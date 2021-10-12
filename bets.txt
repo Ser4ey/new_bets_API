@@ -1,0 +1,17 @@
+P2__TOTALS__UNDER(1.5)
+
+TOTALS__OVER(2.5)
+TOTALS__UNDER(1.5)
+
+BOTH_TEAMS_TO_SCORE__YES
+WIN__12
+
+
+
+
+
+
+
+
+
+
