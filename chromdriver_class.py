@@ -1228,3 +1228,50 @@ class FireFoxDriverWithVPN2(FireFoxDriverMain):
         return False
 
 
+class FireFoxForPimatch:
+    def __init__(self):
+        firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
+        firefox_capabilities['marionette'] = True
+
+        fp = webdriver.FirefoxProfile(data.firefox_profile_path)
+        fp.set_preference("browser.privatebrowsing.autostart", True)
+
+        options = webdriver.FirefoxOptions()
+        options.add_argument("-private")
+        options.set_preference("dom.webdriver.enabled", False)
+        options.set_preference("dom.webnotifications.enabled", False)
+        binary = data.firefox_binary
+        options.binary = binary
+
+        driver = webdriver.Firefox(capabilities=firefox_capabilities, firefox_profile=fp,
+                                   firefox_binary=data.firefox_binary,
+                                   executable_path=data.path_to_geckodriver,
+                                   options=options)
+
+        self.driver = driver
+        self.driver.set_page_load_timeout(75)
+        time.sleep(10)
+        input('Смените прокси:')
+
+        self.driver.get('https://www.parimatch.ru/')
+
+    def get_all_coef_from_url(self, url):
+        self.driver.get(url)
+        time.sleep(1)
+        AllCoef = self.driver.find_elements_by_class_name('_3Sa1tkZVXvesvtPRE_cUEV')
+        for i in range(30):
+            if len(AllCoef) == 0:
+                time.sleep(0.5)
+                AllCoef = self.driver.find_elements_by_class_name('_3Sa1tkZVXvesvtPRE_cUEV')
+                continue
+            else:
+                AllCoef2 = []
+                for i in range(len(AllCoef)):
+                    AllCoef2.append(AllCoef[i].text)
+                return  AllCoef2
+
+        return []
+
+
+
+
