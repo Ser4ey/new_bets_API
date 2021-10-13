@@ -112,11 +112,30 @@ class FireFoxDriverMain:
                 return
 
         self.driver.find_element_by_class_name('lms-StandardLogin_LoginButton').click()
-        time.sleep(10)
+        time.sleep(15)
         print('Вы успешно вошли в аккаунт bet365.ru')
         self.bet365_account_name = login
 
-    def get_balence(self):
+        # закрываем окно с почтой
+        try:
+            time.sleep(3)
+            frame = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame')
+            self.driver.switch_to.frame(frame)
+            print('open page')
+            self.driver.find_element_by_id('RemindMeLater').click()
+        except Exception as er:
+            # print(er)
+            pass
+        finally:
+            self.driver.switch_to.default_content()
+
+        try:
+            time.sleep(5)
+            self.driver.find_element_by_class_name('pm-PushTargetedMessageOverlay_CloseButton ').click()
+        except:
+            pass
+
+    def get_balance(self):
         value = '%3'
         if str(value)[0] == '%':
             value = value[1:]
@@ -256,7 +275,8 @@ class FireFoxDriverMain:
         # WIN__P1 | WIN__P2
         if bet_type == 'WIN__P1' or bet_type == 'WIN__P2':
             self.make_cyber_football_bet_P1_P2_X(url, bet_type, coef, bet_value)
-
+        else:
+            print('This type not supported now!')
 
         '''
         elif bet_type == '1X' or bet_type == 'X2' or bet_type == '1Х' or bet_type == 'Х2' or bet_type == '12' or bet_type == '21':
