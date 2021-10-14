@@ -336,13 +336,10 @@ class FireFoxDriverMain:
 
             if text1 == 'Двойной шанс':
                 line = i
+                print('Ставка двойной шанс найдена')
                 break
 
-        try:
-            bet_element = list_of_bets[line]
-        except:
-            print('Ставка(Двойной шанс) нет ставок')
-            return
+        bet_element = list_of_bets[line]
 
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
