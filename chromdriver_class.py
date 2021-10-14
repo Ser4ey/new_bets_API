@@ -132,7 +132,7 @@ class FireFoxDriverMain:
         except:
             pass
 
-        print('Вы успешно вошли в аккаунт bet365.ru')
+        print('Вы успешно вошли в аккаунт bet365.com')
 
     def make_a_bet(self, value, coef, element):
         '''Ставит ставку в открывшемся окошечке
