@@ -136,7 +136,6 @@ class FireFoxDriverMain:
 
         print('Вы успешно вошли в аккаунт bet365.ru')
 
-
     def get_balance(self):
         value = '%3'
         if str(value)[0] == '%':
@@ -149,6 +148,7 @@ class FireFoxDriverMain:
                 bet365balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
                 bet365balance = bet365balance.split(',')[0]
                 bet365balance = bet365balance.strip()
+                bet365balance = bet365balance.strip('£')
                 bet365balance = bet365balance.replace(' ', '')
                 bet365balance = float(bet365balance)
                 print(f'Баланс аккаунта {bet365balance}')
@@ -185,7 +185,7 @@ class FireFoxDriverMain:
                 bet365balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
                 bet365balance = bet365balance.split(',')[0]
                 bet365balance = bet365balance.strip()
-                bet365balance = bet365balance.strip('')
+                bet365balance = bet365balance.strip('£')
                 bet365balance = bet365balance.replace(' ', '')
                 bet365balance = float(bet365balance)
                 print(f'Баланс аккаунта {bet365balance}')
@@ -277,12 +277,13 @@ class FireFoxDriverMain:
         # WIN__P1 | WIN__P2 | WIN__PX
         if bet_type == 'WIN__P1' or bet_type == 'WIN__P2' or bet_type == 'WIN__PX':
             self.make_cyber_football_bet_P1_P2_X(url, bet_type, coef, bet_value)
+        elif bet_type == 'WIN__1X' or bet_type == 'WIN__X2' or bet_type == 'WIN__12':
+            self.make_cyber_football_bet_double_chance_P1X_XP2_P1P2(url, bet_type, coef, bet_value)
         else:
             print('This type not supported now!')
 
         '''
-        elif bet_type == '1X' or bet_type == 'X2' or bet_type == '1Х' or bet_type == 'Х2' or bet_type == '12' or bet_type == '21':
-            self.make_cyber_football_bet_double_chance_P1X_XP2_P1P2(url, bet_type, coef, bet_value)
+
         elif bet_type[:13] == 'Гола не будет':
             self.make_cyber_football_bet_gola_ne_budet(url, bet_type, coef, bet_value)
         elif bet_type == 'Чет' or bet_type == 'Нечет':
@@ -379,11 +380,11 @@ class FireFoxDriverMain:
         bets = element_with_bets.find_elements_by_class_name('gl-Participant ')
 
         my_bet_number = 2
-        if bet_type == '1X' or bet_type == '1Х':
+        if bet_type == 'WIN__1X':
             my_bet_number = 0
-        elif bet_type == 'X2' or bet_type == 'Х2':
+        elif bet_type == 'WIN__X2':
             my_bet_number = 1
-        elif bet_type == '12' or bet_type == '21':
+        elif bet_type == 'WIN__12':
             my_bet_number = -1
         else:
             print('Ставка на (Двойной шанс) , неизвестный формат ставки')
