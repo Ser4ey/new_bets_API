@@ -20,13 +20,9 @@ driver1 = FireFoxForPimatch()
 #     print(coef)
 #
 
-
-
-
-
 for i in range(100):
-    url_ = input('url:')
     bet_type = input('bet_type:')
+    url_ = input('url:')
 
     coef = driver1.find_coef(url_, bet_type)
     print(coef)

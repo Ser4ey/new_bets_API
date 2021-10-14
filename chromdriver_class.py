@@ -1286,13 +1286,14 @@ class FireFoxForPimatch:
             else:
                 not_good_flag = False
         if not_good_flag:
-            return 0
+            print('Нет ставок(вообще)')
+            return 'Нет ставок(вообще)'
 
         bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
         if bet_type == 'WIN__P1' or bet_type == 'WIN__P2' or bet_type == 'WIN__PX':
             print('1 type')
             return self.win(bet_type)
-        elif bet_type == 'WIN__12' or bet_type == 'WIN__X2' or bet_type == '12':
+        elif bet_type == 'WIN__12' or bet_type == 'WIN__X2' or bet_type == 'WIN__1X':
             print('2 type')
             return self.double_win(bet_type)
         else:
@@ -1304,20 +1305,24 @@ class FireFoxForPimatch:
         bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
         not_found_flag = True
         for i in range(len(bets_blocks)):
-            block_ = bets_blocks[i]
-            text_ = block_.find_element_by_class_name('_3CimNyPb5QiYxWFt8yXhNJ').text
+            try:
+                block_ = bets_blocks[i]
+                text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
+                print(text_)
+            except:
+                return 'Коэффициенты изменились'
             if text_ == 'Победитель матча (основное время)':
                 not_found_flag = False
-                continue
+                print('Ставка на париматч найдена!')
+                break
 
         if not_found_flag:
-            print('Ставка не найдена')
-
+            print('Ставка на париматч не найдена')
             return -1
 
         coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
-        for coef in coefs:
-            print(coef.text)
+        # for coef in coefs:
+        #     print(coef.text)
 
         if bet_type == 'WIN__P1':
             return coefs[0].text
@@ -1326,18 +1331,20 @@ class FireFoxForPimatch:
         else:
             return coefs[1].text
 
-
-
     def double_win(self, bet_type):
         bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
         not_found_flag = True
         for i in range(len(bets_blocks)):
-            block_ = bets_blocks[i]
-            text_ = block_.find_element_by_class_name('_3CimNyPb5QiYxWFt8yXhNJ').text
+            try:
+                block_ = bets_blocks[i]
+                text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
+                print(text_)
+            except:
+                return 'Коэффициенты изменились'
             print(text_)
             if text_ == 'Двойной исход':
                 not_found_flag = False
-                print('Ctavka naidena')
+                print('Ставка на париматч найдена')
                 break
 
         if not_found_flag:
@@ -1345,8 +1352,8 @@ class FireFoxForPimatch:
             return -1
 
         coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
-        for coef in coefs:
-            print(coef.text)
+        # for coef in coefs:
+        #     print(coef.text)
 
         if bet_type == 'WIN__1X':
             return coefs[0].text
