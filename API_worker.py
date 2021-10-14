@@ -66,10 +66,10 @@ class APIWork:
 
 APIWorker1 = APIWork(TOKEN, URL, params)
 
-# for i in range(100):
-#     r = APIWorker1.send_request_to_API()
-#     print(r)
-#     time.sleep(5)
+for i in range(100):
+    r = APIWorker1.send_request_to_API()
+    print(r)
+    time.sleep(5)
 
-# 
+
 

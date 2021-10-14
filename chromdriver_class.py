@@ -273,7 +273,7 @@ class FireFoxDriverMain:
         bet_value = self.bet_value
 
         # WIN__P1 | WIN__P2
-        if bet_type == 'WIN__P1' or bet_type == 'WIN__P2':
+        if bet_type == 'WIN__P1' or bet_type == 'WIN__P2' or bet_type == 'WIN__PX':
             self.make_cyber_football_bet_P1_P2_X(url, bet_type, coef, bet_value)
         else:
             print('This type not supported now!')
@@ -332,8 +332,8 @@ class FireFoxDriverMain:
             my_bet_number = 0
         elif bet_type == 'WIN__P2':
             my_bet_number = -1
-        # elif bet_type == 'X' or bet_type == 'Х':
-        #     my_bet_number = 1
+        elif bet_type == 'WIN__PX':
+            my_bet_number = 1
         else:
             print('Ставка на П1П2Х, неизвестный формат ставки')
             return 'Ставка на П1П2Х, неизвестный формат ставки'
@@ -1272,6 +1272,67 @@ class FireFoxForPimatch:
 
         return []
 
+    def find_coef(self, url, bet_type):
+        # ожидание загрузки коэффициентов
+        self.driver.get(url)
+        time.sleep(1)
+        AllCoef = self.driver.find_elements_by_class_name('_3Sa1tkZVXvesvtPRE_cUEV')
+        not_good_flag = True
+        for i in range(30):
+            if len(AllCoef) == 0:
+                time.sleep(0.5)
+                AllCoef = self.driver.find_elements_by_class_name('_3Sa1tkZVXvesvtPRE_cUEV')
+                continue
+            else:
+                not_good_flag = False
+        if not_good_flag:
+            return 0
+
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+
+
+    def win(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        not_found_flag = True
+        for i in range(len(bets_blocks)):
+            block_ = bets_blocks[i]
+            text_ = block_.find_element_by_class_name('_3CimNyPb5QiYxWFt8yXhNJ').text
+            if text_ == 'Победитель матча (основное время)':
+                not_found_flag = False
+                continue
+
+        if not_found_flag:
+            return 0
+
+        coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
+
+        if bet_type == 'WIN__1':
+            return coefs[0]
+        elif bet_type == 'WIN__2':
+            return coefs[-1]
+        else:
+            return coefs[1]
 
 
 
+    def double_win(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        not_found_flag = True
+        for i in range(len(bets_blocks)):
+            block_ = bets_blocks[i]
+            text_ = block_.find_element_by_class_name('_3CimNyPb5QiYxWFt8yXhNJ').text
+            if text_ == 'Двойной исход':
+                not_found_flag = False
+                continue
+
+        if not_found_flag:
+            return 0
+
+        coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
+
+        if bet_type == 'WIN__1X':
+            return coefs[0]
+        elif bet_type == 'WIN__X2':
+            return coefs[-1]
+        else:
+            return coefs[1]

@@ -16,6 +16,7 @@ for i in range(100):
         continue
     print(fork_info)
     info = driver1.get_all_coef_from_url(fork_info['parimatch_href'])
+    
     print(info)
 
 
