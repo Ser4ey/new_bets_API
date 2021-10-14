@@ -8,8 +8,6 @@ import random
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 
-from threading import Thread
-
 
 class FireFoxDriverMain:
     def __init__(self, bet_value):
@@ -135,30 +133,6 @@ class FireFoxDriverMain:
             pass
 
         print('Вы успешно вошли в аккаунт bet365.ru')
-
-    def get_balance(self):
-        value = '%3'
-        if str(value)[0] == '%':
-            value = value[1:]
-            value = float(value)
-            print(f'value1: {value}')
-            value = value / 100
-            print(f'value1.5: {value}')
-            try:
-                bet365balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
-                bet365balance = bet365balance.split(',')[0]
-                bet365balance = bet365balance.strip()
-                bet365balance = bet365balance.strip('£')
-                bet365balance = bet365balance.replace(' ', '')
-                bet365balance = float(bet365balance)
-                print(f'Баланс аккаунта {bet365balance}')
-            except:
-                bet365balance = 10
-                print(f'Баланс аккаунта {bet365balance} не был получен')
-
-            print(f'{bet365balance} * {value}')
-            value = bet365balance * value
-            print('value2:', value)
 
     def make_a_bet(self, value, coef, element):
         '''Ставит ставку в открывшемся окошечке

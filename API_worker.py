@@ -84,6 +84,8 @@ class APIWork:
         cfs2 = bet1['cfs2']
         cfs2 = json.loads(cfs2)
 
+        fork_id = bet1['fork_id']
+
         if find_max_in_dict(cfs1) == 'BT3' and find_min_in_dict(cfs2) != 'PAN':
             print('BET365 - инциатор')
         elif find_max_in_dict(cfs2) == 'BT3' and find_min_in_dict(cfs1) != 'PAN':
@@ -104,6 +106,7 @@ class APIWork:
             'bet_all_data': bet1,
             'cfs1': cfs1,
             'cfs2': cfs2,
+            'fork_id': fork_id,
             'responce': respons
         }
 

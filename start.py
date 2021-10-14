@@ -7,7 +7,6 @@ from data import AccountsBet365
 
 driverParimatch = FireFoxForPimatch()
 
-
 account1 = AccountsBet365[0]
 driver1 = FireFoxDriverMain(account1['bet_value'])
 driver1.log_in_bet365(account1['bet365_login'], account1['bet365_password'])
@@ -20,6 +19,12 @@ while True:
         time.sleep(5)
 
         fork_info = APIWorker1.send_request_to_API()
+
+        if fork_info['fork_id'] in AllBetsSet:
+            print(f"Ставка {fork_info['fork_id']} уже проставлена!")
+            time.sleep(10)
+            continue
+
         if not fork_info:
             print('no forks now')
             continue
@@ -35,9 +40,9 @@ while True:
             bet_type=fork_info['bet365_type'],
             coef=fork_info['bet365_coef']
         )
+        AllBetsSet.add(fork_info['bet365_href']+fork_info['bet365_type'])
 
-
-
+    AllBetsSet = set()
 
 
 
