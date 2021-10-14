@@ -272,7 +272,7 @@ class FireFoxDriverMain:
     def make_cyber_football_bet(self, url, bet_type, coef):
         bet_value = self.bet_value
 
-        # WIN__P1 | WIN__P2
+        # WIN__P1 | WIN__P2 | WIN__PX
         if bet_type == 'WIN__P1' or bet_type == 'WIN__P2' or bet_type == 'WIN__PX':
             self.make_cyber_football_bet_P1_P2_X(url, bet_type, coef, bet_value)
         else:
@@ -1251,7 +1251,7 @@ class FireFoxForPimatch:
         self.driver = driver
         self.driver.set_page_load_timeout(75)
         time.sleep(10)
-        input('Смените прокси:')
+        input('Смените VPN:')
 
         self.driver.get('https://www.parimatch.ru/')
 
@@ -1289,7 +1289,16 @@ class FireFoxForPimatch:
             return 0
 
         bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
-
+        if bet_type == 'WIN__P1' or bet_type == 'WIN__P2' or bet_type == 'WIN__PX':
+            print('1 type')
+            return self.win(bet_type)
+        elif bet_type == 'WIN__12' or bet_type == 'WIN__X2' or bet_type == '12':
+            print('2 type')
+            return self.double_win(bet_type)
+        else:
+            print(bet_type)
+            print('Неизвестный вид ставки')
+            return 'Неизвестный вид ставки returned'
 
     def win(self, bet_type):
         bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
@@ -1302,16 +1311,20 @@ class FireFoxForPimatch:
                 continue
 
         if not_found_flag:
-            return 0
+            print('Ставка не найдена')
+
+            return -1
 
         coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
+        for coef in coefs:
+            print(coef.text)
 
-        if bet_type == 'WIN__1':
-            return coefs[0]
-        elif bet_type == 'WIN__2':
-            return coefs[-1]
+        if bet_type == 'WIN__P1':
+            return coefs[0].text
+        elif bet_type == 'WIN__P2':
+            return coefs[-1].text
         else:
-            return coefs[1]
+            return coefs[1].text
 
 
 
@@ -1321,18 +1334,34 @@ class FireFoxForPimatch:
         for i in range(len(bets_blocks)):
             block_ = bets_blocks[i]
             text_ = block_.find_element_by_class_name('_3CimNyPb5QiYxWFt8yXhNJ').text
+            print(text_)
             if text_ == 'Двойной исход':
                 not_found_flag = False
-                continue
+                print('Ctavka naidena')
+                break
 
         if not_found_flag:
-            return 0
+            print('Ставка не найдена')
+            return -1
 
         coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
+        for coef in coefs:
+            print(coef.text)
 
         if bet_type == 'WIN__1X':
-            return coefs[0]
+            return coefs[0].text
         elif bet_type == 'WIN__X2':
-            return coefs[-1]
+            return coefs[-1].text
         else:
-            return coefs[1]
+            return coefs[1].text
+
+
+
+
+
+
+
+
+
+
+
