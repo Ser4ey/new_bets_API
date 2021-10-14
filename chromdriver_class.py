@@ -165,17 +165,6 @@ class FireFoxDriverMain:
         (его нужно предварительно открыть)'''
 
         time.sleep(1)
-        coef_now = self.driver.find_element_by_class_name('bsc-OddsDropdownLabel').text
-        coef_now = float(coef_now)
-        print(f'Текущий коэффициент - {coef_now} Нужный коэффициент - {coef}')
-        coef = float(coef)
-        if coef - coef_now > 0.09:
-            print('Коэффициэнт сильно изменился')
-            time.sleep(1)
-            element.click()
-            self.driver.get('https://www.bet365.com/')
-            time.sleep(2)
-            return
 
         if str(value)[0] == '%':
             value = value[1:]
@@ -198,6 +187,18 @@ class FireFoxDriverMain:
             value = round(value, 2)
             print('value:', value)
 
+        coef_now = self.driver.find_element_by_class_name('bsc-OddsDropdownLabel').text
+        coef_now = float(coef_now)
+        print(f'Текущий коэффициент - {coef_now} Нужный коэффициент - {coef}')
+        coef = float(coef)
+        if coef - coef_now > 0.09:
+            print('Коэффициэнт сильно изменился')
+            time.sleep(1)
+            element.click()
+            self.driver.get('https://www.bet365.com/')
+            time.sleep(2)
+            return
+
         self.driver.find_element_by_class_name('qbs-NormalBetItem_DetailsContainer ') \
             .find_element_by_class_name('qbs-StakeBox_StakeInput ').click()
         time.sleep(0.3)
@@ -218,7 +219,10 @@ class FireFoxDriverMain:
                 time.sleep(1)
 
         print('[-] Не удалось поставить ставку')
-        self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
+        try:
+            self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
+        except:
+            pass
 
         self.driver.get('https://www.bet365.com/#/HO/')
 

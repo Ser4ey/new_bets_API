@@ -3,6 +3,30 @@ import json
 import time
 
 
+def find_max_in_dict(d: dict):
+    max_coef = 0
+    best_bk = 'None'
+
+    for name, coef in d.items():
+        if float(coef) > max_coef or (name == 'BT3' and float(coef) >= max_coef):
+            best_bk = name
+            max_coef = float(coef)
+
+    return best_bk
+
+
+def find_min_in_dict(d: dict):
+    min_coef = 100000
+    min_bk = 'None'
+
+    for name, coef in d.items():
+        if float(coef) < min_coef:
+            min_bk = name
+            min_coef = float(coef)
+
+    return min_bk
+
+
 TOKEN = 'ec02c59dee6faaca3189bace969c22d7'
 URL = 'http://212.109.216.193:8111/forks'
 
@@ -10,6 +34,7 @@ params = {
     "token": TOKEN,
     "bk2_name": "bet365,parimatch_ru_new",
     "sport": "soccer",
+    'get_cfs': '1',
 }
 
 
@@ -52,6 +77,23 @@ class APIWork:
         bet365_coef = bet1[f'BK{bet365_line}_cf']
         parimatch_coef = bet1[f'BK{parimatch_line}_cf']
 
+        # список коэффициентов по всем бк
+        cfs1 = bet1['cfs1']
+        cfs1 = json.loads(cfs1)
+
+        cfs2 = bet1['cfs2']
+        cfs2 = json.loads(cfs2)
+
+        if find_max_in_dict(cfs1) == 'BT3' and find_min_in_dict(cfs2) != 'PAN':
+            print('BET365 - инциатор')
+        elif find_max_in_dict(cfs2) == 'BT3' and find_min_in_dict(cfs1) != 'PAN':
+                print('BET365 - инциатор2')
+        else:
+            print('BET365 - не инициатор')
+            print(cfs1)
+            print(cfs2)
+            return False
+
         return {
             'bet365_href': bet365_href,
             'bet365_type': bet365_type,
@@ -60,16 +102,21 @@ class APIWork:
             'parimatch_type': parimatch_type,
             'parimatch_coef': parimatch_coef,
             'bet_all_data': bet1,
+            'cfs1': cfs1,
+            'cfs2': cfs2,
             'responce': respons
         }
 
 
 APIWorker1 = APIWork(TOKEN, URL, params)
 
-# for i in range(100):
-#     r = APIWorker1.send_request_to_API()
-#     print(r)
-#     time.sleep(5)
+for i in range(100):
+    r = APIWorker1.send_request_to_API()
+    if not r:
+        continue
+    print(r['cfs1'])
+    print(r['cfs2'])
+    time.sleep(5)
 
 
 
