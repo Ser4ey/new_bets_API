@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+from datetime import datetime
 
 
 def find_max_in_dict(d: dict):
@@ -50,7 +51,7 @@ class APIWork:
         respons = json.loads(r.text)
 
         if len(respons) < 1:
-            print('Нет вилок')
+            print('Нет вилок', datetime.now())
             return False
 
         bet1 = 'No'
@@ -59,7 +60,7 @@ class APIWork:
                 bet1 = i
                 break
         if bet1 == 'No':
-            print('Нет вилок на кибер футбол')
+            print('Нет вилок на кибер футбол', datetime.now())
             return False
 
         bet365_line = '2'
@@ -103,23 +104,25 @@ class APIWork:
             'parimatch_href': parimatch_href,
             'parimatch_type': parimatch_type,
             'parimatch_coef': parimatch_coef,
-            'bet_all_data': bet1,
             'cfs1': cfs1,
             'cfs2': cfs2,
             'fork_id': fork_id,
-            'responce': respons
+            'bet_all_data': bet1,
+            'responce': respons,
         }
 
 
 APIWorker1 = APIWork(TOKEN, URL, params)
 
-for i in range(100):
-    r = APIWorker1.send_request_to_API()
-    if not r:
-        continue
-    print(r['cfs1'])
-    print(r['cfs2'])
-    time.sleep(5)
+# for i in range(100):
+#     time.sleep(5)
+#     r = APIWorker1.send_request_to_API()
+#     if not r:
+#         continue
+#     print(r)
+#     print(r['cfs1'])
+#     print(r['cfs2'])
+#
 
 
 

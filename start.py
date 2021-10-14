@@ -20,19 +20,28 @@ while True:
 
         fork_info = APIWorker1.send_request_to_API()
 
+        if not fork_info:
+            # print('no forks now')
+            continue
+        print(fork_info)
+
         if fork_info['fork_id'] in AllBetsSet:
             print(f"Ставка {fork_info['fork_id']} уже проставлена!")
             time.sleep(10)
             continue
-
-        if not fork_info:
-            print('no forks now')
-            continue
-        print(fork_info)
+        AllBetsSet.add(fork_info['fork_id'])
 
         second_coef = driverParimatch.find_coef(fork_info['parimatch_href'], fork_info['parimatch_type'])
+        print(f'Коэффициент на париматч: {second_coef}')
+
+        try:
+            float(second_coef)
+        except:
+            print('Ставка не поддерживается')
+            continue
+
         if float(second_coef) < float(fork_info['parimatch_coef']):
-            print('Коэффициет на париматч упал!')
+            print('Коэффициет на париматч упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
             continue
 
         driver1.make_cyber_football_bet(
@@ -40,7 +49,7 @@ while True:
             bet_type=fork_info['bet365_type'],
             coef=fork_info['bet365_coef']
         )
-        AllBetsSet.add(fork_info['bet365_href']+fork_info['bet365_type'])
+
 
     AllBetsSet = set()
 

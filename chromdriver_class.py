@@ -1278,10 +1278,8 @@ class FireFoxForPimatch:
 
         bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
         if bet_type == 'WIN__P1' or bet_type == 'WIN__P2' or bet_type == 'WIN__PX':
-            print('1 type')
             return self.win(bet_type)
         elif bet_type == 'WIN__12' or bet_type == 'WIN__X2' or bet_type == 'WIN__1X':
-            print('2 type')
             return self.double_win(bet_type)
         else:
             print(bet_type)
@@ -1295,7 +1293,7 @@ class FireFoxForPimatch:
             try:
                 block_ = bets_blocks[i]
                 text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
-                print(text_)
+                # print(text_)
             except:
                 return 'Коэффициенты изменились'
             if text_ == 'Победитель матча (основное время)':
@@ -1325,7 +1323,7 @@ class FireFoxForPimatch:
             try:
                 block_ = bets_blocks[i]
                 text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
-                print(text_)
+                # print(text_)
             except:
                 return 'Коэффициенты изменились'
             print(text_)
