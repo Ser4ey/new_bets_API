@@ -360,7 +360,13 @@ class FireFoxDriverMain:
                 line = i
                 break
 
-        bet_element = list_of_bets[line]
+        try:
+            bet_element = list_of_bets[line]
+            print('Ставка(Двойной шанс) не найдена')
+            return
+        except:
+            print('')
+
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
         if text != 'Двойной шанс':
