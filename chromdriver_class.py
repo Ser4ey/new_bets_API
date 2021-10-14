@@ -113,7 +113,6 @@ class FireFoxDriverMain:
 
         self.driver.find_element_by_class_name('lms-StandardLogin_LoginButton').click()
         time.sleep(15)
-        print('Вы успешно вошли в аккаунт bet365.ru')
         self.bet365_account_name = login
 
         # закрываем окно с почтой
@@ -134,6 +133,9 @@ class FireFoxDriverMain:
             self.driver.find_element_by_class_name('pm-PushTargetedMessageOverlay_CloseButton ').click()
         except:
             pass
+
+        print('Вы успешно вошли в аккаунт bet365.ru')
+
 
     def get_balance(self):
         value = '%3'
