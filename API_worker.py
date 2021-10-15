@@ -134,18 +134,18 @@ class APIWork:
 
 
 APIWorker1 = APIWork(TOKEN, URL, params)
-
-AllForks = set()
-
-for i in range(1000):
-    time.sleep(5)
-    r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
-    if not r:
-        continue
-
-    AllForks.add(r['fork_id'])
-    print(r)
-
-
+#
+# AllForks = set()
+#
+# for i in range(1000):
+#     time.sleep(5)
+#     r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
+#     if not r:
+#         continue
+#
+#     AllForks.add(r['fork_id'])
+#     print(r)
+#
+#
 
 
