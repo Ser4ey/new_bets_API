@@ -134,6 +134,27 @@ class FireFoxDriverMain:
 
         print('Вы успешно вошли в аккаунт bet365.com')
 
+    def get_balance(self, bet_value):
+        bet365balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
+        bet365balance = bet365balance.split(',')[0]
+        bet365balance = bet365balance.strip()
+        bet365balance = bet365balance.strip('£')
+        bet365balance = bet365balance.replace(' ', '')
+        bet365balance = float(bet365balance)
+        print(f'Баланс аккаунта {bet365balance}')
+
+        if str(bet_value)[0] == '%':
+            bet_value = bet_value[1:]
+            bet_value = float(bet_value)
+            bet_value = bet_value / 100
+
+        print(f'bet = {bet365balance} * {bet_value}')
+        bet_value = bet365balance * bet_value
+        bet_value = round(bet_value, 2)
+        print('value:', bet_value)
+
+
+
     def make_a_bet(self, value, coef, element):
         '''Ставит ставку в открывшемся окошечке
         (его нужно предварительно открыть)'''
