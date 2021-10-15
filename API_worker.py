@@ -58,7 +58,7 @@ class APIWork:
 
                     bet365_line = '2'
                     parimatch_line = '1'
-                    if bet1['BK1_name'] == 'bet365':
+                    if i['BK1_name'] == 'bet365':
                         bet365_line = '1'
                         parimatch_line = '2'
 
