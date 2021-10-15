@@ -46,7 +46,11 @@ class APIWork:
         self.params = params
         self.forks_ids = set()
 
-    def send_request_to_API(self):
+    def send_request_to_API(self, old_bets_set='1'):
+        # список уже проставленных ставок
+        if old_bets_set == '1':
+            old_bets_set = []
+
         r = requests.get(self.URL, params=self.params)
         respons = json.loads(r.text)
 
@@ -57,8 +61,12 @@ class APIWork:
         bet1 = 'No'
         for i in respons:
             if i['is_cyber'] == '1':
-                bet1 = i
-                break
+                if not (i['fork_id'] in old_bets_set):
+                    bet1 = i
+                    break
+                else:
+                    print('Старая вилка', i)
+
         if bet1 == 'No':
             print('Нет вилок на кибер футбол', datetime.now())
             return False
@@ -114,15 +122,17 @@ class APIWork:
 
 APIWorker1 = APIWork(TOKEN, URL, params)
 
+# AllForks = set()
+#
 # for i in range(100):
 #     time.sleep(5)
-#     r = APIWorker1.send_request_to_API()
+#     r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
 #     if not r:
 #         continue
-#     print(r)
-#     print(r['cfs1'])
-#     print(r['cfs2'])
 #
+#     AllForks.add(r['fork_id'])
+#     print(r)
+
 
 
 

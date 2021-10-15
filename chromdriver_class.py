@@ -203,6 +203,7 @@ class FireFoxDriverMain:
         time.sleep(2)
 
     def reanimaite_bet365com(self):
+        self.close_cupon()
         # попытка закрыть купон
         try:
             self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()

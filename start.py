@@ -18,7 +18,7 @@ while True:
     for i in range(100):
         time.sleep(5)
 
-        fork_info = APIWorker1.send_request_to_API()
+        fork_info = APIWorker1.send_request_to_API(old_bets_set=AllBetsSet)
 
         if not fork_info:
             # print('no forks now')
@@ -44,12 +44,18 @@ while True:
             print('Коэффициет на париматч упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
             continue
 
-        driver1.make_cyber_football_bet(
-            url=fork_info['bet365_href'],
-            bet_type=fork_info['bet365_type'],
-            coef=fork_info['bet365_coef']
-        )
-
+        try:
+            driver1.make_cyber_football_bet(
+                url=fork_info['bet365_href'],
+                bet_type=fork_info['bet365_type'],
+                coef=fork_info['bet365_coef']
+            )
+        except Exception as er:
+            print('-'*100)
+            print('Ошибка при проставлении ставки')
+            print(er)
+            print('-'*100)
+            driver1.reanimaite_bet365com()
 
     AllBetsSet = set()
 
