@@ -7,8 +7,10 @@ from data import min_fi
 
 def find_number_of_plus_bets(our_coef: str, bk_name: str, opposite_forks: dict):
     plus_forks_number = 0
-
-    opposite_forks.pop(bk_name)
+    try:
+        opposite_forks.pop(bk_name)
+    except:
+        pass
     for bk, coef in opposite_forks.items():
         profit = 1 - (1/float(our_coef) + 1/float(coef))
         if profit > 0:
@@ -53,8 +55,18 @@ class APIWork:
         for i in respons:
             if i['is_cyber'] == '1':
                 if not (i['fork_id'] in old_bets_set):
-                    bet1 = i
-                    break
+
+                    bet365_line = '2'
+                    parimatch_line = '1'
+                    if bet1['BK1_name'] == 'bet365':
+                        bet365_line = '1'
+                        parimatch_line = '2'
+
+                    if float(i[f'BK{bet365_line}_cf']) >= 2:
+                        bet1 = i
+                        break
+                    else:
+                        print('Коэффициент на bet365 < 2', f'BK{bet365_line}_cf')
 
 
         if bet1 == 'No':
@@ -76,6 +88,8 @@ class APIWork:
         bet365_coef = bet1[f'BK{bet365_line}_cf']
         parimatch_coef = bet1[f'BK{parimatch_line}_cf']
 
+        if float(bet365_coef) < 2:
+            print('Коэффициент на бет365 < 2')
         # список коэффициентов по всем бк
         cfs1 = bet1['cfs1']
         cfs1 = json.loads(cfs1)
@@ -123,7 +137,7 @@ APIWorker1 = APIWork(TOKEN, URL, params)
 
 AllForks = set()
 
-for i in range(100):
+for i in range(1000):
     time.sleep(5)
     r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
     if not r:
