@@ -2,30 +2,19 @@ import requests
 import json
 import time
 from datetime import datetime
+from data import min_fi
 
 
-def find_max_in_dict(d: dict):
-    max_coef = 0
-    best_bk = 'None'
+def find_number_of_plus_bets(our_coef: str, bk_name: str, opposite_forks: dict):
+    plus_forks_number = 0
 
-    for name, coef in d.items():
-        if float(coef) > max_coef or (name == 'BT3' and float(coef) >= max_coef):
-            best_bk = name
-            max_coef = float(coef)
+    opposite_forks.pop(bk_name)
+    for bk, coef in opposite_forks.items():
+        profit = 1 - (1/float(our_coef) + 1/float(coef))
+        if profit > 0:
+            plus_forks_number += 1
 
-    return best_bk
-
-
-def find_min_in_dict(d: dict):
-    min_coef = 100000
-    min_bk = 'None'
-
-    for name, coef in d.items():
-        if float(coef) < min_coef:
-            min_bk = name
-            min_coef = float(coef)
-
-    return min_bk
+    return plus_forks_number
 
 
 TOKEN = 'ec02c59dee6faaca3189bace969c22d7'
@@ -36,6 +25,7 @@ params = {
     "bk2_name": "bet365,parimatch_ru_new",
     "sport": "soccer",
     'get_cfs': '1',
+    'min_fi': min_fi,
 }
 
 
@@ -53,6 +43,7 @@ class APIWork:
 
         r = requests.get(self.URL, params=self.params)
         respons = json.loads(r.text)
+        # print(r.url)
 
         if len(respons) < 1:
             print('Нет вилок', datetime.now())
@@ -64,8 +55,7 @@ class APIWork:
                 if not (i['fork_id'] in old_bets_set):
                     bet1 = i
                     break
-                else:
-                    print('Старая вилка', i)
+
 
         if bet1 == 'No':
             print('Нет вилок на кибер футбол', datetime.now())
@@ -93,16 +83,25 @@ class APIWork:
         cfs2 = bet1['cfs2']
         cfs2 = json.loads(cfs2)
 
+        list_of_cfs = [0, cfs1, cfs2]
         fork_id = bet1['fork_id']
 
-        if find_max_in_dict(cfs1) == 'BT3' and find_min_in_dict(cfs2) != 'PAN':
-            print('BET365 - инциатор')
-        elif find_max_in_dict(cfs2) == 'BT3' and find_min_in_dict(cfs1) != 'PAN':
-                print('BET365 - инциатор2')
-        else:
-            print('BET365 - не инициатор')
-            print(cfs1)
-            print(cfs2)
+        count_of_bet365_plus_forks = find_number_of_plus_bets(
+            our_coef=bet365_coef,
+            bk_name='BT3',
+            opposite_forks=list_of_cfs[int(parimatch_line)]
+        )
+
+        count_of_parimatch_plus_forks = find_number_of_plus_bets(
+            our_coef=parimatch_coef,
+            bk_name='PAN',
+            opposite_forks=list_of_cfs[int(bet365_line)]
+        )
+
+        print('Выигрышных ставок с bet365:', count_of_bet365_plus_forks)
+        print('Выигрышных ставок с parimatch:', count_of_parimatch_plus_forks)
+        if count_of_parimatch_plus_forks >= count_of_bet365_plus_forks:
+            print('Bet365 не инициатор')
             return False
 
         return {
@@ -122,16 +121,16 @@ class APIWork:
 
 APIWorker1 = APIWork(TOKEN, URL, params)
 
-# AllForks = set()
-#
-# for i in range(100):
-#     time.sleep(5)
-#     r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
-#     if not r:
-#         continue
-#
-#     AllForks.add(r['fork_id'])
-#     print(r)
+AllForks = set()
+
+for i in range(100):
+    time.sleep(5)
+    r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
+    if not r:
+        continue
+
+    AllForks.add(r['fork_id'])
+    print(r)
 
 
 
