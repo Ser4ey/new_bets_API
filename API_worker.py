@@ -77,7 +77,7 @@ class APIWork:
                         bet1 = i
                         break
                     else:
-                        print('Коэффициент на bet365 < 2', f'BK{bet365_line}_cf')
+                        print('Коэффициент на bet365 < 2', i[f'BK{bet365_line}_cf'])
 
 
         if bet1 == 'No':

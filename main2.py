@@ -6,9 +6,6 @@ import time
 from API_worker import APIWorker1
 
 
-
-
-
 def make_bet_multipotok(All_elements_array):
     print('Ставим ставку на одном из аккаунтов')
     driver, url, bet_type, coef = All_elements_array
