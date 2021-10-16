@@ -43,9 +43,20 @@ class APIWork:
         if old_bets_set == '1':
             old_bets_set = []
 
-        r = requests.get(self.URL, params=self.params)
-        respons = json.loads(r.text)
-        # print(r.url)
+        try:
+            r = requests.get(self.URL, params=self.params)
+            respons = json.loads(r.text)
+        except Exception as er:
+            print('!'*100)
+            print('Ошибка при отправке запроса к API')
+            print(er)
+            try:
+                print(r.status_code)
+            except:
+                print('Status code: None')
+            print('!'*100)
+            time.sleep(20)
+            return False
 
         if len(respons) < 1:
             print('Нет вилок', datetime.now())
@@ -135,17 +146,17 @@ class APIWork:
 
 APIWorker1 = APIWork(TOKEN, URL, params)
 #
-# AllForks = set()
-#
-# for i in range(1000):
-#     time.sleep(5)
-#     r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
-#     if not r:
-#         continue
-#
-#     AllForks.add(r['fork_id'])
-#     print(r)
-#
+AllForks = set()
+
+for i in range(1000):
+    time.sleep(5)
+    r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
+    if not r:
+        continue
+
+    AllForks.add(r['fork_id'])
+    print(r)
+
 #
 
 
