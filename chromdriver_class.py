@@ -279,6 +279,8 @@ class FireFoxDriverMain:
             self.make_cyber_football_bet_P1_P2_X(url, bet_type, coef, bet_value)
         elif bet_type == 'WIN__1X' or bet_type == 'WIN__X2' or bet_type == 'WIN__12':
             self.make_cyber_football_bet_double_chance_P1X_XP2_P1P2(url, bet_type, coef, bet_value)
+        elif bet_type[:13] == 'TOTALS__UNDER' or bet_type[:12] == 'TOTALS__OVER':
+            self.make_cyber_football_bet_totalbet_of_game(url, bet_type, coef, bet_value)
         else:
             print('This type not supported now!')
 
@@ -432,29 +434,23 @@ class FireFoxDriverMain:
         goul_count = element_with_bets.find_element_by_class_name('srb-ParticipantLabelCentered_Name ').text
         bets = element_with_bets.find_elements_by_class_name('gl-ParticipantOddsOnly ')
 
-        bet_type = bet_type.strip(')')
-        bet_type = bet_type.split('(')
-        number_of_gouls = bet_type[1]
-        bet_type = bet_type[0]
+        number_of_gouls = bet_type.split('(')
+        number_of_gouls = number_of_gouls[-1]
+        number_of_gouls = number_of_gouls.strip(')')
+        number_of_gouls = number_of_gouls.strip('')
 
         if number_of_gouls != goul_count:
             print(f'Число голов не совпадает {goul_count}|{number_of_gouls}')
             return
 
-        if bet_type == 'Тб':
+        if 'OVER' in bet_type:
             bets[0].click()
             time.sleep(2)
             self.make_a_bet(bet_value, coef, bets[0])
-
-        elif bet_type == 'Тм':
+        else:
             bets[1].click()
             time.sleep(2)
             self.make_a_bet(bet_value, coef, bets[1])
-
-
-        else:
-            print('Неизвестный тип ставки (Тотол на общий счёт)')
-            return
 
     def make_cyber_football_bet_totalbet_of_teme_1or2(self, url, bet_type, coef, bet_value):
         print(f'Проставляем ставку total bet team url: {url}; bet_type: {bet_type}; coef: {coef}')
@@ -1299,6 +1295,8 @@ class FireFoxForPimatch:
             return self.win(bet_type)
         elif bet_type == 'WIN__12' or bet_type == 'WIN__X2' or bet_type == 'WIN__1X':
             return self.double_win(bet_type)
+        elif bet_type[:13] == 'TOTALS__UNDER' or bet_type[:12] == 'TOTALS__OVER':
+            return self.total_over__under(bet_type)
         else:
             print(bet_type)
             print('Неизвестный вид ставки')
@@ -1364,6 +1362,46 @@ class FireFoxForPimatch:
             return coefs[-1].text
         else:
             return coefs[1].text
+
+    def total_over__under(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        not_found_flag = True
+        for i in range(len(bets_blocks)):
+            try:
+                block_ = bets_blocks[i]
+                text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
+                # print(text_)
+            except:
+                return 'Коэффициенты изменились'
+            print(text_)
+            if text_ == 'Тотал':
+                not_found_flag = False
+                print('Ставка Тотал на париматч найдена')
+                break
+
+        if not_found_flag:
+            print('Ставка Тотал не найдена')
+            return -1
+
+        total_value = block_.find_element_by_class_name('_3PG_TMtKEMzUVW6dfZLkWt').text
+        coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
+
+        needed_total = bet_type.split('(')
+        needed_total = needed_total[-1]
+        needed_total = needed_total.strip(')')
+        needed_total = needed_total.strip('')
+
+        # print(f'Нужный тотал: {needed_total}')
+        # print(f'Тотал на сайте: {total_value}')
+        if needed_total == total_value:
+            if 'OVER' in bet_type:
+                return coefs[0].text
+            else:
+                return coefs[-1].text
+        else:
+            print(f'Размер тотала изменился с {needed_total} -> {total_value}')
+
+
 
 
 
