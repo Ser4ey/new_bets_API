@@ -77,7 +77,7 @@ while True:
         except:
             print('Ставка не поддерживается')
             continue
-        if float(second_coef) < float(fork_info['parimatch_coef']):
+        if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
             print('Коэффициет на париматч упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
             continue
 
