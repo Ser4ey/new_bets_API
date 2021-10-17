@@ -25,15 +25,24 @@ List_of_bet_account = [0] * len(AccountsBet365)
 i1 = 1
 for i in range(len(AccountsBet365)):
     print(f'Запуск аккаунта {i1}')
-    i1+=1
     account_data = AccountsBet365[i]
+    # запускаем аккаунт пока он не запустится
+    while True:
+        try:
+            driver2 = FireFoxDriverMain(account_data['bet_value'])
+            driver2.log_in_bet365(login=account_data['bet365_login'], password=account_data['bet365_password'])
+            List_of_bet_account[i] = driver2
+            break
+        except:
+            print('Ошибка при запуске аккаунта')
+            print(f'Повторный запуск аккаунта {i1}')
+            try:
+                driver2.driver.close()
+                driver2.driver.quit()
+            except:
+                pass
 
-    driver2 = FireFoxDriverMain(account_data['bet_value'])
-    driver2.log_in_bet365(login=account_data['bet365_login'], password=account_data['bet365_password'])
-
-    List_of_bet_account[i] = driver2
-
-
+    i1 += 1
 AllBetsSet = set()
 
 reboot_counter = 0
