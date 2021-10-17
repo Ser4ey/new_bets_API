@@ -281,6 +281,8 @@ class FireFoxDriverMain:
             self.make_cyber_football_bet_double_chance_P1X_XP2_P1P2(url, bet_type, coef, bet_value)
         elif bet_type[:13] == 'TOTALS__UNDER' or bet_type[:12] == 'TOTALS__OVER':
             self.make_cyber_football_bet_totalbet_of_game(url, bet_type, coef, bet_value)
+        elif bet_type[:10] == 'P1__TOTALS' or bet_type[:10] == 'P2__TOTALS':
+            self.make_cyber_football_bet_totalbet_of_teme_1or2(url, bet_type, coef, bet_value)
         else:
             print('This type not supported now!')
 
@@ -475,12 +477,9 @@ class FireFoxDriverMain:
         bet_element = list_of_bets[line]
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-
-        if 'Команда2' in bet_type:
+        if 'P2' in bet_type:
             line += 1
             bet_element = list_of_bets[line]
-
-        bet_type = bet_type.split(' ')[-1]
 
         try:
             bet_element.find_element_by_class_name('gl-MarketGroup_Wrapper ')
@@ -506,16 +505,11 @@ class FireFoxDriverMain:
             return
 
         bet_element_1 = bets[0]
-        if bet_type == 'Тб':
+        if 'OVER' in bet_type:
             bets[0].click()
-        elif bet_type == 'Тм':
+        else:
             bets[1].click()
             bet_element_1 = bets[1]
-        else:
-            print('Неизвестный тип ставки (Тотал на общий счёт)')
-            return
-
-
 
         time.sleep(2)
         self.make_a_bet(bet_value, coef, bet_element_1)
@@ -1297,6 +1291,9 @@ class FireFoxForPimatch:
             return self.double_win(bet_type)
         elif bet_type[:13] == 'TOTALS__UNDER' or bet_type[:12] == 'TOTALS__OVER':
             return self.total_over__under(bet_type)
+        # P1__TOTALS__UNDER(1.5)
+        elif bet_type[:10] == 'P1__TOTALS' or bet_type[:10] == 'P2__TOTALS':
+            return self.total_over__under_of_team(bet_type)
         else:
             print(bet_type)
             print('Неизвестный вид ставки')
@@ -1342,7 +1339,7 @@ class FireFoxForPimatch:
                 # print(text_)
             except:
                 return 'Коэффициенты изменились'
-            print(text_)
+            # print(text_)
             if text_ == 'Двойной исход':
                 not_found_flag = False
                 print('Ставка на париматч найдена')
@@ -1373,7 +1370,7 @@ class FireFoxForPimatch:
                 # print(text_)
             except:
                 return 'Коэффициенты изменились'
-            print(text_)
+            # print(text_)
             if text_ == 'Тотал':
                 not_found_flag = False
                 print('Ставка Тотал на париматч найдена')
@@ -1401,8 +1398,55 @@ class FireFoxForPimatch:
         else:
             print(f'Размер тотала изменился с {needed_total} -> {total_value}')
 
+    def total_over__under_of_team(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        not_found_flag = True
+        total_counter = 0
+        bet_block = []
+
+        for i in range(len(bets_blocks)):
+            try:
+                block_ = bets_blocks[i]
+                text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
+                # print(text_)
+            except:
+                return 'Коэффициенты изменились'
+            print(text_)
+            if 'Индивидуальный тотал' in text_:
+                if 'P2' in bet_type:
+                    if total_counter == 1:
+                        not_found_flag = False
+                        print('Ставка Тотал на париматч найдена')
+                        break
+                    else:
+                        total_counter += 1
+                else:
+                    not_found_flag = False
+                    print('Ставка Тотал на париматч найдена')
+                    break
 
 
+        if not_found_flag:
+            print('Ставка Тотал не найдена')
+            return -1
+
+        total_value = block_.find_element_by_class_name('_3PG_TMtKEMzUVW6dfZLkWt').text
+        coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
+
+        needed_total = bet_type.split('(')
+        needed_total = needed_total[-1]
+        needed_total = needed_total.strip(')')
+        needed_total = needed_total.strip('')
+
+        # print(f'Нужный тотал: {needed_total}')
+        # print(f'Тотал на сайте: {total_value}')
+        if needed_total == total_value:
+            if 'OVER' in bet_type:
+                return coefs[0].text
+            else:
+                return coefs[-1].text
+        else:
+            print(f'Размер тотала изменился с {needed_total} -> {total_value}')
 
 
 

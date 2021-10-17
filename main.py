@@ -12,9 +12,8 @@ driver1.log_in_bet365(account1['bet365_login'], account1['bet365_password'])
 
 while True:
     bet_type = input('bet type:')
-    coef = input('coef type:')
+    coef = 0
     url = input('bet url:')
-
 
     driver1.make_cyber_football_bet(
                 url=url,
