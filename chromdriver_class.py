@@ -163,46 +163,53 @@ class FireFoxDriverMain:
         print(f'Вы успешно вошли в аккаунт {login}')
 
     def relogin_in_bet365_if_take_off(self):
-        login = self.bet365_login
-        password_ = self.bet365_password
-        print(login)
-        print(password_)
-
         try:
             self.driver.get('https://www.bet365.com/')
         except:
             pass
-
         time.sleep(5)
         try:
-            self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer').click()
-            print('open login')
+            self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
+            print(f'Аккаунт {self.bet365_login} вылетел!')
         except:
-            return f'Аккаунт {login} авторизован'
+            print(f'Аккаунт {self.bet365_login} авторизован')
+            return f'Аккаунт {self.bet365_login} авторизован'
 
-        time.sleep(10)
-        try:
-            self.driver.find_element_by_class_name('lms-StandardLogin_Username').send_keys(login)
-            print('login1')
-            time.sleep(0.7)
-            self.driver.find_element_by_class_name('lms-StandardLogin_Password').send_keys(password_)
-            print('passwd2')
-            time.sleep(0.7)
-        except:
-            time.sleep(1)
-            print(f'Не удалось войти в аккаунт {login}')
-            return
+        print(f'Повторный вход в аккаунт: {self.bet365_login}')
+
+        for i in range(10):
+            try:
+                self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer').click()
+                break
+            except:
+                print(f'Не удалось войти в аккаунт {self.bet365_login}!')
+                time.sleep(2)
+
+        time.sleep(5)
+        for i in range(10):
+            try:
+                self.driver.find_element_by_class_name('lms-StandardLogin_Username').send_keys(self.bet365_login)
+                time.sleep(0.7)
+                self.driver.find_element_by_class_name('lms-StandardLogin_Password').send_keys(self.bet365_password)
+                time.sleep(0.7)
+                break
+            except:
+                time.sleep(1)
+                print(f'Не удалось войти в аккаунт {self.bet365_login}')
+                return
 
         self.driver.find_element_by_class_name('lms-StandardLogin_LoginButton').click()
-        time.sleep(10)
+        time.sleep(15)
 
         # закрываем окно с почтой
         try:
             time.sleep(3)
             frame = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame')
             self.driver.switch_to.frame(frame)
+            # print('open page')
             self.driver.find_element_by_id('RemindMeLater').click()
         except Exception as er:
+            # print(er)
             pass
         finally:
             self.driver.switch_to.default_content()
@@ -213,8 +220,8 @@ class FireFoxDriverMain:
         except:
             pass
 
-        print(f'Вы успешно перевошли в аккаунт {login}')
-        return f'Вы успешно перевошли в аккаунт {login}'
+        print(f'Вы успешно перевошли в аккаунт {self.bet365_login}')
+        return f'Вы успешно перевошли в аккаунт {self.bet365_login}'
 
     def get_balance(self, bet_value):
         bet365balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
@@ -326,7 +333,6 @@ class FireFoxDriverMain:
     def close_cupon(self):
         '''Попытка Закрытие купонов(а_ если он есть)'''
         try:
-
             #open_cupon
             self.driver.find_element_by_class_name('bss-StandardHeader ').click()
             time.sleep(4)
