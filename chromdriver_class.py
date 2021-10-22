@@ -31,28 +31,29 @@ class FireFoxDriverMain:
                                    options=options)
 
         self.driver = driver
-        self.driver.set_page_load_timeout(30)
-        time.sleep(10)
         self.bet_value = bet_value
 
+    def open_bet365com(self):
+        time.sleep(10)
         self.driver.get('https://2ip.ru/')
-
+        self.driver.set_page_load_timeout(10)
         try:
             self.driver.get('https://www.bet365.com/')
+            return None
         except:
-            print('Сайт не загружен')
+            pass
+
+        for i in range(7):
             self.open_new_window_2ip()
-            time.sleep(15)
+            time.sleep(3)
 
         self.driver.set_page_load_timeout(75)
 
         try:
             self.driver.get('https://www.bet365.com/')
         except:
-            self.driver.close()
-            self.driver.quit()
             print('Сайт bet365 не загрузился')
-            raise Exception('Сайт bet365 не загрузился')
+            return 'Сайт bet365 не загрузился'
 
     def open_new_window_2ip(self):
         current_window = self.driver.current_window_handle
