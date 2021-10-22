@@ -322,7 +322,8 @@ class FireFoxDriverMain:
             pass
 
         self.close_cupon()
-        #Попытка реанимировать сайт .com версии (пропадает соединение) (VPN!!!)
+
+        self.relogin_in_bet365_if_take_off()
 
         for i in range(10):
             try:
@@ -341,7 +342,7 @@ class FireFoxDriverMain:
                 pass
 
     def close_cupon(self):
-        '''Попытка Закрытие купонов(а_ если он есть'''
+        '''Попытка Закрытие купонов(а_ если он есть)'''
         try:
 
             #open_cupon
