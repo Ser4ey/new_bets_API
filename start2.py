@@ -31,17 +31,12 @@ def register_bet365_multipotok(AccountData):
         else:
             print('Сайт bet365 не загрузился')
 
-    while True:
-        try:
-            driver2.log_in_bet365(login, password)
-            break
-        except:
-            try:
-                driver2.driver.close()
-                driver2.driver.quit()
-                print(f'Аккаунт {login} перезапускается')
-            except:
-                pass
+    try:
+        driver2.log_in_bet365(login, password)
+    except:
+        print('-'*100)
+        print(f'Не удалось войти в аккаунт {login}')
+        print('-'*100)
 
 
 driverParimatch = FireFoxForPimatch()
