@@ -45,7 +45,7 @@ def register_bet365_multipotok(AccountData):
         print('!'*100)
 
 
-driverParimatch = FireFoxForPimatch()
+# driverParimatch = FireFoxForPimatch()
 
 list_of_start_info = []
 List_of_bet_account = []
@@ -96,16 +96,16 @@ while True:
         AllBetsSet.add(fork_info['fork_id'])
 
 
-        second_coef = driverParimatch.find_coef(fork_info['parimatch_href'], fork_info['parimatch_type'])
-        print(f'Коэффициент на париматч: {second_coef}')
-        try:
-            float(second_coef)
-        except:
-            print('Ставка не поддерживается')
-            continue
-        if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
-            print('Коэффициет на париматч упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
-            continue
+        # second_coef = driverParimatch.find_coef(fork_info['parimatch_href'], fork_info['parimatch_type'])
+        # print(f'Коэффициент на париматч: {second_coef}')
+        # try:
+        #     float(second_coef)
+        # except:
+        #     print('Ставка не поддерживается')
+        #     continue
+        # if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
+        #     print('Коэффициет на париматч упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
+        #     continue
 
         # проставление ставок на всех аккаунтах (Pool)
         try:
