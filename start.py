@@ -26,7 +26,12 @@ def register_bet365_multipotok(AccountData):
     print(f'Open bet365 for: {login}')
 
     while True:
-        r = driver2.open_bet365com()
+        try:
+            r = driver2.open_bet365com()
+        except:
+            print(f'! Перезагрузка драйвера для {login}')
+            driver2.restart_driver()
+            continue
         if r is None:
             break
         else:
