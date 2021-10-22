@@ -33,6 +33,34 @@ class FireFoxDriverMain:
         self.driver = driver
         self.bet_value = bet_value
 
+    def restart_driver(self):
+        try:
+            self.driver.close()
+            self.driver.quit()
+        except:
+            pass
+
+        self.is_VPN = True
+        firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
+        firefox_capabilities['marionette'] = True
+
+        fp = webdriver.FirefoxProfile(data.firefox_profile_path)
+        fp.set_preference("browser.privatebrowsing.autostart", True)
+
+        options = webdriver.FirefoxOptions()
+        options.add_argument("-private")
+        options.set_preference("dom.webdriver.enabled", False)
+        options.set_preference("dom.webnotifications.enabled", False)
+        binary = data.firefox_binary
+        options.binary = binary
+
+        driver = webdriver.Firefox(capabilities=firefox_capabilities, firefox_profile=fp,
+                                   firefox_binary=data.firefox_binary,
+                                   executable_path=data.path_to_geckodriver,
+                                   options=options)
+
+        self.driver = driver
+
     def open_bet365com(self):
         time.sleep(10)
         self.driver.get('https://2ip.ru/')
@@ -57,7 +85,7 @@ class FireFoxDriverMain:
 
     def open_new_window_2ip(self):
         current_window = self.driver.current_window_handle
-        print('open site 2ip.ru')
+        # print('open site 2ip.ru')
         self.driver.execute_script(f"window.open('https://2ip.ru/', '_blank')")
         time.sleep(5)
         self.driver.switch_to.window(self.driver.window_handles[-1])

@@ -30,6 +30,8 @@ def register_bet365_multipotok(AccountData):
             break
         else:
             print('Сайт bet365 не загрузился')
+            driver2.restart_driver()
+            time.sleep(5)
 
     try:
         driver2.log_in_bet365(login, password)
