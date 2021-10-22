@@ -122,7 +122,7 @@ class FireFoxDriverMain:
                 self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer').click()
                 break
             except:
-                print('Не удалось войти в аккаунт!')
+                print(f'Не удалось войти в аккаунт {login}!')
                 time.sleep(2)
 
         time.sleep(5)
@@ -135,7 +135,7 @@ class FireFoxDriverMain:
                 break
             except:
                 time.sleep(1)
-                print('Не удалось войти в аккаунт')
+                print(f'Не удалось войти в аккаунт {login}')
                 return
 
         self.driver.find_element_by_class_name('lms-StandardLogin_LoginButton').click()
@@ -147,7 +147,7 @@ class FireFoxDriverMain:
             time.sleep(3)
             frame = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame')
             self.driver.switch_to.frame(frame)
-            print('open page')
+            # print('open page')
             self.driver.find_element_by_id('RemindMeLater').click()
         except Exception as er:
             # print(er)
@@ -161,7 +161,7 @@ class FireFoxDriverMain:
         except:
             pass
 
-        print('Вы успешно вошли в аккаунт bet365.com')
+        print(f'Вы успешно вошли в аккаунт {login}')
 
     def get_balance(self, bet_value):
         bet365balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
