@@ -73,7 +73,7 @@ class FireFoxDriverMain:
 
         for i in range(7):
             self.open_new_window_2ip()
-            time.sleep(3)
+            time.sleep(1)
 
         self.driver.set_page_load_timeout(75)
 
@@ -85,9 +85,8 @@ class FireFoxDriverMain:
 
     def open_new_window_2ip(self):
         current_window = self.driver.current_window_handle
-        # print('open site 2ip.ru')
         self.driver.execute_script(f"window.open('https://2ip.ru/', '_blank')")
-        time.sleep(5)
+        time.sleep(7)
         self.driver.switch_to.window(self.driver.window_handles[-1])
         self.driver.close()
         self.driver.switch_to.window(current_window)

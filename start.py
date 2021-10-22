@@ -4,6 +4,7 @@ import datetime
 from multiprocessing.dummy import Pool
 import time
 from API_worker import APIWorker1
+import random
 
 
 def make_bet_multipotok(All_elements_array):
@@ -22,23 +23,26 @@ def reanimate_bet365com(driver):
 
 def register_bet365_multipotok(AccountData):
     driver2, login, password = AccountData[0], AccountData[1], AccountData[2]
-    print(f'Запуск аккаунта(открытие bet365): {login}')
+    time.sleep(random.randint(10, 500)/100)
+    print(f'Open bet365 for: {login}')
 
     while True:
         r = driver2.open_bet365com()
         if r is None:
             break
         else:
+            print('-'*100)
             print(f'Сайт bet365 не загрузился для {login}')
+            print('-'*100)
             driver2.restart_driver()
             time.sleep(5)
 
     try:
         driver2.log_in_bet365(login, password)
     except:
-        print('-'*100)
+        print('!'*100)
         print(f'Не удалось войти в аккаунт {login}')
-        print('-'*100)
+        print('!'*100)
 
 
 driverParimatch = FireFoxForPimatch()
