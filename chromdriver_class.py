@@ -176,6 +176,7 @@ class FireFoxDriverMain:
         time.sleep(5)
         try:
             self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer').click()
+            print('open login')
         except:
             return f'Аккаунт {login} авторизован'
 

@@ -13,8 +13,7 @@ def make_bet_multipotok(All_elements_array):
     try:
         driver.make_cyber_football_bet(url, bet_type, coef)
     except:
-        print('Реанимация аккаунта')
-        driver.reanimaite_bet365com()
+        pass
 
 
 def reanimate_bet365com(driver):
