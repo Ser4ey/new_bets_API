@@ -183,8 +183,10 @@ class FireFoxDriverMain:
         time.sleep(10)
         try:
             self.driver.find_element_by_class_name('lms-StandardLogin_Username').send_keys(login)
-            time.sleep(1.4)
+            print('login1')
+            time.sleep(0.7)
             self.driver.find_element_by_class_name('lms-StandardLogin_Password').send_keys(password_)
+            print('passwd2')
             time.sleep(0.7)
         except:
             time.sleep(1)
@@ -214,8 +216,6 @@ class FireFoxDriverMain:
         print(f'Вы успешно перевошли в аккаунт {login}')
         return f'Вы успешно перевошли в аккаунт {login}'
 
-
-
     def get_balance(self, bet_value):
         bet365balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
         bet365balance = bet365balance.split(',')[0]
@@ -234,8 +234,6 @@ class FireFoxDriverMain:
         bet_value = bet365balance * bet_value
         bet_value = round(bet_value, 2)
         print('value:', bet_value)
-
-
 
     def make_a_bet(self, value, coef, element):
         '''Ставит ставку в открывшемся окошечке
@@ -324,22 +322,6 @@ class FireFoxDriverMain:
         self.close_cupon()
 
         self.relogin_in_bet365_if_take_off()
-
-        for i in range(10):
-            try:
-                try:
-                    self.driver.get('https://www.bet365.com/')
-                    time.sleep(4)
-                    bet365balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance ').text
-                    print(f'Аккаунт {self.bet365_account_name} - работает')
-                    break
-                except:
-                    print(f'Аккаунт {self.bet365_account_name} - реанимируется')
-                    self.driver.get('https://www.bet365.com/')
-                    time.sleep(1)
-                    print('-')
-            except:
-                pass
 
     def close_cupon(self):
         '''Попытка Закрытие купонов(а_ если он есть)'''
