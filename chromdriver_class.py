@@ -181,7 +181,7 @@ class FireFoxDriverMain:
         for i in range(10):
             try:
                 self.driver.find_element_by_class_name('lms-StandardLogin_Username').send_keys(login)
-                time.sleep(0.7)
+                time.sleep(1.4)
                 self.driver.find_element_by_class_name('lms-StandardLogin_Password').send_keys(password)
                 time.sleep(0.7)
                 break
