@@ -164,7 +164,9 @@ class FireFoxDriverMain:
 
     def relogin_in_bet365_if_take_off(self):
         login = self.bet365_login
-        password = self.bet365_password
+        password_ = self.bet365_password
+        print(login)
+        print(password_)
 
         try:
             self.driver.get('https://www.bet365.com/')
@@ -177,18 +179,16 @@ class FireFoxDriverMain:
         except:
             return f'Аккаунт {login} авторизован'
 
-        time.sleep(5)
-        for i in range(10):
-            try:
-                self.driver.find_element_by_class_name('lms-StandardLogin_Username').send_keys(login)
-                time.sleep(1.4)
-                self.driver.find_element_by_class_name('lms-StandardLogin_Password').send_keys(password)
-                time.sleep(0.7)
-                break
-            except:
-                time.sleep(1)
-                print(f'Не удалось войти в аккаунт {login}')
-                return
+        time.sleep(10)
+        try:
+            self.driver.find_element_by_class_name('lms-StandardLogin_Username').send_keys(login)
+            time.sleep(1.4)
+            self.driver.find_element_by_class_name('lms-StandardLogin_Password').send_keys(password_)
+            time.sleep(0.7)
+        except:
+            time.sleep(1)
+            print(f'Не удалось войти в аккаунт {login}')
+            return
 
         self.driver.find_element_by_class_name('lms-StandardLogin_LoginButton').click()
         time.sleep(10)
