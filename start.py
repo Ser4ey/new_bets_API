@@ -22,7 +22,7 @@ def reanimate_bet365com(driver):
 
 def register_bet365_multipotok(AccountData):
     driver2, login, password = AccountData[0], AccountData[1], AccountData[2]
-    print(f'Вход в аккаунт: {login}')
+    print(f'Запуск аккаунта(открытие bet365): {login}')
 
     while True:
         r = driver2.open_bet365com()
