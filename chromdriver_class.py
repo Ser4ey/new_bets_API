@@ -368,7 +368,6 @@ class FireFoxDriverMain:
 
         for block_ in messages_blocks:
             title_text = block_.find_element_by_tag_name('span').text
-            print(title_text)
             if title_text == 'Ваша учётная запись':
                 self.is_valud_account = False
                 self.driver.switch_to.default_content()
