@@ -12,6 +12,8 @@ from selenium.webdriver.common.keys import Keys
 class FireFoxDriverMain:
     def __init__(self, bet_value):
         self.is_VPN = True
+        # аккаунт рабочий, если значение меняется на False, то аккаунт закрывается
+        self.is_valud_account = True
         firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
         firefox_capabilities['marionette'] = True
 
@@ -320,6 +322,13 @@ class FireFoxDriverMain:
         except:
             pass
 
+        # попытка закрыть уведомление о сообщениях
+        try:
+            self.driver.find_element_by_class_name('pm-PushTargetedMessageOverlay_CloseButton ').click()
+            time.sleep(2)
+        except:
+            pass
+
         # попытка закрыть окно неактивности
         try:
             self.driver.get('https://www.bet365.com/')
@@ -343,6 +352,10 @@ class FireFoxDriverMain:
             time.sleep(4)
         except Exception as er:
             print('нет купонов', er)
+
+    def check_is_account_valid(self):
+        '''Провепка порезан ли аккаунт'''
+        pass
 
     def make_cyber_football_bet(self, url, bet_type, coef):
         bet_value = self.bet_value
