@@ -13,7 +13,7 @@ def make_bet_multipotok(All_elements_array):
     try:
         driver.make_cyber_football_bet(url, bet_type, coef)
     except:
-        pass
+        driver.reanimaite_bet365com()
 
 
 def reanimate_bet365com(driver):
@@ -99,17 +99,19 @@ while True:
             continue
         AllBetsSet.add(fork_info['fork_id'])
 
-
-        second_coef = driverParimatch.find_coef(fork_info['parimatch_href'], fork_info['parimatch_type'])
-        print(f'Коэффициент на париматч: {second_coef}')
         try:
-            float(second_coef)
+            second_coef = driverParimatch.find_coef(fork_info['parimatch_href'], fork_info['parimatch_type'])
+            print(f'Коэффициент на париматч: {second_coef}')
+            try:
+                float(second_coef)
+            except:
+                print('Ставка не поддерживается')
+                continue
+            if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
+                print('Коэффициет на париматч упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
+                continue
         except:
-            print('Ставка не поддерживается')
-            continue
-        if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
-            print('Коэффициет на париматч упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
-            continue
+            print('Не удалось получить коэффициент для париматч')
 
         # проставление ставок на всех аккаунтах (Pool)
         try:
