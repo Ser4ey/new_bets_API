@@ -89,8 +89,8 @@ while i_porez < len(List_of_bet_account):
         List_of_bet_account.pop(i_porez)
     else:
         i_porez += 1
+print(f'Осталось рабочих аккаунтов: {len(List_of_bet_account)}')
 # завершение поиска порезанных аккаунтов
-
 
 # начало программы
 AllBetsSet = set()
@@ -181,4 +181,6 @@ while True:
         # завершение поиска порезанных аккаунтов
     else:
         porezan_counter += 1
+    print(f'Осталось рабочих аккаунтов: {len(List_of_bet_account)}')
+
 
