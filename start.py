@@ -112,6 +112,7 @@ while True:
                 continue
         except:
             print('Не удалось получить коэффициент для париматч')
+            continue
 
         # проставление ставок на всех аккаунтах (Pool)
         try:
