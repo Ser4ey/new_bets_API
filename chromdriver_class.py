@@ -353,9 +353,30 @@ class FireFoxDriverMain:
         except Exception as er:
             print('нет купонов', er)
 
-    def check_is_account_valid(self):
+    def check_is_account_not_valid_mean_porezan(self):
         '''Провепка порезан ли аккаунт'''
-        pass
+        self.driver.get('https://www.bet365.com/#/ME/X6500')
+        time.sleep(10)
+
+        iframe1 = self.driver.find_element_by_id('MembersIframe')
+        self.driver.switch_to.frame(iframe1)
+        time.sleep(0.5)
+        iframe2 = self.driver.find_element_by_id('MembersHostFrame')
+        self.driver.switch_to.frame(iframe2)
+
+        messages_blocks = self.driver.find_elements_by_class_name('details')
+
+        for block_ in messages_blocks:
+            title_text = block_.find_element_by_tag_name('span').text
+            print(title_text)
+            if title_text == 'Ваша учётная запись':
+                self.is_valud_account = False
+                self.driver.switch_to.default_content()
+                return True
+
+        self.driver.switch_to.default_content()
+        return False
+
 
     def make_cyber_football_bet(self, url, bet_type, coef):
         bet_value = self.bet_value

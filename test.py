@@ -58,3 +58,8 @@ for i in range(len(AccountsBet365)):
 with Pool(processes=len(list_of_start_info)) as p:
     p.map(register_bet365_multipotok, list_of_start_info)
 
+print(List_of_bet_account)
+r = List_of_bet_account[0].check_is_account_not_valid()
+print(r)
+
+
