@@ -83,7 +83,8 @@ with Pool(processes=len(List_of_bet_account)) as p:
 i_porez = 0
 while i_porez < len(List_of_bet_account):
     if not List_of_bet_account[i_porez].is_valud_account:
-        telegram_notify1.telegram_bot_send_message(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
+        telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
+        telegram_notify1.telegram_bot_send_message(telegram_text)
         print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
         List_of_bet_account[i_porez].driver.quit()
         List_of_bet_account.pop(i_porez)
@@ -175,7 +176,8 @@ while True:
         i_porez = 0
         while i_porez < len(List_of_bet_account):
             if not List_of_bet_account[i_porez].is_valud_account:
-                telegram_notify1.telegram_bot_send_message(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
+                telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
+                telegram_notify1.telegram_bot_send_message(telegram_text)
                 print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
                 List_of_bet_account[i_porez].driver.quit()
                 List_of_bet_account.pop(i_porez)

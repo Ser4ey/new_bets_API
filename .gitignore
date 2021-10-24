@@ -1,6 +1,6 @@
 data.py
 creds.json
 geckodriver.log
-
+accounts_list.txt
 /venv/
 /.idea/
