@@ -1,5 +1,5 @@
 from chromdriver_class import FireFoxDriverMain, FireFoxForPimatch
-from data import AccountsBet365
+from data import AccountsBet365, path_to_accounts_file
 import datetime
 from multiprocessing.dummy import Pool
 import time
@@ -56,10 +56,10 @@ def cheeck_porezan_li_account(driver):
 
 def delete_account_from_txt_by_login(login: str):
     '''Удаляет из файла с аккаунтами все строки, содержащии данный логин'''
-    with open('accounts_list.txt', 'r', encoding='utf-8') as file:
+    with open(path_to_accounts_file, 'r', encoding='utf-8') as file:
         lines_with_accounts = file.readlines()
 
-    with open('accounts_list.txt', 'w', encoding='utf-8') as file:
+    with open(path_to_accounts_file, 'w', encoding='utf-8') as file:
         for line in lines_with_accounts:
             if not login in line:
                 file.write(line)
