@@ -167,8 +167,11 @@ while True:
     if porezan_counter % 6 == 0:
         # предварительный поиск порезанных аккаунтов
         porezan_counter = 1
-        with Pool(processes=len(List_of_bet_account)) as p:
-            p.map(cheeck_porezan_li_account, List_of_bet_account)
+        try:
+            with Pool(processes=len(List_of_bet_account)) as p:
+                p.map(cheeck_porezan_li_account, List_of_bet_account)
+        except Exception as er:
+            print(er)
         i_porez = 0
         while i_porez < len(List_of_bet_account):
             if not List_of_bet_account[i_porez].is_valud_account:
