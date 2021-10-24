@@ -1,14 +1,14 @@
-from multiprocessing.dummy import Pool
+def delete_account_from_txt_by_login(login: str):
+    with open('accounts_list.txt', 'r', encoding='utf-8') as file:
+        lines_with_accounts = file.readlines()
 
-A = [1,2,1,2,2,3,4,1,1,223,2,1,1,2,1,1,1]
-
-def f(a):
-    print('1'*a)
-
-
-with Pool(processes=len(A)) as p:
-    p.map(f, A)
-
-print(A)
+    with open('accounts_list.txt', 'w', encoding='utf-8') as file:
+        for line in lines_with_accounts:
+            if not login in line:
+                file.write(line)
+            else:
+                print(f'{login} - удалён из аккаунтов!')
 
 
+
+delete_account_from_txt_by_login('Eliza1971')

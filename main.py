@@ -54,6 +54,20 @@ def cheeck_porezan_li_account(driver):
     driver.check_is_account_not_valid_mean_porezan()
 
 
+def delete_account_from_txt_by_login(login: str):
+    '''Удаляет из файла с аккаунтами все строки, содержащии данный логин'''
+    with open('accounts_list.txt', 'r', encoding='utf-8') as file:
+        lines_with_accounts = file.readlines()
+
+    with open('accounts_list.txt', 'w', encoding='utf-8') as file:
+        for line in lines_with_accounts:
+            if not login in line:
+                file.write(line)
+            else:
+                print(f'{login} - удалён из аккаунтов!')
+                return
+
+
 driverParimatch = FireFoxForPimatch()
 
 list_of_start_info = []
@@ -85,6 +99,7 @@ while i_porez < len(List_of_bet_account):
     if not List_of_bet_account[i_porez].is_valud_account:
         telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
         telegram_notify1.telegram_bot_send_message(telegram_text)
+        delete_account_from_txt_by_login(List_of_bet_account[i_porez].bet365_login)
         print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
         List_of_bet_account[i_porez].driver.quit()
         List_of_bet_account.pop(i_porez)
@@ -178,6 +193,7 @@ while True:
             if not List_of_bet_account[i_porez].is_valud_account:
                 telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
                 telegram_notify1.telegram_bot_send_message(telegram_text)
+                delete_account_from_txt_by_login(List_of_bet_account[i_porez].bet365_login)
                 print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
                 List_of_bet_account[i_porez].driver.quit()
                 List_of_bet_account.pop(i_porez)
