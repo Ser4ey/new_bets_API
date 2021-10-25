@@ -280,7 +280,12 @@ class FireFoxDriverMain:
             self.driver.find_element_by_tag_name("body").send_keys(simvol)
             time.sleep(0.3)
         time.sleep(0.5)
-        self.driver.find_element_by_class_name('qbs-BetPlacement ').click()
+        try:
+            # нажимаем на кнопку стандартной ставки
+            self.driver.find_element_by_class_name('qbs-BetPlacement ').click()
+        except:
+            # нажимаем на кнопку ставки, которую нужно одобрить
+            self.driver.find_element_by_class_name('qbs-PlaceBetReferButton ').click()
 
         flag = False
 
