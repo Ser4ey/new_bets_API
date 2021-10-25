@@ -411,10 +411,9 @@ class FireFoxDriverMain:
         bet_element = list_of_bets[0]
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-        if text != 'Результат основного времени':
+        if (text != 'Результат основного времени') and (text != 'Fulltime Result'):
             print('Ставка на П1П2Х, указана колонка не результат основного времени!')
             return
-
 
         try:
             bet_element.find_element_by_class_name('gl-MarketGroup_Wrapper ')
@@ -454,7 +453,7 @@ class FireFoxDriverMain:
             bet_element = list_of_bets[i]
             text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-            if text1 == 'Двойной шанс':
+            if (text1 == 'Двойной шанс') or (text1 == 'Double Chance'):
                 line = i
                 print('Ставка двойной шанс найдена')
                 break
@@ -463,7 +462,7 @@ class FireFoxDriverMain:
 
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-        if text != 'Двойной шанс':
+        if (text != 'Двойной шанс') and (text != 'Double Chance'):
             print('Ставка(Двойной шанс) не найдена')
             return
 
@@ -505,14 +504,14 @@ class FireFoxDriverMain:
             bet_element = list_of_bets[i]
             text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-            if text1 == 'Голы матча':
+            if (text1 == 'Голы матча') or (text1 == 'Match Goals'):
                 line = i
                 break
 
         bet_element = list_of_bets[line]
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-        if text != 'Голы матча':
+        if (text != 'Голы матча') and (text != 'Match Goals'):
             print('Ставка(Голы матча не найдена/total bet) не найдена')
             return
 
@@ -558,8 +557,9 @@ class FireFoxDriverMain:
         for i in range(len(list_of_bets)):
             bet_element = list_of_bets[i]
             text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text[-4:]
+            text1_2 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-            if text1 == 'ГОЛЫ':
+            if (text1 == 'ГОЛЫ') or (text1 == 'oals' and len(text1_2) > 12):
                 line = i
                 print(f'line: {line}')
                 break
