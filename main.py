@@ -13,7 +13,8 @@ def make_bet_multipotok(All_elements_array):
     driver, url, bet_type, coef = All_elements_array
     try:
         driver.make_cyber_football_bet(url, bet_type, coef)
-    except:
+    except Exception as er:
+        print(f'Ошибка при проставлении ставки: {er}')
         driver.reanimaite_bet365com()
 
 
