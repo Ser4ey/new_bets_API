@@ -369,7 +369,6 @@ class FireFoxDriverMain:
         self.driver.switch_to.default_content()
         return False
 
-
     def make_cyber_football_bet(self, url, bet_type, coef):
         bet_value = self.bet_value
 
@@ -814,7 +813,6 @@ class FireFoxDriverMain:
         time.sleep(2)
         self.make_a_bet(bet_value, coef, bet_)
 
-
     def make_table_tennis_bet(self, url, bet_type, coef, bet_value):
         '''Ставка на настольный теннис'''
 
@@ -832,7 +830,6 @@ class FireFoxDriverMain:
             self.make_table_tennis_bet_F1_F2_gandikap_of_game1(url, bet_type, coef, bet_value)
         else:
             print('Неизвестный тип ставки (1)', bet_type)
-
 
     def make_table_tennis_bet_P1_P2(self, url, bet_type, coef, bet_value):
         print(f'Проставляем ставку П1П2(table tennis): {url}; bet_type: {bet_type}; coef: {coef}')
@@ -958,7 +955,6 @@ class FireFoxDriverMain:
             time.sleep(2)
             self.make_a_bet(bet_value, coef, bet2)
 
-
     def make_table_tennis_bet_F1_F2_gandikap_of_match(self, url, bet_type, coef, bet_value):
         print(f'Проставляем ставку Ф1(2.5)(Гандикап) (table tennis): {url}; bet_type: {bet_type}; coef: {coef}')
         self.driver.get(url)
@@ -1051,7 +1047,6 @@ class FireFoxDriverMain:
             time.sleep(2)
             self.make_a_bet(bet_value, coef, bet2)
 
-
     def make_table_tennis_bet_F1_F2_gandikap_of_game1(self, url, bet_type, coef, bet_value):
         '''Гандикап на отдельную игру, а не на всё партию целиком'''
 
@@ -1143,30 +1138,6 @@ class FireFoxDriverMain:
             bet2.click()
             time.sleep(2)
             self.make_a_bet(bet_value, coef, bet2)
-
-
-    def get_bet365_balance(self):
-        url = 'https://www.bet365.ru/'
-        if self.type_of_account == '.com':
-            url = 'https://www.bet365.com/'
-
-        try:
-            self.driver.get(url)
-            time.sleep(4)
-            #bet365balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
-            bet365balance = self.driver.find_element_by_class_name('hm-Balance').text
-            # hm-Balance
-            bet365balance = bet365balance.split(',')[0]
-            bet365balance = bet365balance.strip()
-            bet365balance = bet365balance.strip('£')
-            bet365balance = bet365balance.replace(' ', '')
-            bet365balance = float(bet365balance)
-            self.current_account_balance = bet365balance
-            return bet365balance
-        except Exception as er:
-            print(f'Не удалось получть баланс аккаунта {self.bet365_account_name} для отправки уведомлений', er)
-
-            return 0
 
     def close_session(self):
         self.driver.quit()

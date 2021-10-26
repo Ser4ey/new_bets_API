@@ -45,7 +45,6 @@ class APIWork:
 
         try:
             r = requests.get(self.URL, params=self.params)
-            print(r.url)
             respons = json.loads(r.text)
         except Exception as er:
             print('!'*100)
@@ -65,9 +64,8 @@ class APIWork:
 
         bet1 = 'No'
         for i in respons:
-            if (i['is_cyber'] == '1') or (i['sport'] == 'basketball'):
+            if (i['sport'] == 'basketball') or (i['is_cyber'] == '1'):
                 if not (i['fork_id'] in old_bets_set):
-
                     bet365_line = '2'
                     parimatch_line = '1'
                     if i['BK1_name'] == 'bet365':
@@ -82,7 +80,7 @@ class APIWork:
 
 
         if bet1 == 'No':
-            print('Нет вилок на кибер футбол', datetime.now())
+            print('Нет вилок на кибер футбол|баскетбол', datetime.now())
             return False
 
         bet365_line = '2'
@@ -90,6 +88,8 @@ class APIWork:
         if bet1['BK1_name'] == 'bet365':
             bet365_line = '1'
             parimatch_line = '2'
+
+        sport_name = bet1['sport']
 
         bet365_href = bet1[f'BK{bet365_line}_href']
         parimatch_href = bet1[f'BK{parimatch_line}_href']
@@ -131,6 +131,7 @@ class APIWork:
             return False
 
         return {
+            'sport_name': sport_name,
             'bet365_href': bet365_href,
             'bet365_type': bet365_type,
             'bet365_coef': bet365_coef,
@@ -149,7 +150,7 @@ APIWorker1 = APIWork(TOKEN, URL, params)
 
 AllForks = set()
 
-for i in range(1):
+for i in range(1000):
     time.sleep(5)
     r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
     if not r:
