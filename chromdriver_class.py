@@ -923,13 +923,14 @@ class FireFoxDriverMain:
         bet1 = columns_[1].find_elements_by_tag_name('div')[1]
         bet2 = columns_[2].find_elements_by_tag_name('div')[1]
 
-        needed_handicap = bet_type.strip('(')[-1]
+        needed_handicap = bet_type.split('(')[-1]
         needed_handicap = needed_handicap.strip(')')
         print('Нужный гандикап:', needed_handicap)
 
         if 'P1' in bet_type:
             real_handicap_value = bet1.find_element_by_class_name('srb-ParticipantCenteredStackedMarketRow_Handicap').text
-            if real_handicap_value != needed_handicap or True:
+            real_handicap_value = real_handicap_value.strip('+')
+            if real_handicap_value != needed_handicap:
                 print(f'Гандикап изменился {needed_handicap} -> {real_handicap_value}')
                 return
             bet1.click()
@@ -937,7 +938,8 @@ class FireFoxDriverMain:
             self.make_a_bet(bet_value, coef, bet1)
         else:
             real_handicap_value = bet2.find_element_by_class_name('srb-ParticipantCenteredStackedMarketRow_Handicap').text
-            if real_handicap_value != needed_handicap or True:
+            real_handicap_value = real_handicap_value.strip('+')
+            if real_handicap_value != needed_handicap:
                 print(f'Гандикап изменился {needed_handicap} -> {real_handicap_value}')
                 return
             bet2.click()
@@ -1318,9 +1320,18 @@ class FireFoxForPimatch:
                 AllCoef2 = []
                 for i in range(len(AllCoef)):
                     AllCoef2.append(AllCoef[i].text)
-                return  AllCoef2
+                return AllCoef2
 
         return []
+
+    def find_coef_for_any_sport(self, sport, url, bet_type):
+        if sport == 'football':
+            pass
+        elif sport == 'basketball':
+            pass
+        else:
+            print('Неизвестный вид спорта для Parimatch')
+            return 'Неизвестный вид спорта для Parimatch'
 
     def find_coef(self, url, bet_type):
         # ожидание загрузки коэффициентов
