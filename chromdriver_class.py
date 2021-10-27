@@ -950,7 +950,6 @@ class FireFoxDriverMain:
 
     def make_basketball_bet_total_of_game(self, url, bet_type, coef, bet_value):
         '''Ставка total на основное время'''
-        '''Ставка total на основное время'''
         print(f'Проставляем ставку total на основное время(basketball): {url}; bet_type: {bet_type}; coef: {coef}')
         self.driver.get(url)
         time.sleep(3)
@@ -986,13 +985,14 @@ class FireFoxDriverMain:
         # колонки со ставками
         columns_ = columns_.find_elements_by_class_name('gl-Market_General-columnheader ')
 
-        bet_text = columns_[0].find_elements_by_tag_name('div')[2].text
+        bet_text = columns_[0].find_elements_by_class_name('gl-Market_General-cn1')[1].text
+        print(bet_text)
         if bet_text != 'Total':
             print('Не удалось найти ставку на Total (basketball)')
             return
 
-        bet1 = columns_[1].find_elements_by_tag_name('div')[2]
-        bet2 = columns_[2].find_elements_by_tag_name('div')[2]
+        bet1 = columns_[1].find_elements_by_class_name('gl-Market_General-cn1')[1]
+        bet2 = columns_[2].find_elements_by_class_name('gl-Market_General-cn1')[1]
 
         needed_total = bet_type.split('(')[-1]
         needed_total = needed_total.strip(')')
