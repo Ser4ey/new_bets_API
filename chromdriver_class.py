@@ -369,6 +369,15 @@ class FireFoxDriverMain:
         self.driver.switch_to.default_content()
         return False
 
+    def make_any_sport_bet(self, sport, url, bet_type, coef):
+        if sport == 'soccer':
+            self.make_cyber_football_bet(url, bet_type, coef)
+        elif sport == 'basketball':
+            self.make_basketball_bet(url, bet_type, coef)
+        else:
+            print('Неизвестный вид спорта для Bet365')
+            return 'Неизвестный вид спорта для Bet365'
+
     def make_cyber_football_bet(self, url, bet_type, coef):
         bet_value = self.bet_value
 
