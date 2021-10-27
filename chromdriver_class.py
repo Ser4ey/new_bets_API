@@ -1617,7 +1617,7 @@ class FireFoxForPimatch:
         elif bet_type[:12] == 'HANDICAP_OT_':
             pass
         elif bet_type[:11] == 'TOTALS_OT__':
-            pass
+            return self.basketball_total_over__under(bet_type)
         else:
             print(bet_type)
             print('Неизвестный вид ставки')
@@ -1650,6 +1650,42 @@ class FireFoxForPimatch:
             return coefs[-1].text
         else:
             return 0
+
+    def basketball_total_over__under(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        not_found_flag = True
+        for i in range(len(bets_blocks)):
+            try:
+                block_ = bets_blocks[i]
+                text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
+            except:
+                return 'Коэффициенты изменились'
+            # print(text_)
+            if text_ == 'Тотал':
+                not_found_flag = False
+                print('Ставка Тотал на париматч найдена')
+                break
+
+        if not_found_flag:
+            print('Ставка Тотал не найдена')
+            return -1
+
+        total_value = block_.find_element_by_class_name('_3PG_TMtKEMzUVW6dfZLkWt').text
+        coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
+
+        needed_total = bet_type.split('(')
+        needed_total = needed_total[-1]
+        needed_total = needed_total.strip(')')
+        needed_total = needed_total.strip('')
+
+        if needed_total == total_value:
+            if 'OVER' in bet_type:
+                return coefs[0].text
+            else:
+                return coefs[-1].text
+        else:
+            print(f'Размер тотала изменился с {needed_total} -> {total_value}')
+
 
 
 
