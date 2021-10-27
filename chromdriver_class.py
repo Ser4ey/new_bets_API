@@ -813,6 +813,75 @@ class FireFoxDriverMain:
         time.sleep(2)
         self.make_a_bet(bet_value, coef, bet_)
 
+    def make_basketball_bet(self, url, bet_type, coef, bet_value):
+        '''Ставка на баскетбол'''
+        if bet_type == 'WIN_OT__P1' or bet_type == 'WIN_OT__P2' or bet_type == 'WIN_OT__PX':
+            self.make_basketball_bet_P1P2PX(url, bet_type, coef, bet_value)
+        else:
+            print('Неизвестный тип ставки (1)', bet_type)
+
+    def make_basketball_bet_P1P2PX(self, url, bet_type, coef, bet_value):
+        '''Ставка победа на основное время'''
+        print(f'Проставляем ставку П1П2(basketball): {url}; bet_type: {bet_type}; coef: {coef}')
+        self.driver.get(url)
+        time.sleep(3)
+
+        list_of_bets = self.driver.find_elements_by_class_name('sip-MarketGroup ')
+        line = 0
+        for i in range(len(list_of_bets)):
+            bet_element = list_of_bets[i]
+            text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
+
+            if text1 == 'Game Lines':
+                line = i
+                break
+
+        bet_element = list_of_bets[line]
+        text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
+
+        if text != 'Game Lines':
+            print('Ставка П1П2(basketball) не найдена')
+            return
+
+        try:
+            bet_element.find_element_by_class_name('gl-MarketGroup_Wrapper ')
+        except:
+            print('Разворачиваем ставку')
+            bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').click()
+            time.sleep(0.5)
+            list_of_bets = self.driver.find_elements_by_class_name('sip-MarketGroup ')
+            bet_element = list_of_bets[line]
+
+        elements_with_bets = bet_element.find_element_by_class_name('gl-MarketGroup_Wrapper ')
+        columns_ = elements_with_bets.find_element_by_class_name('gl-MarketGroupContainer ')
+        # колонки со ставками
+        columns_ = columns_.find_elements_by_class_name('gl-Market_General-columnheader ')
+
+        bet_text = columns_[0].find_elements_by_tag_name('div')[3].text
+        if bet_text != 'Money Line':
+            print('Не удалось найти ставку на победу (basketball)')
+            return
+
+        bet1 = columns_[1].find_elements_by_tag_name('div')[3]
+        bet2 = columns_[2].find_elements_by_tag_name('div')[3]
+
+        if 'P1' in bet_type:
+            bet1.click()
+            time.sleep(2)
+            self.make_a_bet(bet_value, coef, bet1)
+        else:
+            bet2.click()
+            time.sleep(2)
+            self.make_a_bet(bet_value, coef, bet2)
+
+    def make_basketball_bet_total_of_game(self, url, bet_type, coef, bet_value):
+        '''Ставка total на основное время'''
+        pass
+
+    def make_basketball_bet_handicap_of_game(self, url, bet_type, coef, bet_value):
+        '''Ставка total на основное время'''
+        pass
+
     def make_table_tennis_bet(self, url, bet_type, coef, bet_value):
         '''Ставка на настольный теннис'''
 
