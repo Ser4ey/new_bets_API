@@ -1615,7 +1615,7 @@ class FireFoxForPimatch:
         if bet_type == 'WIN_OT__P1' or bet_type == 'WIN_OT__P2' or bet_type == 'WIN_OT__PX':
             return self.basketball_win_of_match(bet_type)
         elif bet_type[:12] == 'HANDICAP_OT_':
-            pass
+            return self.basketball_gandicap_of_match(bet_type)
         elif bet_type[:11] == 'TOTALS_OT__':
             return self.basketball_total_over__under(bet_type)
         else:
@@ -1686,9 +1686,45 @@ class FireFoxForPimatch:
         else:
             print(f'Размер тотала изменился с {needed_total} -> {total_value}')
 
+    def basketball_gandicap_of_match(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        not_found_flag = True
+        for i in range(len(bets_blocks)):
+            try:
+                block_ = bets_blocks[i]
+                text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
+            except:
+                return 'Коэффициенты изменились'
+            # print(text_)
+            if text_ == 'Фора':
+                not_found_flag = False
+                print('Ставка Фора на париматч найдена')
+                break
 
+        if not_found_flag:
+            print('Ставка Фора не найдена')
+            return -1
 
+        needed_total = bet_type.split('(')
+        needed_total = needed_total[-1]
+        needed_total = needed_total.strip(')')
 
+        if 'P1' in bet_type:
+            card2 = block_.find_elements_by_class_name('_1_ZGmoK5sTgjPZ6bQDpAmK ')[0]
+        else:
+            card2 = block_.find_elements_by_class_name('_1_ZGmoK5sTgjPZ6bQDpAmK ')[-1]
+
+        site_total_value = card2.find_element_by_class_name('_3EDVkDYUVqPDxEU_A8ZfAY').text
+        site_total_value = site_total_value.split('(')[-1]
+        site_total_value = site_total_value.strip(')')
+        site_total_value = site_total_value.strip('+')
+
+        if site_total_value != needed_total:
+            print(f'Фора изменилась {needed_total} -> {site_total_value}')
+            return f'Фора изменилась {needed_total} -> {site_total_value}'
+
+        coef = block_.find_element_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr').text
+        return coef
 
 
 
