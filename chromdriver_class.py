@@ -821,6 +821,8 @@ class FireFoxDriverMain:
             self.make_basketball_bet_P1P2PX(url, bet_type, coef, bet_value)
         elif bet_type[:12] == 'HANDICAP_OT_':
             self.make_basketball_bet_handicap_of_game(url, bet_type, coef, bet_value)
+        elif bet_type[:11] == 'TOTALS_OT__':
+            self.make_basketball_bet_total_of_game(url, bet_type, coef, bet_value)
         else:
             print('Неизвестный тип ставки (1)', bet_type)
 
@@ -948,7 +950,76 @@ class FireFoxDriverMain:
 
     def make_basketball_bet_total_of_game(self, url, bet_type, coef, bet_value):
         '''Ставка total на основное время'''
-        pass
+        '''Ставка total на основное время'''
+        print(f'Проставляем ставку total на основное время(basketball): {url}; bet_type: {bet_type}; coef: {coef}')
+        self.driver.get(url)
+        time.sleep(3)
+
+        list_of_bets = self.driver.find_elements_by_class_name('sip-MarketGroup ')
+        line = 0
+        for i in range(len(list_of_bets)):
+            bet_element = list_of_bets[i]
+            text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
+
+            if text1 == 'Game Lines':
+                line = i
+                break
+
+        bet_element = list_of_bets[line]
+        text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
+
+        if text != 'Game Lines':
+            print('Ставка П1П2(basketball) не найдена')
+            return
+
+        try:
+            bet_element.find_element_by_class_name('gl-MarketGroup_Wrapper ')
+        except:
+            print('Разворачиваем ставку')
+            bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').click()
+            time.sleep(0.5)
+            list_of_bets = self.driver.find_elements_by_class_name('sip-MarketGroup ')
+            bet_element = list_of_bets[line]
+
+        elements_with_bets = bet_element.find_element_by_class_name('gl-MarketGroup_Wrapper ')
+        columns_ = elements_with_bets.find_element_by_class_name('gl-MarketGroupContainer ')
+        # колонки со ставками
+        columns_ = columns_.find_elements_by_class_name('gl-Market_General-columnheader ')
+
+        bet_text = columns_[0].find_elements_by_tag_name('div')[2].text
+        if bet_text != 'Total':
+            print('Не удалось найти ставку на Total (basketball)')
+            return
+
+        bet1 = columns_[1].find_elements_by_tag_name('div')[2]
+        bet2 = columns_[2].find_elements_by_tag_name('div')[2]
+
+        needed_total = bet_type.split('(')[-1]
+        needed_total = needed_total.strip(')')
+        print('Нужный total:', needed_total)
+
+        if 'OVER' in bet_type:
+            real_total_value = bet1.find_element_by_class_name(
+                'srb-ParticipantCenteredStackedMarketRow_Handicap').text
+            real_total_value = real_total_value.split(' ')[-1]
+
+            if real_total_value != needed_total:
+                print(f'Тотал изменился {needed_total} -> {real_total_value}')
+                return
+            bet1.click()
+            time.sleep(2)
+            self.make_a_bet(bet_value, coef, bet1)
+        else:
+            real_total_value = bet2.find_element_by_class_name(
+                'srb-ParticipantCenteredStackedMarketRow_Handicap').text
+            real_total_value = real_total_value.split(' ')[-1]
+
+            if real_total_value != needed_total:
+                print(f'Тотал изменился {needed_total} -> {real_total_value}')
+                return
+            bet2.click()
+            time.sleep(2)
+            self.make_a_bet(bet_value, coef, bet2)
 
     def make_table_tennis_bet(self, url, bet_type, coef, bet_value):
         '''Ставка на настольный теннис'''
@@ -1325,15 +1396,15 @@ class FireFoxForPimatch:
         return []
 
     def find_coef_for_any_sport(self, sport, url, bet_type):
-        if sport == 'football':
-            pass
+        if sport == 'soccer':
+            self.cyberfootball_find_coef(url, bet_type)
         elif sport == 'basketball':
             pass
         else:
             print('Неизвестный вид спорта для Parimatch')
             return 'Неизвестный вид спорта для Parimatch'
 
-    def find_coef(self, url, bet_type):
+    def cyberfootball_find_coef(self, url, bet_type):
         # ожидание загрузки коэффициентов
         self.driver.get(url)
         time.sleep(1)
@@ -1352,20 +1423,20 @@ class FireFoxForPimatch:
 
         bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
         if bet_type == 'WIN__P1' or bet_type == 'WIN__P2' or bet_type == 'WIN__PX':
-            return self.win(bet_type)
+            return self.cyberfootball_win(bet_type)
         elif bet_type == 'WIN__12' or bet_type == 'WIN__X2' or bet_type == 'WIN__1X':
-            return self.double_win(bet_type)
+            return self.cyberfootball_double_win(bet_type)
         elif bet_type[:13] == 'TOTALS__UNDER' or bet_type[:12] == 'TOTALS__OVER':
-            return self.total_over__under(bet_type)
+            return self.cyberfootball_total_over__under(bet_type)
         # P1__TOTALS__UNDER(1.5)
         elif bet_type[:10] == 'P1__TOTALS' or bet_type[:10] == 'P2__TOTALS':
-            return self.total_over__under_of_team(bet_type)
+            return self.cyberfootball_total_over__under_of_team(bet_type)
         else:
             print(bet_type)
             print('Неизвестный вид ставки')
             return 'Неизвестный вид ставки returned'
 
-    def win(self, bet_type):
+    def cyberfootball_win(self, bet_type):
         bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
         not_found_flag = True
         for i in range(len(bets_blocks)):
@@ -1395,7 +1466,7 @@ class FireFoxForPimatch:
         else:
             return coefs[1].text
 
-    def double_win(self, bet_type):
+    def cyberfootball_double_win(self, bet_type):
         bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
         not_found_flag = True
         for i in range(len(bets_blocks)):
@@ -1426,7 +1497,7 @@ class FireFoxForPimatch:
         else:
             return coefs[1].text
 
-    def total_over__under(self, bet_type):
+    def cyberfootball_total_over__under(self, bet_type):
         bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
         not_found_flag = True
         for i in range(len(bets_blocks)):
@@ -1464,7 +1535,7 @@ class FireFoxForPimatch:
         else:
             print(f'Размер тотала изменился с {needed_total} -> {total_value}')
 
-    def total_over__under_of_team(self, bet_type):
+    def cyberfootball_total_over__under_of_team(self, bet_type):
         bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
         not_found_flag = True
         total_counter = 0
