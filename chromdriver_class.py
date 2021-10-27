@@ -1406,9 +1406,9 @@ class FireFoxForPimatch:
 
     def find_coef_for_any_sport(self, sport, url, bet_type):
         if sport == 'soccer':
-            self.cyberfootball_find_coef(url, bet_type)
+            return self.cyberfootball_find_coef(url, bet_type)
         elif sport == 'basketball':
-            pass
+            return self.basketball_find_coef(url, bet_type)
         else:
             print('Неизвестный вид спорта для Parimatch')
             return 'Неизвестный вид спорта для Parimatch'
@@ -1594,6 +1594,62 @@ class FireFoxForPimatch:
         else:
             print(f'Размер тотала изменился с {needed_total} -> {total_value}')
 
+    def basketball_find_coef(self, url, bet_type):
+        # ожидание загрузки коэффициентов
+        self.driver.get(url)
+        time.sleep(1)
+        AllCoef = self.driver.find_elements_by_class_name('_3Sa1tkZVXvesvtPRE_cUEV')
+        not_good_flag = True
+        for i in range(30):
+            if len(AllCoef) == 0:
+                time.sleep(0.5)
+                AllCoef = self.driver.find_elements_by_class_name('_3Sa1tkZVXvesvtPRE_cUEV')
+                continue
+            else:
+                not_good_flag = False
+        if not_good_flag:
+            print('Нет ставок(вообще)')
+            return 'Нет ставок(вообще)'
+
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        if bet_type == 'WIN_OT__P1' or bet_type == 'WIN_OT__P2' or bet_type == 'WIN_OT__PX':
+            return self.basketball_win_of_match(bet_type)
+        elif bet_type[:12] == 'HANDICAP_OT_':
+            pass
+        elif bet_type[:11] == 'TOTALS_OT__':
+            pass
+        else:
+            print(bet_type)
+            print('Неизвестный вид ставки')
+            return 'Неизвестный вид ставки returned'
+
+    def basketball_win_of_match(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        not_found_flag = True
+        for i in range(len(bets_blocks)):
+            try:
+                block_ = bets_blocks[i]
+                text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
+            except:
+                return 'Коэффициенты изменились'
+            # print(text_)
+            if text_ == 'Победа с учетом овертайма':
+                not_found_flag = False
+                print('Ставка на париматч найдена')
+                break
+
+        if not_found_flag:
+            print('Ставка не найдена')
+            return -1
+
+        coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
+
+        if 'P1' in bet_type:
+            return coefs[0].text
+        elif 'P2' in bet_type:
+            return coefs[-1].text
+        else:
+            return 0
 
 
 
