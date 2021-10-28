@@ -66,7 +66,7 @@ def delete_account_from_txt_by_login(login: str):
                 file.write(line)
             else:
                 print(f'{login} - удалён из аккаунтов!')
-                return
+    return
 
 
 driverParimatch = FireFoxForPimatch()
