@@ -25,7 +25,7 @@ URL = 'http://212.109.216.193:8111/forks'
 params = {
     "token": TOKEN,
     "bk2_name": "bet365,parimatch_ru_new",
-    "sport": "soccer,basketball",
+    "sport": "soccer",
     'get_cfs': '1',
     'min_fi': min_fi,
 }
