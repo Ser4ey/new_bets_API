@@ -25,6 +25,14 @@ URL = 'http://212.109.216.193:8111/forks'
 params = {
     "token": TOKEN,
     "bk2_name": "bet365,parimatch_ru_new",
+    "sport": "soccer,basketball",
+    'get_cfs': '1',
+    'min_fi': min_fi,
+}
+
+params2 = {
+    "token": TOKEN,
+    "bk2_name": "bet365,winline",
     "sport": "soccer",
     'get_cfs': '1',
     'min_fi': min_fi,
@@ -32,11 +40,13 @@ params = {
 
 
 class APIWork:
-    def __init__(self, TOKEN: str, URL: str, params: dict):
+    def __init__(self, TOKEN: str, URL: str, params: dict, second_bk_short_id: str, second_bk_fullname: str):
         self.TOKEN = TOKEN
         self.URL = URL
         self.params = params
         self.forks_ids = set()
+        self.second_bk_short_id = second_bk_short_id
+        self.second_bk_fullname = second_bk_fullname
 
     def send_request_to_API(self, old_bets_set='1'):
         # список уже проставленных ставок
@@ -46,6 +56,7 @@ class APIWork:
         try:
             r = requests.get(self.URL, params=self.params)
             respons = json.loads(r.text)
+            print(r.url)
         except Exception as er:
             print('!'*100)
             print('Ошибка при отправке запроса к API')
@@ -64,7 +75,7 @@ class APIWork:
 
         bet1 = 'No'
         for i in respons:
-            if (i['sport'] == 'basketball') or (i['is_cyber'] == '1'):
+            if (i['sport'] == 'basketball') or (i['is_cyber'] == '1') or True:
                 if not (i['fork_id'] in old_bets_set):
                     bet365_line = '2'
                     parimatch_line = '1'
@@ -79,7 +90,7 @@ class APIWork:
                         print('Коэффициент на bet365 < 2', i[f'BK{bet365_line}_cf'])
 
         if bet1 == 'No':
-            print('Нет вилок на кибер футбол|баскетбол', datetime.now())
+            print(f'Нет вилок на кибер футбол|баскетбол, bk: {self.second_bk_fullname}', datetime.now())
             return False
 
         bet365_line = '2'
@@ -119,12 +130,12 @@ class APIWork:
 
         count_of_parimatch_plus_forks = find_number_of_plus_bets(
             our_coef=parimatch_coef,
-            bk_name='PAN',
+            bk_name=self.second_bk_short_id,
             opposite_forks=list_of_cfs[int(bet365_line)]
         )
 
         print('Выигрышных ставок с bet365:', count_of_bet365_plus_forks)
-        print('Выигрышных ставок с parimatch:', count_of_parimatch_plus_forks)
+        print(f'Выигрышных ставок с {self.second_bk_fullname}:', count_of_parimatch_plus_forks)
         if count_of_parimatch_plus_forks >= count_of_bet365_plus_forks:
             print('Bet365 не инициатор')
             return False
@@ -145,19 +156,20 @@ class APIWork:
         }
 
 
-APIWorker1 = APIWork(TOKEN, URL, params)
-#
-# AllForks = set()
+APIWorkerParimatch_ru = APIWork(TOKEN, URL, params, 'PAN', 'parimatch_ru_new')
+APIWorkerWinline = APIWork(TOKEN, URL, params2, 'WLN', 'winline')
 
-# for i in range(1000):
-#     time.sleep(5)
-#     r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
-#     if not r:
-#         continue
+AllForks = set()
+
+for i in range(1000):
+    time.sleep(5)
+    r = APIWorkerWinline.send_request_to_API(old_bets_set=AllForks)
+    if not r:
+        continue
+
+    AllForks.add(r['fork_id'])
+    print(r)
+
 #
-#     AllForks.add(r['fork_id'])
-#     print(r)
-#
-# #
 
 
