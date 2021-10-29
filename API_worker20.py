@@ -57,7 +57,7 @@ class APIWork:
         try:
             r = requests.get(self.URL, params=self.params)
             respons = json.loads(r.text)
-            print(r.url)
+            # print(r.url)
         except Exception as er:
             print('!'*100)
             print('Ошибка при отправке запроса к API')
@@ -71,7 +71,7 @@ class APIWork:
             return False
 
         if len(respons) < 1:
-            print('Нет вилок', datetime.now())
+            print(f'Нет вилок от {self.second_bk_fullname}', datetime.now())
             return False
 
         bet1 = 'No'
@@ -254,3 +254,10 @@ def get_fork_from_API(AllBetsSet):
         pass
 
     return 'NO', {}
+
+
+A = set()
+for i in range(100):
+    time.sleep(3)
+    a, b = get_fork_from_API(A)
+    print(a, b)

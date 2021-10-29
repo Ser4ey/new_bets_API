@@ -1557,7 +1557,7 @@ class FireFoxForPimatch:
                 # print(text_)
             except:
                 return 'Коэффициенты изменились'
-            print(text_)
+            # print(text_)
             if 'Индивидуальный тотал' in text_:
                 if 'P2' in bet_type:
                     if total_counter == 1:
