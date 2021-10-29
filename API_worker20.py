@@ -3,6 +3,7 @@ import json
 import time
 from datetime import datetime
 from data import min_fi
+from chromdriver_class import FireFoxForPimatch, FireFoxForWinline
 
 
 def find_number_of_plus_bets(our_coef: str, bk_name: str, opposite_forks: dict):
@@ -159,17 +160,97 @@ class APIWork:
 APIWorkerParimatch_ru = APIWork(TOKEN, URL, params, 'PAN', 'parimatch_ru_new')
 APIWorkerWinline = APIWork(TOKEN, URL, params2, 'WLN', 'winline')
 
-AllForks = set()
 
-for i in range(1000):
-    time.sleep(5)
-    r = APIWorkerWinline.send_request_to_API(old_bets_set=AllForks)
-    if not r:
-        continue
-
-    AllForks.add(r['fork_id'])
-    print(r)
-
-#
+driverParimatch = FireFoxForPimatch()
+driverWinline = FireFoxForWinline()
 
 
+def find_fork_from_API_Parimatch(AllBetsSet):
+    try:
+        fork_info = APIWorkerParimatch_ru.send_request_to_API(old_bets_set=AllBetsSet)
+        if not fork_info:
+            return 'no parimatch'
+        print(fork_info)
+    except Exception as er:
+        print('Ошибка при отправке API запроса:', er)
+        time.sleep(10)
+        return f'Ошибка при отправке API запроса: {er}'
+
+    if fork_info['fork_id'] in AllBetsSet:
+        print(f"Ставка {fork_info['fork_id']} уже проставлена!")
+        time.sleep(10)
+        return
+
+    AllBetsSet.add(fork_info['fork_id'])
+
+    try:
+        second_coef = driverParimatch.find_coef_for_any_sport(fork_info['sport_name'], fork_info['parimatch_href'],
+                                                              fork_info['parimatch_type'])
+        print(f'Коэффициент на париматч: {second_coef}')
+        try:
+            float(second_coef)
+        except:
+            print('Ставка не поддерживается')
+            return 'Ставка не поддерживается'
+        if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
+            print('Коэффициет на париматч упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
+            return
+    except:
+        print('Не удалось получить коэффициент для париматч')
+        return
+
+    return ['Yes, fork', fork_info]
+
+def find_fork_from_API_Winline(AllBetsSet):
+    try:
+        fork_info = APIWorkerWinline.send_request_to_API(old_bets_set=AllBetsSet)
+        if not fork_info:
+            return 'No Winline forks'
+        print(fork_info)
+    except Exception as er:
+        print('Ошибка при отправке API запроса:', er)
+        time.sleep(10)
+        return f'Ошибка при отправке API запроса: {er}'
+
+    if fork_info['fork_id'] in AllBetsSet:
+        print(f"Ставка {fork_info['fork_id']} уже проставлена!")
+        time.sleep(10)
+        return
+
+    AllBetsSet.add(fork_info['fork_id'])
+
+    try:
+        second_coef = driverWinline.find_coef_for_any_sport(fork_info['sport_name'], fork_info['parimatch_href'],
+                                                              fork_info['parimatch_type'])
+        print(f'Коэффициент на париматч: {second_coef}')
+        try:
+            float(second_coef)
+        except:
+            print('Ставка не поддерживается')
+            return 'Ставка не поддерживается'
+        if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
+            print('Коэффициет на париматч упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
+            return
+    except:
+        print('Не удалось получить коэффициент для париматч')
+        return
+
+    return ['Yes, fork', fork_info]
+
+
+def get_fork_from_API(AllBetsSet):
+    try:
+        a, b = find_fork_from_API_Parimatch(AllBetsSet)
+        if a == 'Yes, fork':
+            return 'OK', b
+    except:
+        pass
+
+    try:
+        a, b = find_fork_from_API_Winline(AllBetsSet)
+        if a == 'Yes, fork':
+            return 'OK', b
+    except:
+        pass
+
+    return 'NO', {}
