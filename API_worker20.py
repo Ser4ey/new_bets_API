@@ -255,9 +255,9 @@ def get_fork_from_API(AllBetsSet):
 
     return 'NO', {}
 
-
-A = set()
-for i in range(100):
-    time.sleep(3)
-    a, b = get_fork_from_API(A)
-    print(a, b)
+#
+# A = set()
+# for i in range(100):
+#     time.sleep(3)
+#     a, b = get_fork_from_API(A)
+#     print(a, b)
