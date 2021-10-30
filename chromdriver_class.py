@@ -2250,10 +2250,12 @@ class FireFoxFor1XBet:
             title = block_.find_element_by_class_name('bet-title').text
 
             if 'Индивидуальный тотал' in title:
-                needed_block = block_
-                if 'P2' in bet_type:
-                    needed_block = bets_blocks[i+1]
-                break
+                if 'P1' in bet_type and title == 'Индивидуальный тотал 1-го':
+                    needed_block = block_
+                    break
+                elif 'P2' in bet_type and title == 'Индивидуальный тотал 2-го':
+                    needed_block = block_
+                    break
 
         if needed_block == 'No':
             print('Ставки на индивидуальный тотал 1xbet не найдены')
@@ -2282,7 +2284,7 @@ class FireFoxFor1XBet:
                     needed_block_with_total = bets_list[i + 1]
                 break
         if needed_block_with_total == 'No':
-            return 'Нужный тотал не найден'
+            return 'Нужный тотал (для команды) не найден'
         else:
             coef = needed_block_with_total.find_element_by_class_name('koeff').text
             return coef
