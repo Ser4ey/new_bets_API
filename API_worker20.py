@@ -302,6 +302,13 @@ def get_fork_from_API(AllBetsSet):
     except:
         pass
 
+    try:
+        a, b = find_fork_from_API_1XBet(AllBetsSet)
+        if a == 'Yes, fork':
+            return 'OK', b
+    except:
+        pass
+
     return 'NO', {}
 
 #

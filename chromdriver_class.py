@@ -2222,6 +2222,10 @@ class FireFoxFor1XBet:
             bet_block1 = bets_list[i]
             total_value = bet_block1.find_element_by_class_name('bet_type').text
             total_value = total_value.strip()
+            # print('-'*100)
+            # print('TV:', total_value)
+            # print('coef:', bet_block1.find_element_by_class_name('koeff').text)
+            # print('-'*100)
             total_value = total_value.strip('Б')
             total_value = total_value.strip('М')
             total_value = total_value.strip()
@@ -2230,7 +2234,7 @@ class FireFoxFor1XBet:
                 needed_block_with_total = bet_block1
                 if 'UNDER' in bet_type:
                     needed_block_with_total = bets_list[i+1]
-
+                break
         if needed_block_with_total == 'No':
             return 'Нужный тотал не найден'
         else:
@@ -2276,7 +2280,7 @@ class FireFoxFor1XBet:
                 needed_block_with_total = bet_block1
                 if 'UNDER' in bet_type:
                     needed_block_with_total = bets_list[i + 1]
-
+                break
         if needed_block_with_total == 'No':
             return 'Нужный тотал не найден'
         else:
