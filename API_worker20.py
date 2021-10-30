@@ -39,6 +39,14 @@ params2 = {
     'min_fi': min_fi,
 }
 
+params_1xbet = {
+    "token": TOKEN,
+    "bk2_name": "bet365,1xbet",
+    "sport": "soccer",
+    'get_cfs': '1',
+    'min_fi': min_fi,
+}
+
 
 class APIWork:
     def __init__(self, TOKEN: str, URL: str, params: dict, second_bk_short_id: str, second_bk_fullname: str):
@@ -76,7 +84,7 @@ class APIWork:
 
         bet1 = 'No'
         for i in respons:
-            if (i['sport'] == 'basketball') or (i['is_cyber'] == '1') or True:
+            if (i['sport'] == 'basketball') or (i['is_cyber'] == '1'):
                 if not (i['fork_id'] in old_bets_set):
                     bet365_line = '2'
                     parimatch_line = '1'
@@ -159,6 +167,7 @@ class APIWork:
 
 APIWorkerParimatch_ru = APIWork(TOKEN, URL, params, 'PAN', 'parimatch_ru_new')
 APIWorkerWinline = APIWork(TOKEN, URL, params2, 'WLN', 'winline')
+APIWorker1XBet = APIWork(TOKEN, URL, params_1xbet, 'XBT', '1xbet')
 
 
 driverParimatch = FireFoxForPimatch()
