@@ -2101,7 +2101,7 @@ class FireFoxFor1XBet:
         self.driver = driver
         self.driver.set_page_load_timeout(75)
         time.sleep(5)
-        input('Смените VPN на ?1xbet:')
+        input('Смените VPN на Россия для 1xbet:')
         self.driver.get('https://1xbet.com/')
 
     def find_coef_for_any_sport(self, sport, url, bet_type):
@@ -2234,7 +2234,7 @@ class FireFoxFor1XBet:
         if needed_block_with_total == 'No':
             return 'Нужный тотал не найден'
         else:
-            coef = needed_block_with_total.find_element_by_class_name('koeff')
+            coef = needed_block_with_total.find_element_by_class_name('koeff').text
             return coef
 
     def cyberfootball_total_over__under_of_team(self, bet_type):
@@ -2280,7 +2280,7 @@ class FireFoxFor1XBet:
         if needed_block_with_total == 'No':
             return 'Нужный тотал не найден'
         else:
-            coef = needed_block_with_total.find_element_by_class_name('koeff')
+            coef = needed_block_with_total.find_element_by_class_name('koeff').text
             return coef
 
     def basketball_find_coef(self, url, bet_type):
