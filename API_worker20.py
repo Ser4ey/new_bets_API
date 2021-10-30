@@ -3,7 +3,7 @@ import json
 import time
 from datetime import datetime
 from data import min_fi
-from chromdriver_class import FireFoxForPimatch, FireFoxForWinline
+from chromdriver_class import FireFoxForPimatch, FireFoxForWinline, FireFoxFor1XBet
 
 
 def find_number_of_plus_bets(our_coef: str, bk_name: str, opposite_forks: dict):
@@ -172,6 +172,7 @@ APIWorker1XBet = APIWork(TOKEN, URL, params_1xbet, 'XBT', '1xbet')
 
 driverParimatch = FireFoxForPimatch()
 driverWinline = FireFoxForWinline()
+driver1XBet = FireFoxFor1XBet()
 
 
 def find_fork_from_API_Parimatch(AllBetsSet):
@@ -210,6 +211,7 @@ def find_fork_from_API_Parimatch(AllBetsSet):
 
     return ['Yes, fork', fork_info]
 
+
 def find_fork_from_API_Winline(AllBetsSet):
     try:
         fork_info = APIWorkerWinline.send_request_to_API(old_bets_set=AllBetsSet)
@@ -231,20 +233,58 @@ def find_fork_from_API_Winline(AllBetsSet):
     try:
         second_coef = driverWinline.find_coef_for_any_sport(fork_info['sport_name'], fork_info['parimatch_href'],
                                                               fork_info['parimatch_type'])
-        print(f'Коэффициент на париматч: {second_coef}')
+        print(f'Коэффициент на winline: {second_coef}')
         try:
             float(second_coef)
         except:
             print('Ставка не поддерживается')
             return 'Ставка не поддерживается'
         if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
-            print('Коэффициет на париматч упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
+            print('Коэффициет на winline упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
             return
     except:
-        print('Не удалось получить коэффициент для париматч')
+        print('Не удалось получить коэффициент для winline')
         return
 
     return ['Yes, fork', fork_info]
+
+
+def find_fork_from_API_1XBet(AllBetsSet):
+    try:
+        fork_info = APIWorker1XBet.send_request_to_API(old_bets_set=AllBetsSet)
+        if not fork_info:
+            return 'No 1XBet forks'
+        print(fork_info)
+    except Exception as er:
+        print('Ошибка при отправке API запроса:', er)
+        time.sleep(10)
+        return f'Ошибка при отправке API запроса: {er}'
+
+    if fork_info['fork_id'] in AllBetsSet:
+        print(f"Ставка {fork_info['fork_id']} уже проставлена!")
+        time.sleep(10)
+        return
+
+    AllBetsSet.add(fork_info['fork_id'])
+
+    try:
+        second_coef = driver1XBet.find_coef_for_any_sport(fork_info['sport_name'], fork_info['parimatch_href'],
+                                                              fork_info['parimatch_type'])
+        print(f'Коэффициент на 1xbet: {second_coef}')
+        try:
+            float(second_coef)
+        except:
+            print('Ставка не поддерживается')
+            return 'Ставка не поддерживается'
+        if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
+            print('Коэффициет на 1xbet упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
+            return
+    except:
+        print('Не удалось получить коэффициент для 1xbet')
+        return
+
+    return ['Yes, fork', fork_info]
+
 
 
 def get_fork_from_API(AllBetsSet):
