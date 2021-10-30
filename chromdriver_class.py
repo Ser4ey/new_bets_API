@@ -2121,7 +2121,7 @@ class FireFoxFor1XBet:
         for i in range(30):
             time.sleep(0.5)
             try:
-                bets_blocks = self.driver.find_elements_by_class_name('result-table ')
+                bets_blocks = self.driver.find_elements_by_class_name('bet_group ')
                 if len(bets_blocks) == 0:
                     continue
                 else:
@@ -2150,22 +2150,20 @@ class FireFoxFor1XBet:
 
     def cyberfootball_win(self, bet_type):
         # done+
-        bets_blocks = self.driver.find_elements_by_class_name('result-table ')
+        bets_blocks = self.driver.find_elements_by_class_name('bet_group ')
 
         needed_block = 'No'
         for block_ in bets_blocks:
-            title = block_.find_element_by_class_name('result-table__header').text
-            # print('title:', title)
-            if title == 'Исход 1X2' or title == 'ИСХОД 1X2':
+            title = block_.find_element_by_class_name('bet-title').text
+            if title.strip() == '1X2':
                 needed_block = block_
                 break
 
         if needed_block == 'No':
-            print('Ставки на победу винлайн не найдены')
-            return 'Ставки на победу винлайн не найдены'
+            print('Ставки на победу 1xbet не найдены')
+            return 'Ставки на победу 1xbet не найдены'
 
-        coefs = needed_block.find_element_by_class_name('result-table__row')
-        coefs = coefs.find_elements_by_class_name('result-table__count')
+        coefs = needed_block.find_elements_by_class_name('koeff')
 
         if bet_type == 'WIN__P1':
             return coefs[0].text
@@ -2175,22 +2173,20 @@ class FireFoxFor1XBet:
             return coefs[1].text
 
     def cyberfootball_double_win(self, bet_type):
-        # done +
-        bets_blocks = self.driver.find_elements_by_class_name('result-table ')
+        bets_blocks = self.driver.find_elements_by_class_name('bet_group ')
 
         needed_block = 'No'
         for block_ in bets_blocks:
-            title = block_.find_element_by_class_name('result-table__header').text
-            if title == 'Двойной шанс' or title == 'ДВОЙНОЙ ШАНС':
+            title = block_.find_element_by_class_name('bet-title').text
+            if title.strip() == 'Двойной шанс':
                 needed_block = block_
                 break
 
         if needed_block == 'No':
-            print('Ставки двойной шанс винлайн не найдены')
-            return 'Ставки двойной шанс винлайн не найдены'
+            print('Ставки на двойной шанс 1xbet не найдены')
+            return 'Ставки на двойной шанс 1xbet не найдены'
 
-        coefs = needed_block.find_element_by_class_name('result-table__row')
-        coefs = coefs.find_elements_by_class_name('result-table__count')
+        coefs = needed_block.find_elements_by_class_name('koeff')
 
         if bet_type == 'WIN__1X':
             return coefs[0].text
@@ -2200,39 +2196,20 @@ class FireFoxFor1XBet:
             return coefs[1].text
 
     def cyberfootball_total_over__under(self, bet_type):
-        # done +
-        bets_blocks = self.driver.find_elements_by_class_name('result-table ')
+        bets_blocks = self.driver.find_elements_by_class_name('bet_group ')
 
         needed_block = 'No'
         for block_ in bets_blocks:
-            title = block_.find_element_by_class_name('result-table__header').text
-            if title == 'Тотал (осн. время)' or title == 'ТОТАЛ (ОСН. ВРЕМЯ)':
+            title = block_.find_element_by_class_name('bet-title').text
+            if title.strip() == 'Тотал':
                 needed_block = block_
                 break
 
         if needed_block == 'No':
-            print('Ставки ТОТАЛ винлайн не найдены')
-            return 'Ставки ТОТАЛ винлайн не найдены'
+            print('Ставки на total 1xbet не найдены')
+            return 'Ставки на total 1xbet не найдены'
 
-        if 'OVER' in bet_type:
-            coefs = needed_block.find_element_by_class_name('result-table__row')
-            coefs = coefs.find_element_by_class_name('result-table__count')
-            totals = needed_block.find_element_by_class_name('result-table__row')
-            totals = totals.find_element_by_class_name('result-table__info')
-        else:
-            coefs = needed_block.find_elements_by_class_name('result-table__row')[-1]
-            coefs = coefs.find_element_by_class_name('result-table__count')
-            totals = needed_block.find_elements_by_class_name('result-table__row')[-1]
-            totals = totals.find_element_by_class_name('result-table__info')
-
-        try:
-            totals = totals.text
-            totals = totals.split(' ')[-1]
-
-            coefs = coefs.text
-        except:
-            print('Коэффициет изменился!')
-            return 'Коэффициет изменился!'
+        bets_list = needed_block.find_element_by_class_name('bets').find_elements_by_tag_name('div')
 
         needed_total = bet_type.split('(')
         needed_total = needed_total[-1]
@@ -2240,49 +2217,45 @@ class FireFoxFor1XBet:
         needed_total = needed_total.strip('+')
         needed_total = needed_total.strip('-')
 
-        if totals != needed_total:
-            print(f'Тотал изменился {needed_total} -> {totals}')
-            return f'Тотал изменился {needed_total} -> {totals}'
+        needed_block_with_total = 'No'
+        for i in range(len(bets_list)):
+            bet_block1 = bets_list[i]
+            total_value = bet_block1.find_element_by_class_name('bet_type').text
+            total_value = total_value.strip()
+            total_value = total_value.strip('Б')
+            total_value = total_value.strip('М')
+            total_value = total_value.strip()
 
-        return coefs
+            if total_value == needed_total:
+                needed_block_with_total = bet_block1
+                if 'UNDER' in bet_type:
+                    needed_block_with_total = bets_list[i+1]
+
+        if needed_block_with_total == 'No':
+            return 'Нужный тотал не найден'
+        else:
+            coef = needed_block_with_total.find_element_by_class_name('koeff')
+            return coef
 
     def cyberfootball_total_over__under_of_team(self, bet_type):
-        # done +
-        bets_blocks = self.driver.find_elements_by_class_name('result-table ')
+        bets_blocks = self.driver.find_elements_by_class_name('bet_group ')
 
         needed_block = 'No'
         for i in range(len(bets_blocks)):
             block_ = bets_blocks[i]
-            title = block_.find_element_by_class_name('result-table__header').text
-            if (len(title) > 22) and (('Тотал (осн. время)' in title) or ('ТОТАЛ (ОСН. ВРЕМЯ)' in title)):
+            title = block_.find_element_by_class_name('bet-title').text
+
+            if 'Индивидуальный тотал' in title:
                 needed_block = block_
                 if 'P2' in bet_type:
                     needed_block = bets_blocks[i+1]
                 break
 
         if needed_block == 'No':
-            print('Ставки ТОТАЛ на команду винлайн не найдены')
-            return 'Ставки ТОТАЛ на команду винлайн не найдены'
+            print('Ставки на индивидуальный тотал 1xbet не найдены')
+            return 'Ставки на индивидуальный тотал 1xbet не найдены'
 
-        if 'OVER' in bet_type:
-            coefs = needed_block.find_element_by_class_name('result-table__row')
-            coefs = coefs.find_element_by_class_name('result-table__count')
-            totals = needed_block.find_element_by_class_name('result-table__row')
-            totals = totals.find_element_by_class_name('result-table__info')
-        else:
-            coefs = needed_block.find_elements_by_class_name('result-table__row')[-1]
-            coefs = coefs.find_element_by_class_name('result-table__count')
-            totals = needed_block.find_elements_by_class_name('result-table__row')[-1]
-            totals = totals.find_element_by_class_name('result-table__info')
-
-        try:
-            totals = totals.text
-            totals = totals.split(' ')[-1]
-
-            coefs = coefs.text
-        except:
-            print('Коэффициет изменился!')
-            return 'Коэффициет изменился!'
+        bets_list = needed_block.find_element_by_class_name('bets').find_elements_by_tag_name('div')
 
         needed_total = bet_type.split('(')
         needed_total = needed_total[-1]
@@ -2290,11 +2263,25 @@ class FireFoxFor1XBet:
         needed_total = needed_total.strip('+')
         needed_total = needed_total.strip('-')
 
-        if totals != needed_total:
-            print(f'Тотал на команду изменился {needed_total} -> {totals}')
-            return f'Тотал на команду изменился {needed_total} -> {totals}'
+        needed_block_with_total = 'No'
+        for i in range(len(bets_list)):
+            bet_block1 = bets_list[i]
+            total_value = bet_block1.find_element_by_class_name('bet_type').text
+            total_value = total_value.strip()
+            total_value = total_value.strip('Б')
+            total_value = total_value.strip('М')
+            total_value = total_value.strip()
 
-        return coefs
+            if total_value == needed_total:
+                needed_block_with_total = bet_block1
+                if 'UNDER' in bet_type:
+                    needed_block_with_total = bets_list[i + 1]
+
+        if needed_block_with_total == 'No':
+            return 'Нужный тотал не найден'
+        else:
+            coef = needed_block_with_total.find_element_by_class_name('koeff')
+            return coef
 
     def basketball_find_coef(self, url, bet_type):
         # ожидание загрузки коэффициентов
