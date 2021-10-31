@@ -3,7 +3,7 @@ import json
 import time
 from datetime import datetime
 from data import min_fi
-from chromdriver_class import FireFoxForPimatch, FireFoxForWinline, FireFoxFor1XBet
+from chromdriver_class import FireFoxForPimatch, FireFoxForWinline, FireFoxFor1XBet, FireFoxForFavbet
 
 
 def find_number_of_plus_bets(our_coef: str, bk_name: str, opposite_forks: dict):
@@ -42,6 +42,14 @@ params2 = {
 params_1xbet = {
     "token": TOKEN,
     "bk2_name": "bet365,1xbet",
+    "sport": "soccer",
+    'get_cfs': '1',
+    'min_fi': min_fi,
+}
+
+params_favbet = {
+    "token": TOKEN,
+    "bk2_name": "bet365,favbet",
     "sport": "soccer",
     'get_cfs': '1',
     'min_fi': min_fi,
@@ -168,11 +176,13 @@ class APIWork:
 APIWorkerParimatch_ru = APIWork(TOKEN, URL, params, 'PAN', 'parimatch_ru_new')
 APIWorkerWinline = APIWork(TOKEN, URL, params2, 'WLN', 'winline')
 APIWorker1XBet = APIWork(TOKEN, URL, params_1xbet, 'XBT', '1xbet')
+APIWorkerFavbet = APIWork(TOKEN, URL, params_favbet, 'FAV', 'favbet')
 
 
 driverParimatch = FireFoxForPimatch()
 driverWinline = FireFoxForWinline()
 driver1XBet = FireFoxFor1XBet()
+driverFavbet = FireFoxForFavbet()
 
 
 def find_fork_from_API_Parimatch(AllBetsSet):
@@ -286,6 +296,43 @@ def find_fork_from_API_1XBet(AllBetsSet):
     return ['Yes, fork', fork_info]
 
 
+def find_fork_from_API_Favbet(AllBetsSet):
+    try:
+        fork_info = APIWorkerFavbet.send_request_to_API(old_bets_set=AllBetsSet)
+        if not fork_info:
+            return 'No favbet forks'
+        print(fork_info)
+    except Exception as er:
+        print('Ошибка при отправке API запроса:', er)
+        time.sleep(10)
+        return f'Ошибка при отправке API запроса: {er}'
+
+    if fork_info['fork_id'] in AllBetsSet:
+        print(f"Ставка {fork_info['fork_id']} уже проставлена!")
+        time.sleep(10)
+        return
+
+    AllBetsSet.add(fork_info['fork_id'])
+
+    try:
+        second_coef = driverFavbet.find_coef_for_any_sport(fork_info['sport_name'], fork_info['parimatch_href'],
+                                                              fork_info['parimatch_type'])
+        print(f'Коэффициент на favbet: {second_coef}')
+        try:
+            float(second_coef)
+        except:
+            print('Ставка не поддерживается')
+            return 'Ставка не поддерживается'
+        if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
+            print('Коэффициет на favbet упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
+            return
+    except:
+        print('Не удалось получить коэффициент для favbet')
+        return
+
+    return ['Yes, fork', fork_info]
+
+
 
 def get_fork_from_API(AllBetsSet):
     try:
@@ -304,6 +351,13 @@ def get_fork_from_API(AllBetsSet):
 
     try:
         a, b = find_fork_from_API_1XBet(AllBetsSet)
+        if a == 'Yes, fork':
+            return 'OK', b
+    except:
+        pass
+
+    try:
+        a, b = find_fork_from_API_Favbet(AllBetsSet)
         if a == 'Yes, fork':
             return 'OK', b
     except:

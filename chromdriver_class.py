@@ -2422,3 +2422,361 @@ class FireFoxFor1XBet:
         return coef
 
 
+class FireFoxForFavbet:
+    def __init__(self):
+        firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
+        firefox_capabilities['marionette'] = True
+
+        fp = webdriver.FirefoxProfile(data.firefox_profile_path)
+        fp.set_preference("browser.privatebrowsing.autostart", True)
+
+        options = webdriver.FirefoxOptions()
+        options.add_argument("-private")
+        options.set_preference("dom.webdriver.enabled", False)
+        options.set_preference("dom.webnotifications.enabled", False)
+        binary = data.firefox_binary
+        options.binary = binary
+
+        driver = webdriver.Firefox(capabilities=firefox_capabilities, firefox_profile=fp,
+                                   firefox_binary=data.firefox_binary,
+                                   executable_path=data.path_to_geckodriver,
+                                   options=options)
+
+        self.driver = driver
+        self.driver.set_page_load_timeout(75)
+        time.sleep(5)
+        input('Смените VPN на Украину для falbet:')
+        self.driver.get('https://favbet.by/en/')
+
+    def find_coef_for_any_sport(self, sport, url, bet_type):
+        if sport == 'soccer':
+            return self.cyberfootball_find_coef(url, bet_type)
+        # elif sport == 'basketball':
+        #     return self.basketball_find_coef(url, bet_type)
+        else:
+            print('Неизвестный вид спорта для falbet')
+            return 'Неизвестный вид спорта для falbet'
+
+    def cyberfootball_find_coef(self, url, bet_type):
+        # ожидание загрузки коэффициентов
+        self.driver.get(url)
+
+        not_good_flag = True
+        for i in range(30):
+            time.sleep(0.5)
+            try:
+                bets_blocks = self.driver.find_elements_by_class_name('MarketsGroup_accordionContainer__3C2G6 ')
+                if len(bets_blocks) == 0:
+                    continue
+                else:
+                    not_good_flag = False
+                    break
+            except:
+                pass
+
+        if not_good_flag:
+            print('Нет ставок(вообще) для falbet')
+            return 'Нет ставок(вообще) для falbet'
+
+        if bet_type == 'WIN__P1' or bet_type == 'WIN__P2' or bet_type == 'WIN__PX':
+            return self.cyberfootball_win(bet_type)
+        elif bet_type == 'WIN__12' or bet_type == 'WIN__X2' or bet_type == 'WIN__1X':
+            return self.cyberfootball_double_win(bet_type)
+        # elif bet_type[:13] == 'TOTALS__UNDER' or bet_type[:12] == 'TOTALS__OVER':
+        #     return self.cyberfootball_total_over__under(bet_type)
+        # P1__TOTALS__UNDER(1.5)
+        # elif bet_type[:10] == 'P1__TOTALS' or bet_type[:10] == 'P2__TOTALS':
+        #     return self.cyberfootball_total_over__under_of_team(bet_type)
+        else:
+            print(bet_type)
+            print('Неизвестный вид ставки для favbet')
+            return 'Неизвестный вид ставки favbet returned'
+
+    def cyberfootball_win(self, bet_type):
+        # done
+        bets_blocks = self.driver.find_elements_by_class_name('MarketsGroup_accordionContainer__3C2G6 ')
+
+        needed_block = 'No'
+        for block_ in bets_blocks:
+            title = block_.find_element_by_class_name('accordion_header__1ABzu ').text
+            if title.strip() == '1 X 2':
+                needed_block = block_
+                break
+
+        if needed_block == 'No':
+            print('Ставки на победу favbet не найдены')
+            return 'Ставки на победу favbet не найдены'
+
+        # bets_blocks = self.driver.find_element_by_class_name('MarketOutcomeContainer_outcomeMain__30vRM')
+        coefs = needed_block.find_elements_by_class_name('outcome-button_coef__2WSWL')
+
+        if bet_type == 'WIN__P1':
+            return coefs[0].text
+        elif bet_type == 'WIN__P2':
+            return coefs[2].text
+        else:
+            return coefs[1].text
+
+    def cyberfootball_double_win(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('MarketsGroup_accordionContainer__3C2G6 ')
+
+        needed_block = 'No'
+        for block_ in bets_blocks:
+            title = block_.find_element_by_class_name('accordion_header__1ABzu').text
+            if title.strip() == 'Double chance':
+                needed_block = block_
+                break
+
+        if needed_block == 'No':
+            print('Ставки на двойной шанс 1xbet не найдены')
+            return 'Ставки на двойной шанс 1xbet не найдены'
+
+        coefs = needed_block.find_elements_by_class_name('outcome-button_coef__2WSWL')
+
+        if bet_type == 'WIN__1X':
+            return coefs[0].text
+        elif bet_type == 'WIN__X2':
+            return coefs[2].text
+        else:
+            return coefs[1].text
+
+    def cyberfootball_total_over__under(self, bet_type):
+        '''
+        Ставка не добавлена
+        Over (4.0)
+        '''
+        bets_blocks = self.driver.find_elements_by_class_name('MarketsGroup_accordionContainer__3C2G6 ')
+
+        needed_block = 'No'
+        for block_ in bets_blocks:
+            title = block_.find_element_by_class_name('accordion_header__1ABzu').text
+            if title.strip() == 'Over/Under':
+                needed_block = block_
+                break
+
+        if needed_block == 'No':
+            print('Ставка тотал favbet не найдены')
+            return 'Ставка тотал favbet не найдены'
+
+        needed_total = bet_type.split('(')
+        needed_total = needed_total[-1]
+        needed_total = needed_total.strip(')')
+        needed_total = needed_total.strip('+')
+        needed_total = needed_total.strip('-')
+
+
+
+        coefs = needed_block.find_elements_by_class_name('outcome-button_coef__2WSWL')
+
+        if bet_type == 'WIN__1X':
+            return coefs[0].text
+        elif bet_type == 'WIN__X2':
+            return coefs[2].text
+        else:
+            return coefs[1].text
+
+
+
+        needed_block_with_total = 'No'
+        for i in range(len(bets_list)):
+            bet_block1 = bets_list[i]
+            total_value = bet_block1.find_element_by_class_name('bet_type').text
+            total_value = total_value.strip()
+            # print('-'*100)
+            # print('TV:', total_value)
+            # print('coef:', bet_block1.find_element_by_class_name('koeff').text)
+            # print('-'*100)
+            total_value = total_value.strip('Б')
+            total_value = total_value.strip('М')
+            total_value = total_value.strip()
+
+            if total_value == needed_total:
+                needed_block_with_total = bet_block1
+                if 'UNDER' in bet_type:
+                    needed_block_with_total = bets_list[i+1]
+                break
+        if needed_block_with_total == 'No':
+            return 'Нужный тотал не найден'
+        else:
+            coef = needed_block_with_total.find_element_by_class_name('koeff').text
+            return coef
+
+    def cyberfootball_total_over__under_of_team(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('bet_group ')
+
+        needed_block = 'No'
+        for i in range(len(bets_blocks)):
+            block_ = bets_blocks[i]
+            title = block_.find_element_by_class_name('bet-title').text
+
+            if 'Индивидуальный тотал' in title:
+                if 'P1' in bet_type and title == 'Индивидуальный тотал 1-го':
+                    needed_block = block_
+                    break
+                elif 'P2' in bet_type and title == 'Индивидуальный тотал 2-го':
+                    needed_block = block_
+                    break
+
+        if needed_block == 'No':
+            print('Ставки на индивидуальный тотал 1xbet не найдены')
+            return 'Ставки на индивидуальный тотал 1xbet не найдены'
+
+        bets_list = needed_block.find_element_by_class_name('bets').find_elements_by_tag_name('div')
+
+        needed_total = bet_type.split('(')
+        needed_total = needed_total[-1]
+        needed_total = needed_total.strip(')')
+        needed_total = needed_total.strip('+')
+        needed_total = needed_total.strip('-')
+
+        needed_block_with_total = 'No'
+        for i in range(len(bets_list)):
+            bet_block1 = bets_list[i]
+            total_value = bet_block1.find_element_by_class_name('bet_type').text
+            total_value = total_value.strip()
+            total_value = total_value.strip('Б')
+            total_value = total_value.strip('М')
+            total_value = total_value.strip()
+
+            if total_value == needed_total:
+                needed_block_with_total = bet_block1
+                if 'UNDER' in bet_type:
+                    needed_block_with_total = bets_list[i + 1]
+                break
+        if needed_block_with_total == 'No':
+            return 'Нужный тотал (для команды) не найден'
+        else:
+            coef = needed_block_with_total.find_element_by_class_name('koeff').text
+            return coef
+
+    def basketball_find_coef(self, url, bet_type):
+        # ожидание загрузки коэффициентов
+        self.driver.get(url)
+        time.sleep(1)
+        AllCoef = self.driver.find_elements_by_class_name('_3Sa1tkZVXvesvtPRE_cUEV')
+        not_good_flag = True
+        for i in range(30):
+            if len(AllCoef) == 0:
+                time.sleep(0.5)
+                AllCoef = self.driver.find_elements_by_class_name('_3Sa1tkZVXvesvtPRE_cUEV')
+                continue
+            else:
+                not_good_flag = False
+        if not_good_flag:
+            print('Нет ставок(вообще)')
+            return 'Нет ставок(вообще)'
+
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        if bet_type == 'WIN_OT__P1' or bet_type == 'WIN_OT__P2' or bet_type == 'WIN_OT__PX':
+            return self.basketball_win_of_match(bet_type)
+        elif bet_type[:12] == 'HANDICAP_OT_':
+            return self.basketball_gandicap_of_match(bet_type)
+        elif bet_type[:11] == 'TOTALS_OT__':
+            return self.basketball_total_over__under(bet_type)
+        else:
+            print(bet_type)
+            print('Неизвестный вид ставки')
+            return 'Неизвестный вид ставки returned'
+
+    def basketball_win_of_match(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        not_found_flag = True
+        for i in range(len(bets_blocks)):
+            try:
+                block_ = bets_blocks[i]
+                text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
+            except:
+                return 'Коэффициенты изменились'
+            # print(text_)
+            if text_ == 'Победа с учетом овертайма':
+                not_found_flag = False
+                print('Ставка на париматч найдена')
+                break
+
+        if not_found_flag:
+            print('Ставка не найдена')
+            return -1
+
+        coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
+
+        if 'P1' in bet_type:
+            return coefs[0].text
+        elif 'P2' in bet_type:
+            return coefs[-1].text
+        else:
+            return 0
+
+    def basketball_total_over__under(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        not_found_flag = True
+        for i in range(len(bets_blocks)):
+            try:
+                block_ = bets_blocks[i]
+                text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
+            except:
+                return 'Коэффициенты изменились'
+            # print(text_)
+            if text_ == 'Тотал':
+                not_found_flag = False
+                print('Ставка Тотал на париматч найдена')
+                break
+
+        if not_found_flag:
+            print('Ставка Тотал не найдена')
+            return -1
+
+        total_value = block_.find_element_by_class_name('_3PG_TMtKEMzUVW6dfZLkWt').text
+        coefs = block_.find_elements_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr')
+
+        needed_total = bet_type.split('(')
+        needed_total = needed_total[-1]
+        needed_total = needed_total.strip(')')
+        needed_total = needed_total.strip('')
+
+        if needed_total == total_value:
+            if 'OVER' in bet_type:
+                return coefs[0].text
+            else:
+                return coefs[-1].text
+        else:
+            print(f'Размер тотала изменился с {needed_total} -> {total_value}')
+
+    def basketball_gandicap_of_match(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('_2NQKPrPGvuGOnShyXYTla8 ')
+        not_found_flag = True
+        for i in range(len(bets_blocks)):
+            try:
+                block_ = bets_blocks[i]
+                text_ = block_.find_element_by_class_name('_3vvZ3gaLgFJ2HYlmceiqzV').text
+            except:
+                return 'Коэффициенты изменились'
+            # print(text_)
+            if text_ == 'Фора':
+                not_found_flag = False
+                print('Ставка Фора на париматч найдена')
+                break
+
+        if not_found_flag:
+            print('Ставка Фора не найдена')
+            return -1
+
+        needed_total = bet_type.split('(')
+        needed_total = needed_total[-1]
+        needed_total = needed_total.strip(')')
+
+        if 'P1' in bet_type:
+            card2 = block_.find_elements_by_class_name('_1_ZGmoK5sTgjPZ6bQDpAmK ')[0]
+        else:
+            card2 = block_.find_elements_by_class_name('_1_ZGmoK5sTgjPZ6bQDpAmK ')[-1]
+
+        site_total_value = card2.find_element_by_class_name('_3EDVkDYUVqPDxEU_A8ZfAY').text
+        site_total_value = site_total_value.split('(')[-1]
+        site_total_value = site_total_value.strip(')')
+        site_total_value = site_total_value.strip('+')
+
+        if site_total_value != needed_total:
+            print(f'Фора изменилась {needed_total} -> {site_total_value}')
+            return f'Фора изменилась {needed_total} -> {site_total_value}'
+
+        coef = block_.find_element_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr').text
+        return coef
