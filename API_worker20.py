@@ -2,7 +2,7 @@ import requests
 import json
 import time
 from datetime import datetime
-from data import min_fi
+from data import min_fi, min_value_of_alive_sec, max_value_of_alive_sec
 from chromdriver_class import FireFoxForPimatch, FireFoxForWinline, FireFoxFor1XBet, FireFoxForFavbet
 
 
@@ -93,6 +93,12 @@ class APIWork:
         bet1 = 'No'
         for i in respons:
             if (i['sport'] == 'basketball') or (i['is_cyber'] == '1'):
+                alive_time = i['alive_sec']
+                if (min_value_of_alive_sec <= alive_time) and (alive_time <= max_value_of_alive_sec):
+                    print(f'Время жизни вилки: {alive_time}')
+                else:
+                    print(f'Время жизни вилки не соответствует условиям: {alive_time}')
+                    continue
                 if not (i['fork_id'] in old_bets_set):
                     bet365_line = '2'
                     parimatch_line = '1'
