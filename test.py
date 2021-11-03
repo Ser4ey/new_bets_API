@@ -109,19 +109,19 @@ porezan_counter = 1
 # print(f'Осталось рабочих аккаунтов: {len(List_of_bet_account)}')
 # завершение поиска порезанных аккаунтов
 
-# начало программы
-
-while True:
-    bet_type = input('bet_type:')
-    url = input('url:')
-    coef = '0'
-    A = []
-    for i in range(len(List_of_bet_account)):
-        account_arr = [List_of_bet_account[i],
-                        url,
-                        bet_type,
-                        coef]
-        A.append(account_arr)
-
-    with Pool(processes=len(List_of_bet_account)) as p:
-        p.map(make_bet_multipotok, A)
+# # начало программы
+#
+# while True:
+#     bet_type = input('bet_type:')
+#     url = input('url:')
+#     coef = '0'
+#     A = []
+#     for i in range(len(List_of_bet_account)):
+#         account_arr = [List_of_bet_account[i],
+#                         url,
+#                         bet_type,
+#                         coef]
+#         A.append(account_arr)
+#
+#     with Pool(processes=len(List_of_bet_account)) as p:
+#         p.map(make_bet_multipotok, A)

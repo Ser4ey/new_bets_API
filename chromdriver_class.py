@@ -139,7 +139,8 @@ class FireFoxDriverMain:
                 print(f'Не удалось войти в аккаунт {login}')
                 return
 
-        self.driver.find_element_by_class_name('lms-StandardLogin_LoginButton').click()
+        # new class: 'lms-LoginButton'
+        self.driver.find_element_by_class_name('lms-LoginButton').click()
         time.sleep(15)
         self.bet365_account_name = login
 
@@ -202,7 +203,7 @@ class FireFoxDriverMain:
                 print(f'Не удалось войти в аккаунт {self.bet365_login}')
                 return
 
-        self.driver.find_element_by_class_name('lms-StandardLogin_LoginButton').click()
+        self.driver.find_element_by_class_name('lms-LoginButton').click()
         time.sleep(15)
 
         # закрываем окно с почтой
