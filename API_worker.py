@@ -65,25 +65,25 @@ class APIWork:
         bet1 = 'No'
         for i in respons:
             if i['is_cyber'] == '1':
-                alive_time = i['alive_sec']
-                if (min_value_of_alive_sec <= alive_time) and (alive_time <= max_value_of_alive_sec):
-                    print(f'Время жизни вилки: {alive_time}')
-                else:
-                    print(f'Время жизни вилки не соответствует условиям: {alive_time}')
-                    continue
-
                 if not (i['fork_id'] in old_bets_set):
-                    bet365_line = '2'
-                    parimatch_line = '1'
-                    if i['BK1_name'] == 'bet365':
-                        bet365_line = '1'
-                        parimatch_line = '2'
+                    alive_time = i['alive_sec']
+                    print('------Вилка найдена------')
+                    if (min_value_of_alive_sec <= alive_time) and (alive_time <= max_value_of_alive_sec):
+                        print(f'Время жизни вилки: {alive_time}')
+                        bet365_line = '2'
+                        parimatch_line = '1'
+                        if i['BK1_name'] == 'bet365':
+                            bet365_line = '1'
+                            parimatch_line = '2'
 
-                    if float(i[f'BK{bet365_line}_cf']) >= 2:
-                        bet1 = i
-                        break
+                        if float(i[f'BK{bet365_line}_cf']) >= 2:
+                            print(f'Коэффициент на bet365:', i[f'BK{bet365_line}_cf'])
+                            bet1 = i
+                            break
+                        else:
+                            print('Коэффициент на bet365 < 2', i[f'BK{bet365_line}_cf'])
                     else:
-                        print('Коэффициент на bet365 < 2', i[f'BK{bet365_line}_cf'])
+                        print(f'Время жизни вилки не соответствует условиям: {alive_time}')
 
         if bet1 == 'No':
             print('Нет вилок на кибер футбол', datetime.now())
