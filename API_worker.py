@@ -25,7 +25,7 @@ URL = 'http://212.109.216.193:8111/forks'
 params = {
     "token": TOKEN,
     "bk2_name": "bet365,parimatch_ru_new",
-    "sport": "soccer,basketball",
+    "sport": "soccer",
     'get_cfs': '1',
     'min_fi': min_fi,
 }
@@ -64,7 +64,7 @@ class APIWork:
 
         bet1 = 'No'
         for i in respons:
-            if (i['sport'] == 'basketball') or (i['is_cyber'] == '1'):
+            if i['is_cyber'] == '1':
                 if not (i['fork_id'] in old_bets_set):
                     bet365_line = '2'
                     parimatch_line = '1'
