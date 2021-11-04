@@ -86,7 +86,7 @@ class APIWork:
                         print('Коэффициент на bet365 < 2', i[f'BK{bet365_line}_cf'])
 
         if bet1 == 'No':
-            print('Нет вилок на кибер футбол|баскетбол', datetime.now())
+            print('Нет вилок на кибер футбол', datetime.now())
             return False
 
         bet365_line = '2'
