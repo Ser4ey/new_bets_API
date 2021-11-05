@@ -323,13 +323,22 @@ class FireFoxDriverMain:
         except:
             pass
 
-        # попытка закрыть окно неактивности
+        # попытка закрыть уведомление о сообщениях (2.0 version)
+        try:
+            self.driver.find_element_by_class_name('pm-MessageOverlayCloseButton').click()
+            time.sleep(2)
+        except:
+            pass
+
+        # попытка закрыть окно неактивности 2.0
         try:
             self.driver.get('https://www.bet365.com/')
             time.sleep(3)
-            self.driver.find_element_by_class_name('alm-ActivityLimitAlert_Button ').click()
+            self.driver.find_element_by_class_name('alm-ActivityLimitStayButton').click()
         except:
             pass
+
+
 
         self.close_cupon()
 
