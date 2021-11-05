@@ -159,7 +159,7 @@ class FireFoxDriverMain:
 
         try:
             time.sleep(5)
-            self.driver.find_element_by_class_name('pm-PushTargetedMessageOverlay_CloseButton ').click()
+            self.driver.find_element_by_class_name('pm-MessageOverlayCloseButton ').click()
         except:
             pass
 
@@ -221,7 +221,7 @@ class FireFoxDriverMain:
 
         try:
             time.sleep(5)
-            self.driver.find_element_by_class_name('pm-PushTargetedMessageOverlay_CloseButton ').click()
+            self.driver.find_element_by_class_name('pm-MessageOverlayCloseButton ').click()
         except:
             pass
 
@@ -312,13 +312,6 @@ class FireFoxDriverMain:
         # попытка закрыть купон
         try:
             self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
-            time.sleep(2)
-        except:
-            pass
-
-        # попытка закрыть уведомление о сообщениях
-        try:
-            self.driver.find_element_by_class_name('pm-PushTargetedMessageOverlay_CloseButton ').click()
             time.sleep(2)
         except:
             pass
