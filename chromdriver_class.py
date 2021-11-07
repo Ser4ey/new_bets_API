@@ -371,11 +371,15 @@ class FireFoxDriverMain:
         return False
 
     def make_any_sport_bet(self, sport, url, bet_type, coef):
-        # Попытка закрыть окно неактивности -> сообщения
+        # Попытка закрыть окно неактивности
         try:
             # попытка закрыть окно неактивности
             self.driver.find_element_by_class_name('alm-ActivityLimitStayButton ').click()
-            time.sleep(0.3)
+            time.sleep(0.5)
+        except:
+            pass
+
+        try:
             # попытка закрыть сообщения
             self.driver.find_element_by_class_name('pm-MessageOverlayCloseButton ').click()
         except:
