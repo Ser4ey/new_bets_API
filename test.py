@@ -1,127 +1,97 @@
-from chromdriver_class import FireFoxDriverMain, FireFoxForPimatch
-from data import AccountsBet365, path_to_accounts_file
-import datetime
-from multiprocessing.dummy import Pool
+import requests
+import json
 import time
-from API_worker import APIWorker1
-import random
-from telegram_API import telegram_notify1
+from datetime import datetime
+# from data import min_fi, min_value_of_alive_sec, max_value_of_alive_sec
 
 
-def make_bet_multipotok(All_elements_array):
-    print('Ставим ставку на одном из аккаунтов')
-    driver, url, bet_type, coef = All_elements_array
+def find_number_of_plus_bets(our_coef: str, bk_name: str, opposite_forks: dict):
+    plus_forks_number = 0
     try:
-        driver.make_basketball_bet(url, bet_type, coef)
-    except Exception as er:
-        print(f'Error: {er}')
-        driver.reanimaite_bet365com()
-
-
-def reanimate_bet365com(driver):
-    driver.reanimaite_bet365com()
-
-
-def register_bet365_multipotok(AccountData):
-    driver2, login, password = AccountData[0], AccountData[1], AccountData[2]
-    time.sleep(random.randint(10, 500)/100)
-    print(f'Open bet365 for: {login}')
-
-    while True:
-        try:
-            r = driver2.open_bet365com()
-        except:
-            print(f'! Перезагрузка драйвера для {login}')
-            driver2.restart_driver()
-            continue
-        if r is None:
-            break
-        else:
-            print('-'*100)
-            print(f'Сайт bet365 не загрузился для {login}')
-            print('-'*100)
-            driver2.restart_driver()
-            time.sleep(5)
-
-    try:
-        driver2.log_in_bet365(login, password)
+        opposite_forks.pop(bk_name)
     except:
-        print('!'*100)
-        print(f'Не удалось войти в аккаунт {login}')
-        print('!'*100)
+        pass
+    for bk, coef in opposite_forks.items():
+        profit = 1 - (1/float(our_coef) + 1/float(coef))
+        if profit > 0:
+            plus_forks_number += 1
+
+    return plus_forks_number
+
+TOKEN = 'ec02c59dee6faaca3189bace969c22d7'
+URL = 'http://212.109.216.193:8111/forks'
+
+params = {
+    "token": TOKEN,
+    "bk2_name": "bet365,fonbet",
+    # "sport": "soccer",
+    'get_cfs': '1',
+    'min_fi': 10,
+}
 
 
-def cheeck_porezan_li_account(driver):
-    driver.check_is_account_not_valid_mean_porezan()
+class APIWork:
+    def __init__(self, TOKEN: str, URL: str, params: dict):
+        self.TOKEN = TOKEN
+        self.URL = URL
+        self.params = params
+        self.forks_ids = set()
+
+    def send_request_to_API(self, old_bets_set='1'):
+        # список уже проставленных ставок
+        if old_bets_set == '1':
+            old_bets_set = []
+
+        try:
+            r = requests.get(self.URL, params=self.params)
+            respons = json.loads(r.text)
+        except Exception as er:
+            print('!'*100)
+            print('Ошибка при отправке запроса к API')
+            print(er)
+            try:
+                print(r.status_code)
+            except:
+                print('Status code: None')
+            print('!'*100)
+            time.sleep(20)
+            return False
+
+        if len(respons) < 1:
+            # print('Нет вилок', datetime.now())
+            return False
+
+        for i in respons:
+            bet1 = i
+            sport_name = bet1['sport']
+            bet_type = bet1['bet_type']
+            income = bet1['income']
+
+            bet365_line = '2'
+            fonbet_line = '1'
+            if bet1['BK1_name'] == 'bet365':
+                bet365_line = '1'
+                fonbet_line = '2'
+
+            bet365_bet = bet1[f'BK{bet365_line}_bet']
+            fonbet_bet = bet1[f'BK{fonbet_line}_bet']
+
+            text = f'Спорт: {sport_name}; Ставка: {bet_type}; Процент: {income}; bet365: {bet365_bet}; fonbet: {fonbet_bet}\n'
+            print(text)
+
+            with open('bet_log.txt', 'a', encoding='utf-8') as file:
+                file.write(text)
 
 
-def delete_account_from_txt_by_login(login: str):
-    '''Удаляет из файла с аккаунтами все строки, содержащии данный логин'''
-    with open(path_to_accounts_file, 'r', encoding='utf-8') as file:
-        lines_with_accounts = file.readlines()
+APIWorker1 = APIWork(TOKEN, URL, params)
 
-    with open(path_to_accounts_file, 'w', encoding='utf-8') as file:
-        for line in lines_with_accounts:
-            if not login in line:
-                file.write(line)
-            else:
-                print(f'{login} - удалён из аккаунтов!')
-                return
+AllForks = set()
+
+for i in range(10000):
+    time.sleep(5)
+    APIWorker1.send_request_to_API(old_bets_set=AllForks)
 
 
 
 
-list_of_start_info = []
-List_of_bet_account = []
 
-i1 = 1
-for i in range(len(AccountsBet365)):
-    print(f'Запуск аккаунта {i1}')
-    account_data = AccountsBet365[i]
-
-    driver2 = FireFoxDriverMain(account_data['bet_value'])
-    List_of_bet_account.append(driver2)
-    start_info = [driver2, account_data['bet365_login'], account_data['bet365_password']]
-
-    list_of_start_info.append(start_info)
-
-    i1 += 1
-
-
-with Pool(processes=len(list_of_start_info)) as p:
-    p.map(register_bet365_multipotok, list_of_start_info)
-
-porezan_counter = 1
-# предварительный поиск порезанных аккаунтов
-# with Pool(processes=len(List_of_bet_account)) as p:
-#     p.map(cheeck_porezan_li_account, List_of_bet_account)
-# i_porez = 0
-# while i_porez < len(List_of_bet_account):
-#     if not List_of_bet_account[i_porez].is_valud_account:
-#         telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
-#         telegram_notify1.telegram_bot_send_message(telegram_text)
-#         delete_account_from_txt_by_login(List_of_bet_account[i_porez].bet365_login)
-#         print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
-#         List_of_bet_account[i_porez].driver.quit()
-#         List_of_bet_account.pop(i_porez)
-#     else:
-#         i_porez += 1
-# print(f'Осталось рабочих аккаунтов: {len(List_of_bet_account)}')
-# завершение поиска порезанных аккаунтов
-
-# # начало программы
-#
-# while True:
-#     bet_type = input('bet_type:')
-#     url = input('url:')
-#     coef = '0'
-#     A = []
-#     for i in range(len(List_of_bet_account)):
-#         account_arr = [List_of_bet_account[i],
-#                         url,
-#                         bet_type,
-#                         coef]
-#         A.append(account_arr)
-#
-#     with Pool(processes=len(List_of_bet_account)) as p:
-#         p.map(make_bet_multipotok, A)

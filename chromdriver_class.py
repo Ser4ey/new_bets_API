@@ -316,22 +316,19 @@ class FireFoxDriverMain:
         except:
             pass
 
+        # попытка закрыть окно неактивности
+        try:
+            self.driver.find_element_by_class_name('alm-ActivityLimitStayButton ').click()
+            time.sleep(2)
+        except Exception as er:
+            print(f'Нет кнопки закрытия окна неактивности! {er}')
+
         # попытка закрыть уведомление о сообщениях (2.0 version)
         try:
-            self.driver.find_element_by_class_name('pm-MessageOverlayCloseButton').click()
+            self.driver.find_element_by_class_name('pm-MessageOverlayCloseButton ').click()
             time.sleep(2)
         except:
             pass
-
-        # попытка закрыть окно неактивности 2.0
-        try:
-            self.driver.get('https://www.bet365.com/')
-            time.sleep(3)
-            self.driver.find_element_by_class_name('alm-ActivityLimitStayButton').click()
-        except:
-            pass
-
-
 
         self.close_cupon()
 
@@ -347,7 +344,8 @@ class FireFoxDriverMain:
             self.driver.find_element_by_class_name('bs-ControlBar_RemoveButton ').click()
             time.sleep(4)
         except Exception as er:
-            print('нет купонов', er)
+            pass
+            # print('нет купонов', er)
 
     def check_is_account_not_valid_mean_porezan(self):
         '''Провепка порезан ли аккаунт'''
@@ -373,6 +371,16 @@ class FireFoxDriverMain:
         return False
 
     def make_any_sport_bet(self, sport, url, bet_type, coef):
+        # Попытка закрыть окно неактивности -> сообщения
+        try:
+            # попытка закрыть окно неактивности
+            self.driver.find_element_by_class_name('alm-ActivityLimitStayButton ').click()
+            time.sleep(0.3)
+            # попытка закрыть сообщения
+            self.driver.find_element_by_class_name('pm-MessageOverlayCloseButton ').click()
+        except:
+            pass
+
         if sport == 'soccer':
             self.make_cyber_football_bet(url, bet_type, coef)
         elif sport == 'basketball':
