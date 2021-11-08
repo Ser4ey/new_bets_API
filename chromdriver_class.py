@@ -248,6 +248,7 @@ class FireFoxDriverMain:
             try:
                 bet365balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
                 bet365balance = bet365balance.replace(',', '')
+                bet365balance = bet365balance.replace(' ', '')
                 bet365balance = bet365balance.strip()
                 bet365balance = bet365balance.strip('£')
                 bet365balance = bet365balance.replace(' ', '')
