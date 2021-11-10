@@ -2867,11 +2867,11 @@ class FireFoxFonbet:
     def tabletennis_set_win(self, bet_type):
         bets_blocks = self.driver.find_elements_by_class_name('market-group-box--iAdNd')
 
-        set_number = bet_type.split('--')[0]
-        set_number = set_number.split('-')[1]
+        set_number = bet_type.split('__')[0]
+        set_number = set_number.split('_')[1]
         set_number = set_number.strip('0')
 
-        win_command = bet_type.split('--')[-1]
+        win_command = bet_type.split('__fix')[-1]
         print(f'Set number: {set_number}')
         print(f'Win command: {win_command}')
         generate_title_text = f'Победа во {set_number}‑м сете'
