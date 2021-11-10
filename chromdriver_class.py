@@ -2872,12 +2872,12 @@ class FireFoxFonbet:
         set_number = set_number.strip('0')
 
         win_command = bet_type.split('__')[-1]
-        print(f'Set number: {set_number}')
-        print(f'Win command: {win_command}')
+        # print(f'Set number: {set_number}')
+        # print(f'Win command: {win_command}')
         generate_title_text = f'Победа во {set_number}‑м сете'
         generate_title_text2 = f'Победа в {set_number}‑м сете'
-        print(f'text1: {generate_title_text}')
-        print(f'text2: {generate_title_text2}')
+        # print(f'text1: {generate_title_text}')
+        # print(f'text2: {generate_title_text2}')
 
         needed_block = 'No'
         for block_ in bets_blocks:
@@ -2892,8 +2892,8 @@ class FireFoxFonbet:
             return 'Ставки на победу в сете fonbet не найдены'
 
         coefs = needed_block.find_elements_by_class_name('v--GM-zl')
-        for coef in coefs:
-            print(f'--coef: {coef.text}')
+        # for coef in coefs:
+        #     print(f'--coef: {coef.text}')
 
         if 'P1' in bet_type:
             return coefs[0].text

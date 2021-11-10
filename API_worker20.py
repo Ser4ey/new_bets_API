@@ -2,8 +2,8 @@ import requests
 import json
 import time
 from datetime import datetime
-from data import min_fi, min_value_of_alive_sec, max_value_of_alive_sec
-from chromdriver_class import FireFoxForPimatch, FireFoxForWinline, FireFoxFor1XBet, FireFoxForFavbet
+from data import min_fi, min_fi_for_fonbet, min_value_of_alive_sec, max_value_of_alive_sec
+from chromdriver_class import FireFoxForPimatch, FireFoxForWinline, FireFoxFor1XBet, FireFoxForFavbet, FireFoxFonbet
 
 
 def find_number_of_plus_bets(our_coef: str, bk_name: str, opposite_forks: dict):
@@ -31,14 +31,13 @@ params = {
     'min_fi': min_fi,
 }
 
-params2 = {
+'''params2 = {
     "token": TOKEN,
     "bk2_name": "bet365,winline",
     "sport": "soccer",
     'get_cfs': '1',
     'min_fi': min_fi,
 }
-
 params_1xbet = {
     "token": TOKEN,
     "bk2_name": "bet365,1xbet",
@@ -46,13 +45,21 @@ params_1xbet = {
     'get_cfs': '1',
     'min_fi': min_fi,
 }
-
 params_favbet = {
     "token": TOKEN,
     "bk2_name": "bet365,favbet",
     "sport": "soccer",
     'get_cfs': '1',
     'min_fi': min_fi,
+}'''
+
+
+params_fonbet = {
+    "token": TOKEN,
+    "bk2_name": "bet365,fonbet",
+    "sport": "table-tennis",
+    'get_cfs': '1',
+    'min_fi': min_fi_for_fonbet,
 }
 
 
@@ -73,7 +80,7 @@ class APIWork:
         try:
             r = requests.get(self.URL, params=self.params)
             respons = json.loads(r.text)
-            # print(r.url)
+            print(r.url)
         except Exception as er:
             print('!'*100)
             print('Ошибка при отправке запроса к API')
@@ -92,7 +99,7 @@ class APIWork:
 
         bet1 = 'No'
         for i in respons:
-            if (i['sport'] == 'basketball') or (i['is_cyber'] == '1'):
+            if (i['sport'] == 'basketball') or (i['sport'] == "table-tennis") or (i['is_cyber'] == '1'):
                 alive_time = i['alive_sec']
                 if (min_value_of_alive_sec <= alive_time) and (alive_time <= max_value_of_alive_sec):
                     print(f'Время жизни вилки: {alive_time}')
@@ -113,7 +120,7 @@ class APIWork:
                         print('Коэффициент на bet365 < 2', i[f'BK{bet365_line}_cf'])
 
         if bet1 == 'No':
-            print(f'Нет вилок на кибер футбол|баскетбол, bk: {self.second_bk_fullname}', datetime.now())
+            print(f'Нет вилок на кибер футбол|настольный теннис, bk: {self.second_bk_fullname}', datetime.now())
             return False
 
         bet365_line = '2'
@@ -180,15 +187,17 @@ class APIWork:
 
 
 APIWorkerParimatch_ru = APIWork(TOKEN, URL, params, 'PAN', 'parimatch_ru_new')
-APIWorkerWinline = APIWork(TOKEN, URL, params2, 'WLN', 'winline')
-APIWorker1XBet = APIWork(TOKEN, URL, params_1xbet, 'XBT', '1xbet')
-APIWorkerFavbet = APIWork(TOKEN, URL, params_favbet, 'FAV', 'favbet')
+# APIWorkerWinline = APIWork(TOKEN, URL, params2, 'WLN', 'winline')
+# APIWorker1XBet = APIWork(TOKEN, URL, params_1xbet, 'XBT', '1xbet')
+# APIWorkerFavbet = APIWork(TOKEN, URL, params_favbet, 'FAV', 'favbet')
+APIWorkerFonbet = APIWork(TOKEN, URL, params_fonbet, 'FON', 'fonbet')
 
 
 driverParimatch = FireFoxForPimatch()
-driverWinline = FireFoxForWinline()
-driver1XBet = FireFoxFor1XBet()
-driverFavbet = FireFoxForFavbet()
+# driverWinline = FireFoxForWinline()
+# driver1XBet = FireFoxFor1XBet()
+# driverFavbet = FireFoxForFavbet()
+driverFonbet = FireFoxFonbet()
 
 
 def find_fork_from_API_Parimatch(AllBetsSet):
@@ -228,7 +237,7 @@ def find_fork_from_API_Parimatch(AllBetsSet):
     return ['Yes, fork', fork_info]
 
 
-def find_fork_from_API_Winline(AllBetsSet):
+'''def find_fork_from_API_Winline(AllBetsSet):
     try:
         fork_info = APIWorkerWinline.send_request_to_API(old_bets_set=AllBetsSet)
         if not fork_info:
@@ -337,7 +346,43 @@ def find_fork_from_API_Favbet(AllBetsSet):
         return
 
     return ['Yes, fork', fork_info]
+'''
 
+def find_fork_from_API_Fonbet(AllBetsSet):
+    # try:
+    fork_info = APIWorkerFonbet.send_request_to_API(old_bets_set=AllBetsSet)
+    if not fork_info:
+        return 'no fonbet'
+    print(fork_info)
+    # except Exception as er:
+    #     print('Ошибка при отправке API запроса:', er)
+    #     time.sleep(10)
+    #     return f'Ошибка при отправке API запроса: {er}'
+
+    if fork_info['fork_id'] in AllBetsSet:
+        print(f"Ставка {fork_info['fork_id']} уже проставлена!")
+        time.sleep(10)
+        return
+
+    AllBetsSet.add(fork_info['fork_id'])
+
+    try:
+        second_coef = driverFonbet.find_coef_for_any_sport(fork_info['sport_name'], fork_info['parimatch_href'],
+                                                              fork_info['parimatch_type'])
+        print(f'Коэффициент на fonbet: {second_coef}')
+        try:
+            float(second_coef)
+        except:
+            print('Ставка не поддерживается')
+            return 'Ставка не поддерживается'
+        if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
+            print('Коэффициет на fonbet упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
+            return
+    except:
+        print('Не удалось получить коэффициент для fonbet')
+        return
+
+    return ['Yes, fork', fork_info]
 
 
 def get_fork_from_API(AllBetsSet):
@@ -349,21 +394,7 @@ def get_fork_from_API(AllBetsSet):
         pass
 
     try:
-        a, b = find_fork_from_API_Winline(AllBetsSet)
-        if a == 'Yes, fork':
-            return 'OK', b
-    except:
-        pass
-
-    try:
-        a, b = find_fork_from_API_1XBet(AllBetsSet)
-        if a == 'Yes, fork':
-            return 'OK', b
-    except:
-        pass
-
-    try:
-        a, b = find_fork_from_API_Favbet(AllBetsSet)
+        a, b = find_fork_from_API_Fonbet(AllBetsSet)
         if a == 'Yes, fork':
             return 'OK', b
     except:
@@ -377,6 +408,9 @@ def get_fork_from_API(AllBetsSet):
 #     time.sleep(3)
 #     a, b = get_fork_from_API(A)
 #     print(a, b)
+#     if a == 'OK':
+#         break
+    # input('Enter:')
 
 
 
