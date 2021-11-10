@@ -390,6 +390,8 @@ class FireFoxDriverMain:
             self.make_cyber_football_bet(url, bet_type, coef)
         elif sport == 'basketball':
             self.make_basketball_bet(url, bet_type, coef)
+        elif sport == 'table-tennis':
+            self.make_table_tennis_bet(url, bet_type, coef)
         else:
             print('Неизвестный вид спорта для Bet365')
             return 'Неизвестный вид спорта для Bet365'
@@ -1048,26 +1050,18 @@ class FireFoxDriverMain:
 
     def make_table_tennis_bet(self, url, bet_type, coef, bet_value):
         '''Ставка на настольный теннис'''
-
-        if bet_type == 'П1' or bet_type == 'П2':
-            # П1 П2
-            self.make_table_tennis_bet_P1_P2(url, bet_type, coef, bet_value)
-        elif ('П1' in bet_type or 'П2' in bet_type) and len(bet_type) > 5:
-            # П1 (1 партия)
-            self.make_table_tennis_bet_P1_P2_of_game1(url, bet_type, coef, bet_value)
-        elif ('Ф1' in bet_type or 'Ф2' in bet_type) and len(bet_type) < 10:
-            # Ф1(-2.5)  Ф2(1.5)
-            self.make_table_tennis_bet_F1_F2_gandikap_of_match(url, bet_type, coef, bet_value)
-        elif ('Ф1' in bet_type or 'Ф2' in bet_type) and len(bet_type) > 10:
-            # Ф1(-2.5) (3 партия)     Ф2(1.5) (1 партия)
-            self.make_table_tennis_bet_F1_F2_gandikap_of_game1(url, bet_type, coef, bet_value)
+        if bet_type[:4] == 'SET_' and bet_type[6:14] == '__WIN__P':
+            self.make_table_tennis_bet_set_winner(url, bet_type, coef, bet_value)
         else:
-            print('Неизвестный тип ставки (1)', bet_type)
+            print('Неизвестный тип ставки', bet_type)
 
-    def make_table_tennis_bet_P1_P2(self, url, bet_type, coef, bet_value):
-        print(f'Проставляем ставку П1П2(table tennis): {url}; bet_type: {bet_type}; coef: {coef}')
+    def make_table_tennis_bet_set_winner(self, url, bet_type, coef, bet_value):
+        print(f'Проставляем ставку set winner {url}; bet_type: {bet_type}; coef: {coef}')
         self.driver.get(url)
         time.sleep(3)
+        set_number = bet_type.split('__')[0]
+        set_number = set_number.split('_')[1]
+        set_number = set_number.strip('0')
 
         list_of_bets = self.driver.find_elements_by_class_name('sip-MarketGroup ')
         line = 0
@@ -1075,14 +1069,14 @@ class FireFoxDriverMain:
             bet_element = list_of_bets[i]
             text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-            if text1 == 'ЛИНИИ МАТЧА':
+            if (text1 == f'Game {set_number} Lines') or (text1 == f'ИГРА {set_number} - ЛИНИИ'):
                 line = i
                 break
 
         bet_element = list_of_bets[line]
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-        if text != 'ЛИНИИ МАТЧА':
+        if (text != f'Game {set_number} Lines') and (text != f'ИГРА {set_number} - ЛИНИИ'):
             print('Ставка П1П2 настольный теннис')
             return
 
@@ -1100,14 +1094,14 @@ class FireFoxDriverMain:
         columns_ = columns_.find_elements_by_class_name('gl-Market_General-columnheader ')
 
         bet_text = columns_[0].find_elements_by_tag_name('div')[1].text
-        if bet_text != 'Победитель':
+        if (bet_text != 'Победитель') and (bet_text != 'Winner'):
             print('Не удалось найти ставку на победу (теннис)')
             return
 
         bet1 = columns_[1].find_elements_by_tag_name('div')[1]
         bet2 = columns_[2].find_elements_by_tag_name('div')[1]
 
-        if bet_type == 'П1':
+        if 'P1' in bet_type:
             bet1.click()
             time.sleep(2)
             self.make_a_bet(bet_value, coef, bet1)
