@@ -2895,7 +2895,7 @@ class FireFoxFonbet:
         for coef in coefs:
             print(f'--coef: {coef.text}')
 
-        if bet_type == 'P1':
+        if 'P1' in bet_type:
             return coefs[0].text
         else:
             return coefs[-1].text
