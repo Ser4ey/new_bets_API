@@ -2796,3 +2796,106 @@ class FireFoxForFavbet:
 
         coef = block_.find_element_by_class_name('_3X0TBSCUiGrpBC5hAY66Pr').text
         return coef
+
+
+class FireFoxFonbet:
+    def __init__(self):
+        firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
+        firefox_capabilities['marionette'] = True
+
+        fp = webdriver.FirefoxProfile(data.firefox_profile_path)
+        fp.set_preference("browser.privatebrowsing.autostart", True)
+
+        options = webdriver.FirefoxOptions()
+        options.add_argument("-private")
+        options.set_preference("dom.webdriver.enabled", False)
+        options.set_preference("dom.webnotifications.enabled", False)
+        binary = data.firefox_binary
+        options.binary = binary
+
+        driver = webdriver.Firefox(capabilities=firefox_capabilities, firefox_profile=fp,
+                                   firefox_binary=data.firefox_binary,
+                                   executable_path=data.path_to_geckodriver,
+                                   options=options)
+
+        self.driver = driver
+        self.driver.set_page_load_timeout(75)
+        time.sleep(5)
+        input('Смените VPN на Россию для fonbet:')
+        self.driver.get('https://www.fonbet.ru')
+
+    def find_coef_for_any_sport(self, sport, url, bet_type):
+        if sport == 'table-tennis':
+            return self.tabletennis_find_coef(url, bet_type)
+        # if sport == 'soccer':
+        #         return self.cyberfootball_find_coef(url, bet_type)
+        # elif sport == 'basketball':
+        #     return self.basketball_find_coef(url, bet_type)
+        else:
+            print('Неизвестный вид спорта для fonbet')
+            return 'Неизвестный вид спорта для fonbet'
+
+    def tabletennis_find_coef(self, url, bet_type):
+        # ожидание загрузки коэффициентов
+        self.driver.get(url)
+
+        not_good_flag = True
+        for i in range(30):
+            time.sleep(0.5)
+            try:
+                bets_blocks = self.driver.find_elements_by_class_name('market-group-box--iAdNd')
+                if len(bets_blocks) == 0:
+                    continue
+                else:
+                    not_good_flag = False
+                    break
+            except:
+                pass
+
+        if not_good_flag:
+            print('Нет ставок(вообще) для falbet')
+            return 'Нет ставок(вообще) для falbet'
+        
+        # SET_02__WIN__P2
+        if bet_type[:4] == 'SET_' and bet_type[6:14] == '__WIN__P':
+            return self.tabletennis_set_win(bet_type)
+        else:
+            print(bet_type)
+            print('Неизвестный вид ставки для fonbet')
+            return 'Неизвестный вид ставки fonbet returned'
+
+    def tabletennis_set_win(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('market-group-box--iAdNd')
+
+        set_number = bet_type.split('--')[0]
+        set_number = set_number.split('-')[1]
+        set_number = set_number.strip('0')
+
+        win_command = bet_type.split('--')[-1]
+        print(f'Set number: {set_number}')
+        print(f'Win command: {win_command}')
+        generate_title_text = f'Победа во {set_number}‑м сете'
+        generate_title_text2 = f'Победа в {set_number}‑м сете'
+        print(f'text1: {generate_title_text}')
+        print(f'text2: {generate_title_text2}')
+
+        needed_block = 'No'
+        for block_ in bets_blocks:
+            title = block_.find_element_by_class_name('text-new--1wMNx').text
+
+            if title == generate_title_text or title == generate_title_text2:
+                needed_block = block_
+                break
+
+        if needed_block == 'No':
+            print('Ставки на победу в сете fonbet не найдены')
+            return 'Ставки на победу в сете fonbet не найдены'
+
+        coefs = needed_block.find_elements_by_class_name('v--GM-zl')
+        for coef in coefs:
+            print(f'--coef: {coef}')
+
+        if bet_type == 'P1':
+            return coefs[0].text
+        else:
+            return coefs[-1].text

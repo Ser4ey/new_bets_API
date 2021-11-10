@@ -1,14 +1,14 @@
-from chromdriver_class import FireFoxFor1XBet, FireFoxForFavbet
+from chromdriver_class import FireFoxFonbet
 import datetime
 from multiprocessing.dummy import Pool
 import time
 
 
-driverFavbet = FireFoxForFavbet()
+driverFavbet = FireFoxFonbet()
 
 while True:
     bet_type = input('bet_type:')
     url = input('url:')
-    second_coef = driverFavbet.find_coef_for_any_sport('soccer', url, bet_type)
+    second_coef = driverFavbet.find_coef_for_any_sport('table-tennis', url, bet_type)
     print(second_coef)
 
