@@ -2871,7 +2871,7 @@ class FireFoxFonbet:
         set_number = set_number.split('_')[1]
         set_number = set_number.strip('0')
 
-        win_command = bet_type.split('__fix')[-1]
+        win_command = bet_type.split('__')[-1]
         print(f'Set number: {set_number}')
         print(f'Win command: {win_command}')
         generate_title_text = f'Победа во {set_number}‑м сете'
@@ -2893,7 +2893,7 @@ class FireFoxFonbet:
 
         coefs = needed_block.find_elements_by_class_name('v--GM-zl')
         for coef in coefs:
-            print(f'--coef: {coef}')
+            print(f'--coef: {coef.text}')
 
         if bet_type == 'P1':
             return coefs[0].text
