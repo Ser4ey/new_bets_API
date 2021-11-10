@@ -1048,8 +1048,10 @@ class FireFoxDriverMain:
             time.sleep(2)
             self.make_a_bet(bet_value, coef, bet2)
 
-    def make_table_tennis_bet(self, url, bet_type, coef, bet_value):
+    def make_table_tennis_bet(self, url, bet_type, coef):
         '''Ставка на настольный теннис'''
+        bet_value = self.bet_value
+
         if bet_type[:4] == 'SET_' and bet_type[6:14] == '__WIN__P':
             self.make_table_tennis_bet_set_winner(url, bet_type, coef, bet_value)
         else:
