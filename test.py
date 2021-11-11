@@ -99,7 +99,9 @@ while True:
     coef = '0'
 
     bet_type = 'SET_01__WIN__P2'
+    bet_type = input('bet type:')
     url = input('url:')
+
     driver.make_any_sport_bet(sport, url, bet_type, coef)
 
 
