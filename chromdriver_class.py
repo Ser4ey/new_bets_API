@@ -1056,8 +1056,8 @@ class FireFoxDriverMain:
         if bet_type[:4] == 'SET_' and bet_type[6:14] == '__WIN__P':
             self.make_table_tennis_bet_set_winner(url, bet_type, coef, bet_value)
         # SET_03__TOTALS__UNDER(18.5)
-        # elif bet_type[:4] == 'SET_' and bet_type[6:14] == '__WIN__P':
-        #     self.make_table_tennis_bet_set_winner(url, bet_type, coef, bet_value)
+        elif bet_type[:4] == 'SET_' and bet_type[8:14] == 'TOTALS':
+            self.make_table_tennis_bet_set_total(url, bet_type, coef, bet_value)
         else:
             print('Неизвестный тип ставки', bet_type)
 
@@ -1112,6 +1112,138 @@ class FireFoxDriverMain:
             time.sleep(2)
             self.make_a_bet(bet_value, coef, bet1)
         else:
+            bet2.click()
+            time.sleep(2)
+            self.make_a_bet(bet_value, coef, bet2)
+
+    def make_table_tennis_bet_set_total(self, url, bet_type, coef, bet_value):
+        print(f'Проставляем ставку set total {url}; bet_type: {bet_type}; coef: {coef}')
+        self.driver.get(url)
+        time.sleep(3)
+        set_number = bet_type.split('__')[0]
+        set_number = set_number.split('_')[1]
+        set_number = set_number.strip('0')
+
+        total_value = bet_type.split('(')[-1]
+        total_value = total_value.strip(')')
+
+        list_of_bets = self.driver.find_elements_by_class_name('sip-MarketGroup ')
+        line = 0
+        for i in range(len(list_of_bets)):
+            bet_element = list_of_bets[i]
+            text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
+
+            if (text1 == f'Game {set_number} Lines') or (text1 == f'ИГРА {set_number} - ЛИНИИ'):
+                line = i
+                break
+
+        bet_element = list_of_bets[line]
+        text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
+
+        if (text != f'Game {set_number} Lines') and (text != f'ИГРА {set_number} - ЛИНИИ'):
+            print('Ставка set total не найдена настольный теннис')
+            return
+
+        try:
+            bet_element.find_element_by_class_name('gl-MarketGroup_Wrapper ')
+        except:
+            print('Разворачиваем ставку')
+            bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').click()
+            time.sleep(0.5)
+            list_of_bets = self.driver.find_elements_by_class_name('sip-MarketGroup ')
+            bet_element = list_of_bets[line]
+
+        elements_with_bets = bet_element.find_element_by_class_name('gl-MarketGroup_Wrapper ')
+        columns_ = elements_with_bets.find_element_by_class_name('gl-MarketGroupContainer ')
+        columns_ = columns_.find_elements_by_class_name('gl-Market_General-columnheader ')
+
+        bet_text = columns_[0].find_elements_by_class_name('srb-ParticipantLabel')[-1].text
+        if (bet_text != 'Тотал') and (bet_text != 'Total'):
+            print('Не удалось найти ставку тотал на сет (теннис)')
+            return
+
+        bet1 = columns_[1].find_elements_by_class_name('gl-Participant_General')[-1]
+        bet2 = columns_[2].find_elements_by_class_name('gl-Participant_General')[-1]
+
+        if 'OVER' in bet_type:
+            total = bet1.find_element_by_class_name('srb-ParticipantCenteredStackedMarketRow_Handicap').text
+            if total_value not in total:
+                print(f'Тотал не совпадает: {total_value} -> {total}')
+                return
+            bet1.click()
+            time.sleep(2)
+            self.make_a_bet(bet_value, coef, bet1)
+        else:
+            total = bet2.find_element_by_class_name('srb-ParticipantCenteredStackedMarketRow_Handicap').text
+            if total_value not in total:
+                print(f'Тотал не совпадает: {total_value} -> {total}')
+                return
+            bet2.click()
+            time.sleep(2)
+            self.make_a_bet(bet_value, coef, bet2)
+
+    def make_table_tennis_bet_set_handicap(self, url, bet_type, coef, bet_value):
+        print(f'Проставляем ставку set handicap {url}; bet_type: {bet_type}; coef: {coef}')
+        self.driver.get(url)
+        time.sleep(3)
+        set_number = bet_type.split('__')[0]
+        set_number = set_number.split('_')[1]
+        set_number = set_number.strip('0')
+
+        total_value = bet_type.split('(')[-1]
+        total_value = total_value.strip(')')
+
+        list_of_bets = self.driver.find_elements_by_class_name('sip-MarketGroup ')
+        line = 0
+        for i in range(len(list_of_bets)):
+            bet_element = list_of_bets[i]
+            text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
+
+            if (text1 == f'Game {set_number} Lines') or (text1 == f'ИГРА {set_number} - ЛИНИИ'):
+                line = i
+                break
+
+        bet_element = list_of_bets[line]
+        text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
+
+        if (text != f'Game {set_number} Lines') and (text != f'ИГРА {set_number} - ЛИНИИ'):
+            print('Ставка set handicap не найдена настольный теннис')
+            return
+
+        try:
+            bet_element.find_element_by_class_name('gl-MarketGroup_Wrapper ')
+        except:
+            print('Разворачиваем ставку')
+            bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').click()
+            time.sleep(0.5)
+            list_of_bets = self.driver.find_elements_by_class_name('sip-MarketGroup ')
+            bet_element = list_of_bets[line]
+
+        elements_with_bets = bet_element.find_element_by_class_name('gl-MarketGroup_Wrapper ')
+        columns_ = elements_with_bets.find_element_by_class_name('gl-MarketGroupContainer ')
+        columns_ = columns_.find_elements_by_class_name('gl-Market_General-columnheader ')
+
+        bet_text = columns_[0].find_elements_by_class_name('srb-ParticipantLabel')[-1].text
+        if (bet_text != 'Handicap') and (bet_text != 'Гандикап'):
+            print('Не удалось найти ставку handicap на сет (теннис)')
+            return
+
+        bet1 = columns_[1].find_elements_by_class_name('gl-Participant_General')[-1]
+        bet2 = columns_[2].find_elements_by_class_name('gl-Participant_General')[-1]
+
+        if 'OVER' in bet_type:
+            total = bet1.find_element_by_class_name('srb-ParticipantCenteredStackedMarketRow_Handicap').text
+            if total_value not in total:
+                print(f'Тотал не совпадает: {total_value} -> {total}')
+                return
+            bet1.click()
+            time.sleep(2)
+            self.make_a_bet(bet_value, coef, bet1)
+        else:
+            total = bet2.find_element_by_class_name('srb-ParticipantCenteredStackedMarketRow_Handicap').text
+            if total_value not in total:
+                print(f'Тотал не совпадает: {total_value} -> {total}')
+                return
             bet2.click()
             time.sleep(2)
             self.make_a_bet(bet_value, coef, bet2)
