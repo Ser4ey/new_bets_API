@@ -3052,11 +3052,40 @@ class FireFoxFonbet:
         # SET_03__TOTALS__UNDER(18.5)
         elif bet_type[:4] == 'SET_' and bet_type[8:14] == 'TOTALS':
             return self.tabletennis_set_total(bet_type)
-
+        # SET_03__HANDICAP__P1(-2.5)
+        elif bet_type[:4] == 'SET_' and bet_type[8:16] == 'HANDICAP':
+            return self.tabletennis_set_handicap(bet_type)
+        # WIN__P2
+        elif bet_type == 'WIN__P1' or bet_type == 'WIN__P2':
+            return self.tabletennis_game_win(bet_type)
         else:
             print(bet_type)
             print('Неизвестный вид ставки для fonbet')
             return 'Неизвестный вид ставки fonbet returned'
+
+    def tabletennis_game_win(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('market-group-box--iAdNd')
+
+        needed_block = 'No'
+        for block_ in bets_blocks:
+            title = block_.find_element_by_class_name('text-new--1wMNx').text
+
+            if title == 'Победа в матче':
+                needed_block = block_
+                break
+
+        if needed_block == 'No':
+            print('Ставка на победу в матче fonbet не найдены')
+            return 'Ставка на победу в матче fonbet не найдены'
+
+        coefs = needed_block.find_elements_by_class_name('v--GM-zl')
+        for coef in coefs:
+            print(coef.text)
+
+        if 'P1' in bet_type:
+            return coefs[0].text
+        else:
+            return coefs[-1].text
 
     def tabletennis_set_win(self, bet_type):
         bets_blocks = self.driver.find_elements_by_class_name('market-group-box--iAdNd')
@@ -3148,3 +3177,53 @@ class FireFoxFonbet:
             return coefs[0].text
         else:
             return coefs[-1].text
+
+    def tabletennis_set_handicap(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('market-group-box--iAdNd')
+
+        set_number = bet_type.split('__')[0]
+        set_number = set_number.split('_')[1]
+        set_number = set_number.strip('0')
+
+        handicap_value = bet_type.split('(')[-1]
+        handicap_value = handicap_value.strip(')')
+
+        generate_title_text = f'Победа в {set_number}‑м сете с учетом форы'
+        generate_title_text2 = f'Победа во {set_number}‑м сете с учетом форы'
+
+        needed_block = 'No'
+        for block_ in bets_blocks:
+            title = block_.find_element_by_class_name('text-new--1wMNx').text
+            print(title)
+
+            if title == generate_title_text or title == generate_title_text2:
+                needed_block = block_
+                break
+
+        if needed_block == 'No':
+            print('Ставки на gandicap в сете fonbet не найдены')
+            return 'Ставки на gandicap в сете fonbet не найдены'
+
+        totals_body = needed_block.find_element_by_class_name('body--2OWOF')
+        totals_columns = totals_body.find_elements_by_class_name('section--2Yslw')
+
+        if 'P1' in bet_type:
+            needed_column = totals_columns[0]
+        else:
+            needed_column = totals_columns[-1]
+
+        # поиск нужного handicap
+        total_lines = needed_column.find_elements_by_class_name('row-common--1AmKd')
+
+        for total_line in total_lines:
+            title_text = total_line.find_element_by_class_name('common-text--1tG1x').text
+            print(title_text)
+            if handicap_value in title_text:
+                coef = total_line.find_element_by_class_name('v--GM-zl')
+                return coef
+
+        print('Ставки на handicap в сете fonbet не найдены')
+        return 'Ставки на handicap в сете fonbet не найдены'
+
+
+
