@@ -3192,7 +3192,7 @@ class FireFoxFonbet:
         else:
             handicap_value = '‑' + handicap_value[1:]
 
-        print(f'handicap value: {handicap_value}')
+        # print(f'handicap value: {handicap_value}')
 
         generate_title_text = f'Победа в {set_number}‑м сете с учетом форы'
         generate_title_text2 = f'Победа во {set_number}‑м сете с учетом форы'
@@ -3200,7 +3200,7 @@ class FireFoxFonbet:
         needed_block = 'No'
         for block_ in bets_blocks:
             title = block_.find_element_by_class_name('text-new--1wMNx').text
-            print(title)
+            # print(title)
 
             if title == generate_title_text or title == generate_title_text2:
                 needed_block = block_
@@ -3221,17 +3221,14 @@ class FireFoxFonbet:
         # поиск нужного handicap
         total_lines = needed_column.find_elements_by_class_name('row-common--1AmKd')
 
-        print('-'*100)
         for total_line in total_lines:
             title_text = total_line.find_element_by_class_name('common-text--1tG1x').text
-            print(title_text,'==', handicap_value)
-            coef = total_line.find_element_by_class_name('v--GM-zl')
-            print(coef.text)
+
             if handicap_value in title_text:
                 coef = total_line.find_element_by_class_name('v--GM-zl')
                 return coef.text
-            else:
-                print(f'{handicap_value} not in {title_text}')
+            # else:
+            #     print(f'{handicap_value} not in {title_text}')
 
         print('Ставки на handicap в сете fonbet не найдены')
         return 'Ставки на handicap в сете fonbet не найдены'
