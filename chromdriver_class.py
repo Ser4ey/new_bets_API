@@ -1062,8 +1062,8 @@ class FireFoxDriverMain:
         elif bet_type[:4] == 'SET_' and bet_type[8:16] == 'HANDICAP':
             self.make_table_tennis_bet_set_handicap(url, bet_type, coef, bet_value)
         # WIN__P2
-        elif bet_type == 'WIN__P1' and bet_type == 'WIN__P2':
-            self.make_table_tennis_bet_set_handicap(url, bet_type, coef, bet_value)
+        elif bet_type == 'WIN__P1' or bet_type == 'WIN__P2':
+            self.make_table_tennis_bet_game_winner(url, bet_type, coef, bet_value)
         else:
             print('Неизвестный тип ставки', bet_type)
 
