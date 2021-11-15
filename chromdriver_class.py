@@ -1707,14 +1707,14 @@ class FireFoxDriverMain:
             bet_element = list_of_bets[i]
             text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-            if (text1 == f'Game {set_number} Lines') or (text1 == f'ИГРА {set_number} - ЛИНИИ'):
+            if (text1 == f'Set {set_number} Lines') or (text1 == f'СЕТ {set_number} - ЛИНИИ'):
                 line = i
                 break
 
         bet_element = list_of_bets[line]
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-        if (text != f'Game {set_number} Lines') and (text != f'ИГРА {set_number} - ЛИНИИ'):
+        if (text != f'Set {set_number} Lines') and (text != f'СЕТ {set_number} - ЛИНИИ'):
             print('Ставка set total не найдена настольный теннис')
             return
 
@@ -1774,14 +1774,14 @@ class FireFoxDriverMain:
             bet_element = list_of_bets[i]
             text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-            if (text1 == f'Game {set_number} Lines') or (text1 == f'ИГРА {set_number} - ЛИНИИ'):
+            if (text1 == f'Set {set_number} Lines') or (text1 == f'СЕТ {set_number} - ЛИНИИ'):
                 line = i
                 break
 
         bet_element = list_of_bets[line]
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-        if (text != f'Game {set_number} Lines') and (text != f'ИГРА {set_number} - ЛИНИИ'):
+        if (text != f'Set {set_number} Lines') and (text != f'СЕТ {set_number} - ЛИНИИ'):
             print('Ставка set handicap не найдена настольный теннис')
             return
 
@@ -1809,7 +1809,7 @@ class FireFoxDriverMain:
         if 'P1' in bet_type:
             total = bet1.find_element_by_class_name('srb-ParticipantCenteredStackedMarketRow_Handicap').text
             if handicap_value not in total:
-                print(f'Тотал не совпадает: {handicap_value} -> {total}')
+                print(f'Handicap не совпадает: {handicap_value} -> {total}')
                 return
             bet1.click()
             time.sleep(2)
