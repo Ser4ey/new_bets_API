@@ -3524,8 +3524,8 @@ class FireFoxFonbet:
         elif bet_type[:4] == 'SET_' and bet_type[8:16] == 'HANDICAP':
             return self.volleyball_set_handicap(bet_type)
         # WIN__P2
-        # elif bet_type == 'WIN__P1' or bet_type == 'WIN__P2':
-        #     return self.tabletennis_game_win(bet_type)
+        elif bet_type == 'WIN__P1' or bet_type == 'WIN__P2':
+            return self.volleyball_game_win(bet_type)
         else:
             print(bet_type)
             print('Неизвестный вид ставки для fonbet')
@@ -3692,29 +3692,29 @@ class FireFoxFonbet:
         print('Ставки на handicap в сете fonbet не найдены')
         return 'Ставки на handicap в сете fonbet не найдены'
 
-    # def volleyball_game_win(self, bet_type):
-    #     bets_blocks = self.driver.find_elements_by_class_name('market-group-box--iAdNd')
-    #
-    #     needed_block = 'No'
-    #     for block_ in bets_blocks:
-    #         title = block_.find_element_by_class_name('text-new--1wMNx').text
-    #
-    #         if title == 'Победа в матче':
-    #             needed_block = block_
-    #             break
-    #
-    #     if needed_block == 'No':
-    #         print('Ставка на победу в матче fonbet не найдены')
-    #         return 'Ставка на победу в матче fonbet не найдены'
-    #
-    #     coefs = needed_block.find_elements_by_class_name('v--GM-zl')
-    #     # for coef in coefs:
-    #     #     print(coef.text)
-    #
-    #     if 'P1' in bet_type:
-    #         return coefs[0].text
-    #     else:
-    #         return coefs[-1].text
+    def volleyball_game_win(self, bet_type):
+        bets_blocks = self.driver.find_elements_by_class_name('market-group-box--iAdNd')
+
+        needed_block = 'No'
+        for block_ in bets_blocks:
+            title = block_.find_element_by_class_name('text-new--1wMNx').text
+
+            if title == 'Победа в матче':
+                needed_block = block_
+                break
+
+        if needed_block == 'No':
+            print('Ставка на победу в матче fonbet не найдены')
+            return 'Ставка на победу в матче fonbet не найдены'
+
+        coefs = needed_block.find_elements_by_class_name('v--GM-zl')
+        # for coef in coefs:
+        #     print(coef.text)
+
+        if 'P1' in bet_type:
+            return coefs[0].text
+        else:
+            return coefs[-1].text
 
 
 
