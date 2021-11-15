@@ -1566,7 +1566,7 @@ class FireFoxDriverMain:
 
 
     def make_volleyball_bet(self, url, bet_type, coef):
-        '''Ставка на настольный воллейбол'''
+        '''Ставка на настольный волейбол'''
         bet_value = self.bet_value
 
         # SET_03__WIN__P2
@@ -1602,7 +1602,7 @@ class FireFoxDriverMain:
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
         if (text != f'Game Lines') and (text != f'ЛИНИИ ИГРЫ'):
-            print('Ставка П1П2 воллейбол not found')
+            print('Ставка П1П2 волейбол not found')
             return
 
         try:
@@ -1620,7 +1620,7 @@ class FireFoxDriverMain:
 
         bet_text = columns_[0].find_elements_by_tag_name('div')[1].text
         if (bet_text != 'Победитель') and (bet_text != 'Winner'):
-            print('Не удалось найти ставку на победу (воллейбол)')
+            print('Не удалось найти ставку на победу (волейбол)')
             return
 
         bet1 = columns_[1].find_elements_by_tag_name('div')[1]
@@ -1657,7 +1657,7 @@ class FireFoxDriverMain:
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
         if (text != f'Set {set_number} Lines') and (text != f'СЕТ {set_number} - ЛИНИИ'):
-            print('Ставка П1П2 воллейбол')
+            print('Ставка П1П2 волейбол')
             return
 
         try:
