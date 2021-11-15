@@ -3158,7 +3158,7 @@ class FireFoxFonbet:
 
         for total_block in total_blocks:
             title_text = total_block.find_element_by_class_name('common-text--1tG1x').text
-            print(f'{title_text} == {total_value}')
+            # print(f'{title_text} == {total_value}')
             if total_value in title_text:
                 nedeed_total_block = total_block
                 break
@@ -3168,8 +3168,8 @@ class FireFoxFonbet:
             return 'Ставки на тотал в сете fonbet не найдены'
 
         coefs = nedeed_total_block.find_elements_by_class_name('v--GM-zl')
-        for coef in coefs:
-            print(f'--coef: {coef.text}')
+        # for coef in coefs:
+        #     print(f'--coef: {coef.text}')
 
         if 'OVER' in bet_type:
             return coefs[0].text
@@ -3271,6 +3271,7 @@ class FireFoxFonbet:
             return 'Неизвестный вид ставки fonbet returned'
 
     def volleyball_set_win(self, bet_type):
+        # +
         bets_blocks = self.driver.find_elements_by_class_name('market-group-box--iAdNd')
 
         set_number = bet_type.split('__')[0]
@@ -3327,7 +3328,7 @@ class FireFoxFonbet:
         needed_block = 'No'
         for block_ in bets_blocks:
             title = block_.find_element_by_class_name('text-new--1wMNx').text
-            print(title)
+            # print(title)
 
             if title == generate_title_text or title == generate_title_text2:
                 needed_block = block_
@@ -3346,14 +3347,16 @@ class FireFoxFonbet:
             title_text1 = total_block.find_elements_by_class_name('common-text--1tG1x')[0].text
             title_text2 = total_block.find_elements_by_class_name('common-text--1tG1x')[-1].text
 
-            print(f'{title_text1} == {total_value}')
-            print(f'{title_text2} == {total_value}')
+            # print(f'{title_text1} == {total_value}')
+            # print(f'{title_text2} == {total_value}')
             if total_value in title_text1:
                 nedeed_total_block = total_block
+                # print(1)
                 break
             elif total_value in title_text2:
                 nedeed_total_block = total_block
                 position = 2
+                # print(2)
                 break
 
         if nedeed_total_block == 'No':
@@ -3361,16 +3364,16 @@ class FireFoxFonbet:
             return 'Ставки на тотал в сете fonbet не найдены'
 
         coefs = nedeed_total_block.find_elements_by_class_name('v--GM-zl')
-        for coef in coefs:
-            print(f'--coef: {coef.text}')
+        # for coef in coefs:
+        #     print(f'--coef: {coef.text}')
 
         if 'OVER' in bet_type:
             if position == 2:
-                return coefs[-2]
+                return coefs[-2].text
             return coefs[0].text
         else:
             if position == 2:
-                return coefs[-1]
+                return coefs[-1].text
             return coefs[1].text
 
     def volleyball_set_handicap(self, bet_type):
