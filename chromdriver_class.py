@@ -3280,6 +3280,8 @@ class FireFoxFonbet:
             return self.tabletennis_find_coef(url, bet_type)
         elif sport == 'volleyball':
             return self.volleyball_find_coef(url, bet_type)
+        elif sport == 'basketball':
+            return self.basketball_find_coef(url, bet_type)
         else:
             print('Неизвестный вид спорта для fonbet')
             return 'Неизвестный вид спорта для fonbet'
@@ -3717,4 +3719,109 @@ class FireFoxFonbet:
             return coefs[-1].text
 
 
+    def basketball_find_coef(self, url, bet_type):
+        # ожидание загрузки коэффициентов
+        self.driver.get(url)
 
+        not_good_flag = True
+        for i in range(30):
+            time.sleep(0.5)
+            try:
+                bets_blocks = self.driver.find_elements_by_class_name('market-group-box--iAdNd')
+                if len(bets_blocks) == 0:
+                    continue
+                else:
+                    not_good_flag = False
+                    break
+            except:
+                pass
+
+        if not_good_flag:
+            print('Нет ставок(вообще) для falbet')
+            return 'Нет ставок(вообще) для falbet'
+
+        # SET_02__WIN__P2
+        # if bet_type[:4] == 'SET_' and bet_type[6:14] == '__WIN__P':
+        #     return self.volleyball_set_win(bet_type)
+        # # SET_03__TOTALS__UNDER(18.5)
+        elif bet_type[:4] == 'SET_' and bet_type[8:14] == 'TOTALS':
+            return self.basketball_set_total(bet_type)
+        # SET_03__HANDICAP__P1(-2.5)
+        # elif bet_type[:4] == 'SET_' and bet_type[8:16] == 'HANDICAP':
+        #     return self.volleyball_set_handicap(bet_type)
+        # # WIN__P2
+        # elif bet_type == 'WIN__P1' or bet_type == 'WIN__P2':
+        #     return self.volleyball_game_win(bet_type)
+        else:
+            print(bet_type)
+            print('Неизвестный вид ставки для fonbet')
+            return 'Неизвестный вид ставки fonbet returned'
+
+    def basketball_set_total(self, bet_type):
+        # SET_04__TOTALS__OVER(17.5)
+        bets_blocks = self.driver.find_elements_by_class_name('market-group-box--iAdNd')
+
+        set_number = bet_type.split('__')[0]
+        set_number = set_number.split('_')[1]
+        set_number = set_number.strip('0')
+
+        total_value = bet_type.split('(')[-1]
+        total_value = total_value.strip(')')
+
+        generate_title_text = f'Тотал очков в {set_number}‑м сете'
+        generate_title_text2 = f'Тотал очков во {set_number}‑м сете'
+        # print(generate_title_text)
+        # print(generate_title_text2)
+        # print('total value:', total_value)
+        # print('-'*100)
+
+        needed_block = 'No'
+        for block_ in bets_blocks:
+            title = block_.find_element_by_class_name('text-new--1wMNx').text
+            # print(title)
+
+            if title == generate_title_text or title == generate_title_text2:
+                needed_block = block_
+                break
+
+        if needed_block == 'No':
+            print('Ставки на тотал в сете fonbet не найдены')
+            return 'Ставки на тотал в сете fonbet не найдены'
+
+        # поиск нужного тотала
+        nedeed_total_block = 'No'
+        position = 1
+        total_blocks = needed_block.find_elements_by_class_name('row-common--1AmKd')
+
+        for total_block in total_blocks:
+            title_text1 = total_block.find_elements_by_class_name('common-text--1tG1x')[0].text
+            title_text2 = total_block.find_elements_by_class_name('common-text--1tG1x')[-1].text
+
+            # print(f'{title_text1} == {total_value}')
+            # print(f'{title_text2} == {total_value}')
+            if total_value in title_text1:
+                nedeed_total_block = total_block
+                # print(1)
+                break
+            elif total_value in title_text2:
+                nedeed_total_block = total_block
+                position = 2
+                # print(2)
+                break
+
+        if nedeed_total_block == 'No':
+            print('Ставки на тотал в сете fonbet не найдены')
+            return 'Ставки на тотал в сете fonbet не найдены'
+
+        coefs = nedeed_total_block.find_elements_by_class_name('v--GM-zl')
+        # for coef in coefs:
+        #     print(f'--coef: {coef.text}')
+
+        if 'OVER' in bet_type:
+            if position == 2:
+                return coefs[-2].text
+            return coefs[0].text
+        else:
+            if position == 2:
+                return coefs[-1].text
+            return coefs[1].text
