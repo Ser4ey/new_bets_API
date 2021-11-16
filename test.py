@@ -95,7 +95,7 @@ AllBetsSet = set()
 
 while True:
     driver = List_of_bet_account[0]
-    sport = 'volleyball'
+    sport = 'basketball'
     coef = '0'
 
     bet_type = 'SET_01__WIN__P2'

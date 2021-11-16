@@ -3768,8 +3768,8 @@ class FireFoxFonbet:
         total_value = bet_type.split('(')[-1]
         total_value = total_value.strip(')')
 
-        generate_title_text = f'Тотал очков в {set_number}‑м сете'
-        generate_title_text2 = f'Тотал очков во {set_number}‑м сете'
+        generate_title_text = f'Тотал очков в {set_number}‑й четверти'
+        generate_title_text2 = f'Тотал очков во {set_number}‑й четверти'
         # print(generate_title_text)
         # print(generate_title_text2)
         # print('total value:', total_value)
