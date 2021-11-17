@@ -52,8 +52,10 @@ def register_bet365_multipotok(AccountData):
 
 
 def cheeck_porezan_li_account(driver):
-    driver.check_is_account_not_valid_mean_porezan()
-
+    try:
+        driver.check_is_account_not_valid_mean_porezan()
+    except Exception as er:
+        print(f'Ошибка при определении порезки для - {driver.bet365_login}\nError: {er}')
 
 def delete_account_from_txt_by_login(login: str):
     '''Удаляет из файла с аккаунтами все строки, содержащии данный логин'''
@@ -98,15 +100,34 @@ while True:
     sport = 'basketball'
     coef = '0'
 
-    # input('reanimate:')
+    input('reanimate:')
+
+    porezan_counter = 1
+    # предварительный поиск порезанных аккаунтов
+    with Pool(processes=len(List_of_bet_account)) as p:
+        p.map(cheeck_porezan_li_account, List_of_bet_account)
+    i_porez = 0
+    while i_porez < len(List_of_bet_account):
+        if not List_of_bet_account[i_porez].is_valud_account:
+            telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
+            telegram_notify1.telegram_bot_send_message(telegram_text)
+            delete_account_from_txt_by_login(List_of_bet_account[i_porez].bet365_login)
+            print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
+            List_of_bet_account[i_porez].driver.quit()
+            List_of_bet_account.pop(i_porez)
+        else:
+            i_porez += 1
+    print(f'Осталось рабочих аккаунтов: {len(List_of_bet_account)}')
+
+
     # with Pool(processes=len(List_of_bet_account)) as p:
     #     A = [i for i in List_of_bet_account]
     #     p.map(reanimate_bet365com, A)
-    bet_type = 'SET_01__WIN__P2'
-    bet_type = input('bet type:')
-    url = input('url:')
-
-    driver.make_any_sport_bet(sport, url, bet_type, coef)
+    # bet_type = 'SET_01__WIN__P2'
+    # bet_type = input('bet type:')
+    # url = input('url:')
+    #
+    # driver.make_any_sport_bet(sport, url, bet_type, coef)
 
 
 

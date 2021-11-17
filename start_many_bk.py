@@ -52,7 +52,10 @@ def register_bet365_multipotok(AccountData):
 
 
 def cheeck_porezan_li_account(driver):
-    driver.check_is_account_not_valid_mean_porezan()
+    try:
+        driver.check_is_account_not_valid_mean_porezan()
+    except Exception as er:
+        print(f'Ошибка при определении порезки для - {driver.bet365_login}\nError: {er}')
 
 
 def delete_account_from_txt_by_login(login: str):
