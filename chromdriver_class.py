@@ -879,15 +879,15 @@ class FireFoxDriverMain:
             english_text = '3rd Quarter Lines'
         elif set_number == '4':
             english_text = '4th Quarter Lines'
-        print('-'*100)
-        print(english_text)
+        # print('-'*100)
+        # print(english_text)
 
         for i in range(len(list_of_bets)):
             bet_element = list_of_bets[i]
             text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
-            print(text1)
+            # print(text1)
             if (text1 == english_text) or (text1 == f'Линии - {set_number}-я четверть'):
-                print('ok')
+                # print('ok')
                 line = i
                 break
 
@@ -911,13 +911,13 @@ class FireFoxDriverMain:
         columns_ = elements_with_bets.find_element_by_class_name('gl-MarketGroupContainer ')
         columns_ = columns_.find_elements_by_class_name('gl-Market_General-columnheader ')
 
-        bet_text = columns_[0].find_elements_by_class_name('srb-ParticipantLabel')[-2].text
+        bet_text = columns_[0].find_elements_by_class_name('srb-ParticipantLabel')[1].text
         if (bet_text != 'Тотал') and (bet_text != 'Total'):
             print('Не удалось найти ставку тотал на сет (basketball)')
             return
 
-        bet1 = columns_[1].find_elements_by_class_name('gl-Participant_General')[-2]
-        bet2 = columns_[2].find_elements_by_class_name('gl-Participant_General')[-2]
+        bet1 = columns_[1].find_elements_by_class_name('gl-Participant_General')[1]
+        bet2 = columns_[2].find_elements_by_class_name('gl-Participant_General')[1]
 
         if 'OVER' in bet_type:
             total = bet1.find_element_by_class_name('srb-ParticipantCenteredStackedMarketRow_Handicap').text
