@@ -98,6 +98,10 @@ while True:
     sport = 'basketball'
     coef = '0'
 
+    # input('reanimate:')
+    # with Pool(processes=len(List_of_bet_account)) as p:
+    #     A = [i for i in List_of_bet_account]
+    #     p.map(reanimate_bet365com, A)
     bet_type = 'SET_01__WIN__P2'
     bet_type = input('bet type:')
     url = input('url:')
