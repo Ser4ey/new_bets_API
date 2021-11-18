@@ -101,10 +101,10 @@ while i_porez < len(List_of_bet_account):
     if not List_of_bet_account[i_porez].is_valud_account:
         telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
         telegram_notify1.telegram_bot_send_message(telegram_text)
-        delete_account_from_txt_by_login(List_of_bet_account[i_porez].bet365_login)
+        # delete_account_from_txt_by_login(List_of_bet_account[i_porez].bet365_login)
         print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
-        List_of_bet_account[i_porez].driver.quit()
-        List_of_bet_account.pop(i_porez)
+        # List_of_bet_account[i_porez].driver.quit()
+        # List_of_bet_account.pop(i_porez)
     else:
         i_porez += 1
 print(f'Осталось рабочих аккаунтов: {len(List_of_bet_account)}')
@@ -169,10 +169,10 @@ while True:
             if not List_of_bet_account[i_porez].is_valud_account:
                 telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
                 telegram_notify1.telegram_bot_send_message(telegram_text)
-                delete_account_from_txt_by_login(List_of_bet_account[i_porez].bet365_login)
+                # delete_account_from_txt_by_login(List_of_bet_account[i_porez].bet365_login)
                 print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
-                List_of_bet_account[i_porez].driver.quit()
-                List_of_bet_account.pop(i_porez)
+                # List_of_bet_account[i_porez].driver.quit()
+                # List_of_bet_account.pop(i_porez)
             else:
                 i_porez += 1
         # завершение поиска порезанных аккаунтов
