@@ -107,8 +107,9 @@ while i_porez < len(List_of_bet_account):
         print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
         # List_of_bet_account[i_porez].driver.quit()
         # List_of_bet_account.pop(i_porez)
-    else:
-        i_porez += 1
+    # else:
+    i_porez += 1
+
 print(f'Осталось рабочих аккаунтов: {len(List_of_bet_account)}')
 # завершение поиска порезанных аккаунтов
 
@@ -202,8 +203,8 @@ while True:
                 print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
                 # List_of_bet_account[i_porez].driver.quit()
                 # List_of_bet_account.pop(i_porez)
-            else:
-                i_porez += 1
+            # else:
+            i_porez += 1
         # завершение поиска порезанных аккаунтов
     else:
         porezan_counter += 1
