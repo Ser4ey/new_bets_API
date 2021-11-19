@@ -69,18 +69,19 @@ class FireFoxDriverMain:
         self.driver.set_page_load_timeout(10)
         try:
             self.driver.get('https://www.bet365.com/')
-            return None
+            return 'Success'
         except:
             pass
 
-        for i in range(7):
+        self.driver.set_page_load_timeout(45)
+
+        for i in range(3):
             self.open_new_window_2ip()
             time.sleep(1)
 
-        self.driver.set_page_load_timeout(75)
-
         try:
             self.driver.get('https://www.bet365.com/')
+            return 'Success'
         except:
             print('Сайт bet365 не загрузился')
             return 'Сайт bet365 не загрузился'

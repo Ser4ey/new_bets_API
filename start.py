@@ -34,7 +34,9 @@ def register_bet365_multipotok(AccountData):
             print(f'! Перезагрузка драйвера для {login}')
             driver2.restart_driver()
             continue
-        if r is None:
+
+        if r == 'Success':
+            print(f'Сайт успешно открылся для {login}')
             break
         else:
             print('-'*100)
