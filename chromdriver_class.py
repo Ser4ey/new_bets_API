@@ -1946,7 +1946,7 @@ class FireFoxDriverMain:
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
         if (text != f'Game {set_number} Lines') and (text != f'ИГРА {set_number} - ЛИНИИ'):
-            print('Ставка П1П2 настольный теннис')
+            print('Ставка П1П2 badminton не найдена')
             return
 
         try:
@@ -1967,8 +1967,8 @@ class FireFoxDriverMain:
             print('Не удалось найти ставку на победу (badminton)')
             return
 
-        bet1 = columns_[1].find_elements_by_class_name('gl-Market_General-cn1')[-1].text
-        bet2 = columns_[2].find_elements_by_class_name('gl-Market_General-cn1')[-1].text
+        bet1 = columns_[1].find_elements_by_class_name('gl-Market_General-cn1')[-1]
+        bet2 = columns_[2].find_elements_by_class_name('gl-Market_General-cn1')[-1]
 
         if 'P1' in bet_type:
             bet1.click()
@@ -2004,7 +2004,7 @@ class FireFoxDriverMain:
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
         if (text != f'Game {set_number} Lines') and (text != f'ИГРА {set_number} - ЛИНИИ'):
-            print('Ставка set total не найдена настольный теннис')
+            print('Ставка set total не найдена badminton')
             return
 
         try:
@@ -2022,7 +2022,7 @@ class FireFoxDriverMain:
 
         bet_text = columns_[0].find_elements_by_class_name('gl-Market_General-cn1')[0].text
         if (bet_text != 'Тотал') and (bet_text != 'Total'):
-            print('Не удалось найти ставку тотал на сет (теннис)')
+            print('Не удалось найти ставку тотал на сет (badminton)')
             return
 
         bet1 = columns_[1].find_elements_by_class_name('gl-Participant_General')[0]
@@ -2071,7 +2071,7 @@ class FireFoxDriverMain:
         text = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
         if (text != f'Game {set_number} Handicap') and (text != f'Игра {set_number} Гандикап'):
-            print('Ставка set handicap не найдена badminton теннис')
+            print('Ставка set handicap не найдена badminton')
             return
 
         try:
