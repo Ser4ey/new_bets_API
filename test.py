@@ -24,7 +24,7 @@ def reanimate_bet365com(driver):
 
 def register_bet365_multipotok(AccountData):
     driver2, login, password = AccountData[0], AccountData[1], AccountData[2]
-    time.sleep(random.randint(10, 500)/100)
+    time.sleep(random.randint(10, 500) / 100)
     print(f'Open bet365 for: {login}')
 
     while True:
@@ -34,21 +34,23 @@ def register_bet365_multipotok(AccountData):
             print(f'! Перезагрузка драйвера для {login}')
             driver2.restart_driver()
             continue
-        if r is None:
+
+        if r == 'Success':
+            print(f'Сайт успешно открылся для {login}')
             break
         else:
-            print('-'*100)
+            print('-' * 100)
             print(f'Сайт bet365 не загрузился для {login}')
-            print('-'*100)
+            print('-' * 100)
             driver2.restart_driver()
             time.sleep(5)
 
     try:
         driver2.log_in_bet365(login, password)
     except:
-        print('!'*100)
+        print('!' * 100)
         print(f'Не удалось войти в аккаунт {login}')
-        print('!'*100)
+        print('!' * 100)
 
 
 def cheeck_porezan_li_account(driver):
@@ -56,6 +58,7 @@ def cheeck_porezan_li_account(driver):
         driver.check_is_account_not_valid_mean_porezan()
     except Exception as er:
         print(f'Ошибка при определении порезки для - {driver.bet365_login}\nError: {er}')
+
 
 def delete_account_from_txt_by_login(login: str):
     '''Удаляет из файла с аккаунтами все строки, содержащии данный логин'''
