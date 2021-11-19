@@ -37,20 +37,28 @@ def register_bet365_multipotok(AccountData):
 
         if r == 'Success':
             print(f'Сайт успешно открылся для {login}')
-            break
         else:
             print('-' * 100)
             print(f'Сайт bet365 не загрузился для {login}')
             print('-' * 100)
             driver2.restart_driver()
             time.sleep(5)
+            print(f'Перезапуск браузера для {login}')
+            continue
 
-    try:
-        driver2.log_in_bet365(login, password)
-    except:
-        print('!' * 100)
-        print(f'Не удалось войти в аккаунт {login}')
-        print('!' * 100)
+        try:
+            login_info = driver2.log_in_bet365(login, password)
+            if login_info == 'Успешный вход в аккаунт':
+                return
+            else:
+                print(f'Не удалось войти в аккаунт {login}, браузер будет перезгружен')
+                driver2.restart_driver()
+                time.sleep(5)
+                print(f'Перезапуск браузера для {login}')
+        except:
+            print('!' * 100)
+            print(f'Не удалось войти в аккаунт {login}')
+            print('!' * 100)
 
 
 def cheeck_porezan_li_account(driver):
@@ -100,37 +108,37 @@ AllBetsSet = set()
 
 while True:
     driver = List_of_bet_account[0]
-    sport = 'basketball'
+    sport = 'badminton'
     coef = '0'
 
-    input('reanimate:')
-
-    porezan_counter = 1
-    # предварительный поиск порезанных аккаунтов
-    with Pool(processes=len(List_of_bet_account)) as p:
-        p.map(cheeck_porezan_li_account, List_of_bet_account)
-    i_porez = 0
-    while i_porez < len(List_of_bet_account):
-        if not List_of_bet_account[i_porez].is_valud_account:
-            telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
-            telegram_notify1.telegram_bot_send_message(telegram_text)
-            delete_account_from_txt_by_login(List_of_bet_account[i_porez].bet365_login)
-            print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
-            List_of_bet_account[i_porez].driver.quit()
-            List_of_bet_account.pop(i_porez)
-        else:
-            i_porez += 1
-    print(f'Осталось рабочих аккаунтов: {len(List_of_bet_account)}')
+    # input('reanimate:')
+    #
+    # porezan_counter = 1
+    # # предварительный поиск порезанных аккаунтов
+    # with Pool(processes=len(List_of_bet_account)) as p:
+    #     p.map(cheeck_porezan_li_account, List_of_bet_account)
+    # i_porez = 0
+    # while i_porez < len(List_of_bet_account):
+    #     if not List_of_bet_account[i_porez].is_valud_account:
+    #         telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
+    #         telegram_notify1.telegram_bot_send_message(telegram_text)
+    #         delete_account_from_txt_by_login(List_of_bet_account[i_porez].bet365_login)
+    #         print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
+    #         List_of_bet_account[i_porez].driver.quit()
+    #         List_of_bet_account.pop(i_porez)
+    #     else:
+    #         i_porez += 1
+    # print(f'Осталось рабочих аккаунтов: {len(List_of_bet_account)}')
 
 
     # with Pool(processes=len(List_of_bet_account)) as p:
     #     A = [i for i in List_of_bet_account]
     #     p.map(reanimate_bet365com, A)
-    # bet_type = 'SET_01__WIN__P2'
-    # bet_type = input('bet type:')
-    # url = input('url:')
-    #
-    # driver.make_any_sport_bet(sport, url, bet_type, coef)
+    bet_type = 'SET_01__WIN__P2'
+    bet_type = input('bet type:')
+    url = input('url:')
+
+    driver.make_any_sport_bet(sport, url, bet_type, coef)
 
 
 

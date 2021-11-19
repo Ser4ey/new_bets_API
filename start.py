@@ -37,20 +37,28 @@ def register_bet365_multipotok(AccountData):
 
         if r == 'Success':
             print(f'Сайт успешно открылся для {login}')
-            break
         else:
             print('-'*100)
             print(f'Сайт bet365 не загрузился для {login}')
             print('-'*100)
             driver2.restart_driver()
             time.sleep(5)
+            print(f'Перезапуск браузера для {login}')
+            continue
 
-    try:
-        driver2.log_in_bet365(login, password)
-    except:
-        print('!'*100)
-        print(f'Не удалось войти в аккаунт {login}')
-        print('!'*100)
+        try:
+            login_info = driver2.log_in_bet365(login, password)
+            if login_info == 'Успешный вход в аккаунт':
+                return
+            else:
+                print(f'Не удалось войти в аккаунт {login}, браузер будет перезагружен')
+                driver2.restart_driver()
+                time.sleep(5)
+                print(f'Перезапуск браузера для {login}')
+        except:
+            print('!'*100)
+            print(f'Не удалось войти в аккаунт {login}')
+            print('!'*100)
 
 
 def cheeck_porezan_li_account(driver):
