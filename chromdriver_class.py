@@ -375,7 +375,7 @@ class FireFoxDriverMain:
         self.driver.get('https://www.bet365.com/#/MB/')
         time.sleep(7)
 
-        main_blocks_line = self.driver.find_elements_by_class_name('myb-MyBetsHeader_Container ')
+        main_blocks_line = self.driver.find_element_by_class_name('myb-MyBetsHeader_Container ')
 
         first_block = main_blocks_line.find_element_by_class_name('myb-HeaderButton')[0]
         first_block_text = first_block.text
