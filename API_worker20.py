@@ -80,7 +80,7 @@ class APIWork:
         try:
             r = requests.get(self.URL, params=self.params)
             respons = json.loads(r.text)
-            print(r.url)
+            # print(r.url)
         except Exception as er:
             print('!'*100)
             print('Ошибка при отправке запроса к API')
