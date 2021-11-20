@@ -110,7 +110,10 @@ while True:
     driver = List_of_bet_account[0]
     sport = 'badminton'
     coef = '0'
+    print('()'*1000)
 
+    driver.check_is_account_not_valid_mean_porezan()
+    print('()'*1000)
     # input('reanimate:')
     #
     # porezan_counter = 1

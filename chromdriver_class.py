@@ -351,26 +351,42 @@ class FireFoxDriverMain:
 
     def check_is_account_not_valid_mean_porezan(self):
         '''Провепка порезан ли аккаунт'''
-        self.driver.get('https://www.bet365.com/#/ME/X6500')
-        time.sleep(10)
+        # self.driver.get('https://www.bet365.com/#/ME/X6500')
+        # time.sleep(10)
+        #
+        # iframe1 = self.driver.find_element_by_id('MembersIframe')
+        # self.driver.switch_to.frame(iframe1)
+        # time.sleep(0.5)
+        # iframe2 = self.driver.find_element_by_id('MembersHostFrame')
+        # self.driver.switch_to.frame(iframe2)
+        #
+        # messages_blocks = self.driver.find_elements_by_class_name('details')
+        #
+        # for block_ in messages_blocks:
+        #     title_text = block_.find_element_by_tag_name('span').text
+        #     if title_text == 'Ваша учётная запись' or title_text == 'Your Account':
+        #         self.is_valud_account = False
+        #         self.driver.switch_to.default_content()
+        #         return True
+        #
+        # self.driver.switch_to.default_content()
+        # return False
 
-        iframe1 = self.driver.find_element_by_id('MembersIframe')
-        self.driver.switch_to.frame(iframe1)
-        time.sleep(0.5)
-        iframe2 = self.driver.find_element_by_id('MembersHostFrame')
-        self.driver.switch_to.frame(iframe2)
+        self.driver.get('https://www.bet365.com/#/MB/')
+        time.sleep(7)
 
-        messages_blocks = self.driver.find_elements_by_class_name('details')
+        main_blocks_line = self.driver.find_elements_by_class_name('myb-MyBetsHeader_Container ')
 
-        for block_ in messages_blocks:
-            title_text = block_.find_element_by_tag_name('span').text
-            if title_text == 'Ваша учётная запись' or title_text == 'Your Account':
-                self.is_valud_account = False
-                self.driver.switch_to.default_content()
-                return True
+        first_block = main_blocks_line.find_element_by_class_name('myb-HeaderButton')[0]
+        first_block_text = first_block.text
+        print(first_block_text)
+        if first_block_text == 'Кэшаут' or first_block_text == 'Cash Out':
+            # аккаунт не порезан
+            return False
 
-        self.driver.switch_to.default_content()
-        return False
+        self.is_valud_account = False
+        return True
+
 
     def make_any_sport_bet(self, sport, url, bet_type, coef):
         # Попытка закрыть окно неактивности
