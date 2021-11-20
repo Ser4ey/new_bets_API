@@ -3705,7 +3705,7 @@ class FireFoxFonbet:
         needed_block = 'No'
         for block_ in bets_blocks:
             title = block_.find_element_by_class_name('text-new--1wMNx').text
-            print(title)
+            # print(title)
 
             if title == generate_title_text or title == generate_title_text2:
                 needed_block = block_
