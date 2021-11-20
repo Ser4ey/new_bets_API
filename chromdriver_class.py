@@ -3570,6 +3570,10 @@ class FireFoxFonbet:
         self.driver.get('https://www.fonbet.ru')
 
     def find_coef_for_any_sport(self, sport, url, bet_type):
+        if ('ODD' in bet_type) or ('EVEN' in bet_type):
+            print(f'Ставка не поддерживается: {bet_type}')
+            return f'Ставка не поддерживается: {bet_type}'
+
         if sport == 'table-tennis':
             return self.tabletennis_find_coef(url, bet_type)
         elif sport == 'volleyball':
