@@ -377,7 +377,7 @@ class FireFoxDriverMain:
 
         main_blocks_line = self.driver.find_element_by_class_name('myb-MyBetsHeader_Container ')
 
-        first_block = main_blocks_line.find_element_by_class_name('myb-HeaderButton')[0]
+        first_block = main_blocks_line.find_elements_by_class_name('myb-HeaderButton')[0]
         first_block_text = first_block.text
         print(first_block_text)
         if first_block_text == 'Кэшаут' or first_block_text == 'Cash Out':
