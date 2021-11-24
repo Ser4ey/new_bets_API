@@ -18,6 +18,18 @@ def open_new_window_2ip(driver):
     driver.switch_to.window(current_window)
 
 
+def check_bet365(driver):
+    # провепка правильно ли открылся сайт bet365
+    try:
+        time.sleep(2)
+        driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
+        return True
+    except Exception as er:
+        print(f'Сайт bet365 открыт не правильно: {er}')
+        return False
+
+
+
 def get_driver():
     firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
     firefox_capabilities['marionette'] = True
@@ -43,14 +55,11 @@ def get_driver():
     try:
         driver.get('https://www.bet365.com/')
         driver.set_page_load_timeout(25)
-        try:
-            time.sleep(5)
-            driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
+        if check_bet365(driver):
             return driver, 'Ok'
-        except:
-            pass
     except:
         pass
+
     driver.set_page_load_timeout(25)
     for i in range(2):
         open_new_window_2ip(driver)
@@ -58,11 +67,9 @@ def get_driver():
 
     try:
         driver.get('https://www.bet365.com/')
-        try:
-            time.sleep(5)
-            driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
+        if check_bet365(driver):
             return driver, 'Ok'
-        except:
+        else:
             return driver, 'Сайт bet365 не загрузился'
     except:
         return driver, 'Сайт bet365 не загрузился'
@@ -71,6 +78,7 @@ def get_driver():
 def add_accounts_to_list(a=''):
     global List_of_Bet365_open
     driver, info = get_driver()
+    print(info)
     if info == 'OK':
         List_of_Bet365_open.append(driver)
         print('+1 открытый сайт bet365')
