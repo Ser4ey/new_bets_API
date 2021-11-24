@@ -9,6 +9,15 @@ from selenium import webdriver
 import data
 
 
+def open_new_window_2ip(driver):
+    current_window = driver.current_window_handle
+    driver.execute_script(f"window.open('https://2ip.ru/', '_blank')")
+    time.sleep(7)
+    driver.switch_to.window(driver.window_handles[-1])
+    driver.close()
+    driver.switch_to.window(current_window)
+
+
 def get_driver():
     firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
     firefox_capabilities['marionette'] = True
@@ -30,7 +39,23 @@ def get_driver():
 
     time.sleep(10)
     driver.get('https://2ip.ru/')
-    driver.set_page_load_timeout(10)
+    driver.set_page_load_timeout(15)
+    try:
+        driver.get('https://www.bet365.com/')
+        driver.set_page_load_timeout(25)
+        try:
+            time.sleep(5)
+            driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
+            return driver, 'Ok'
+        except:
+            pass
+    except:
+        pass
+
+    for i in range(2):
+        open_new_window_2ip(driver)
+        time.sleep(0.3)
+
     try:
         driver.get('https://www.bet365.com/')
         driver.set_page_load_timeout(25)
@@ -79,3 +104,4 @@ while len(List_of_Bet365_open) < len(list_of_start_info):
 
 print(f'Numbers of accounts: {len(List_of_Bet365_open)}')
 print(List_of_Bet365_open)
+

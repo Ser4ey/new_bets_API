@@ -2193,6 +2193,12 @@ class FireFoxDriverMain:
         self.driver.quit()
 
 
+class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
+    def __init__(self, driver, bet_value):
+        self.driver = driver
+        self.bet_value = bet_value
+
+
 class FireFoxForPimatch:
     def __init__(self):
         firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
