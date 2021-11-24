@@ -19,7 +19,10 @@ def make_bet_multipotok(All_elements_array):
 
 
 def reanimate_bet365com(driver):
-    driver.reanimaite_bet365com()
+    try:
+        driver.reanimaite_bet365com()
+    except:
+        pass
 
 
 def register_bet365_multipotok(AccountData):

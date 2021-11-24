@@ -111,7 +111,7 @@ while True:
     sport = 'badminton'
     coef = '0'
 
-    driver.check_is_account_not_valid_mean_porezan()
+    # driver.check_is_account_not_valid_mean_porezan()
     # input('reanimate:')
     #
     # porezan_counter = 1
@@ -135,11 +135,11 @@ while True:
     # with Pool(processes=len(List_of_bet_account)) as p:
     #     A = [i for i in List_of_bet_account]
     #     p.map(reanimate_bet365com, A)
-    bet_type = 'SET_01__WIN__P2'
-    bet_type = input('bet type:')
+    # bet_type = 'SET_01__WIN__P2'
+    # bet_type = input('bet type:')
     url = input('url:')
-
-    driver.make_any_sport_bet(sport, url, bet_type, coef)
+    driver.restart_browser_and_bet365_account()
+    # driver.make_any_sport_bet(sport, url, bet_type, coef)
 
 
 

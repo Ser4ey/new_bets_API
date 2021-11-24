@@ -105,10 +105,10 @@ class FireFoxDriverMain:
         except:
             pass
 
-        for i in range(4):
+        for i in range(2):
             try:
                 try:
-                    time.sleep(3)
+                    time.sleep(2)
                     self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
                     break
                 except:
@@ -118,17 +118,15 @@ class FireFoxDriverMain:
                 pass
 
         print(f'Вход в аккаунт: {login}')
-        time.sleep(5)
+        time.sleep(1.5)
         # вход в аккаунт bet365ru
-        for i in range(10):
-            try:
-                self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer').click()
-                break
-            except:
-                print(f'Не удалось войти в аккаунт {login}!')
-                time.sleep(2)
+        try:
+            self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer').click()
+        except:
+            print(f'Не удалось войти в аккаунт {login}!')
+            return f'Не удалось войти в аккаунт {login}!'
 
-        time.sleep(5)
+        time.sleep(2)
         for i in range(10):
             try:
                 self.driver.find_element_by_class_name('lms-StandardLogin_Username').send_keys(login)
@@ -143,7 +141,7 @@ class FireFoxDriverMain:
 
         # new class: 'lms-LoginButton'
         self.driver.find_element_by_class_name('lms-LoginButton').click()
-        time.sleep(15)
+        time.sleep(10)
         self.bet365_account_name = login
 
         # закрываем окно с почтой
@@ -160,7 +158,7 @@ class FireFoxDriverMain:
             self.driver.switch_to.default_content()
 
         try:
-            time.sleep(5)
+            time.sleep(3)
             self.driver.find_element_by_class_name('pm-MessageOverlayCloseButton ').click()
         except:
             pass
@@ -231,6 +229,66 @@ class FireFoxDriverMain:
 
         print(f'Вы успешно перевошли в аккаунт {self.bet365_login}')
         return f'Вы успешно перевошли в аккаунт {self.bet365_login}'
+
+    def restart_browser_and_bet365_account(self, check_valid=True):
+        # перезапус браузера, если сайта bet365, если он завис
+        # если флаг check_valid=False, то просто перезагрузка браузера
+
+        if check_valid:
+            try:
+                self.driver.get('https://www.bet365.com/')
+            except:
+                pass
+            time.sleep(2)
+
+            try:
+                account_balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
+                print(f'Аккаунт: {self.bet365_login} - работает. Баланс: {account_balance}')
+                return account_balance
+            except:
+                print(f'Аккаунт: {self.bet365_login} - завис. Перезапуск браузера!')
+
+        self.driver.close()
+        self.driver.quit()
+        self.restart_driver()
+
+        for i in range(3):
+            try:
+                r = self.open_bet365com()
+            except:
+                print(f'! Перезагрузка драйвера для {self.bet365_login}')
+                self.restart_driver()
+                continue
+
+            if r == 'Success':
+                print(f'Сайт успешно открылся для {self.bet365_login}')
+            else:
+                print('-' * 100)
+                print(f'Сайт bet365 не загрузился для {self.bet365_login}')
+                print('-' * 100)
+                self.restart_driver()
+                time.sleep(5)
+                print(f'Перезапуск браузера для {self.bet365_login}')
+                continue
+
+            try:
+                login_info = self.log_in_bet365(self.bet365_login, self.bet365_password)
+                if login_info == 'Успешный вход в аккаунт':
+                    return
+                else:
+                    print(f'Не удалось войти в аккаунт {self.bet365_login}, браузер будет перезагружен')
+                    self.restart_driver()
+                    time.sleep(2)
+                    print(f'Перезапуск браузера для {self.bet365_login}')
+            except:
+                print('!' * 100)
+                print(f'Не удалось войти в аккаунт {self.bet365_login}')
+                print('!' * 100)
+
+        print(f'Не удалось войти в аккаунт {self.bet365_login}')
+        self.account_status = 'need_restart'
+        self.driver.close()
+        self.driver.quit()
 
     def get_balance(self):
         try:
@@ -338,6 +396,8 @@ class FireFoxDriverMain:
         self.close_cupon()
 
         self.relogin_in_bet365_if_take_off()
+
+        self.restart_browser_and_bet365_account()
 
     def close_cupon(self):
         '''Попытка Закрытие купонов(а_ если он есть)'''
