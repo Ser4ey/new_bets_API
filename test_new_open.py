@@ -106,7 +106,7 @@ for i in range(4):
     list_of_start_info.append(start_info)
     i1 += 1
 
-numbers_of_processes = 9
+numbers_of_processes = 8
 while True:
     with Pool(processes=numbers_of_processes) as p:
         p.map(add_accounts_to_list, [i for i in range(numbers_of_processes)])
