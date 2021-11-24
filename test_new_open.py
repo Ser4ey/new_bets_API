@@ -51,14 +51,13 @@ def get_driver():
             pass
     except:
         pass
-
+    driver.set_page_load_timeout(25)
     for i in range(2):
         open_new_window_2ip(driver)
         time.sleep(0.3)
 
     try:
         driver.get('https://www.bet365.com/')
-        driver.set_page_load_timeout(25)
         try:
             time.sleep(5)
             driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
