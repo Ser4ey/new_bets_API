@@ -87,6 +87,7 @@ def add_accounts_to_list(a=''):
             driver.quit()
         except:
             pass
+    print(f'end: {a}')
 
 
 def log_in_driver(driver_class):
@@ -106,13 +107,15 @@ for i in range(4):
     list_of_start_info.append(start_info)
     i1 += 1
 
-
-while len(List_of_Bet365_open) < len(list_of_start_info):
-    with Pool(processes=9) as p:
-        p.map(add_accounts_to_list, [i for i in range(9)])
+numbers_of_processes = 9
+while True:
+    with Pool(processes=numbers_of_processes) as p:
+        p.map(add_accounts_to_list, [i for i in range(numbers_of_processes)])
 
     print(f'Необходимо ещё открыть сайтов: {len(list_of_start_info) - len(List_of_Bet365_open)}')
-
+    if (len(list_of_start_info) - len(List_of_Bet365_open)) < 1:
+        print('Все аккаунты загружены')
+        break
 
 List_of_bet_account = []
 
@@ -124,7 +127,7 @@ for i in range(len(list_of_start_info)):
         bet_value=list_of_start_info[i][2]
     )
 
-    List_of_Bet365_open.append(driver_class)
+    List_of_bet_account.append(driver_class)
 
 
 with Pool(processes=9) as p:
