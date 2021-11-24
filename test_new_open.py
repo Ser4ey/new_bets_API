@@ -56,7 +56,7 @@ def get_driver():
         driver.get('https://www.bet365.com/')
         driver.set_page_load_timeout(25)
         if check_bet365(driver):
-            return driver, 'Ok'
+            return driver, 'OK'
     except:
         pass
 
@@ -68,7 +68,7 @@ def get_driver():
     try:
         driver.get('https://www.bet365.com/')
         if check_bet365(driver):
-            return driver, 'Ok'
+            return driver, 'OK'
         else:
             return driver, 'Сайт bet365 не загрузился'
     except:
