@@ -7,6 +7,7 @@ import data
 import random
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
+from multiprocessing.dummy import Pool
 
 
 class FireFoxDriverMain:
@@ -65,26 +66,34 @@ class FireFoxDriverMain:
 
     def open_bet365com(self):
         time.sleep(7)
-        self.driver.get('https://2ip.ru/')
+        # self.driver.get('https://2ip.ru/')
         self.driver.set_page_load_timeout(10)
         try:
             self.driver.get('https://www.bet365.com/')
             self.driver.set_page_load_timeout(25)
+            try:
+                time.sleep(5)
+                self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
+            except:
+                return 'Сайт bet365 не загрузился'
             return 'Success'
         except:
             pass
-        return 'Сайт bet365 не загрузился'
-
 
         self.driver.set_page_load_timeout(15)
 
         for i in range(2):
             self.open_new_window_2ip()
-            time.sleep(1)
+            time.sleep(0.3)
 
         try:
             self.driver.get('https://www.bet365.com/')
             self.driver.set_page_load_timeout(25)
+            try:
+                time.sleep(5)
+                self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
+            except:
+                return 'Сайт bet365 не загрузился'
             return 'Success'
         except:
             print('Сайт bet365 не загрузился')
