@@ -76,6 +76,7 @@ def get_driver():
 
 def add_accounts_to_list(a=''):
     global List_of_Bet365_open
+    print(f'start: {a}')
     driver, info = get_driver()
     if info == 'OK':
         List_of_Bet365_open.append(driver)
