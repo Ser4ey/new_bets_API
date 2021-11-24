@@ -88,7 +88,7 @@ list_of_start_info = []
 List_of_bet_account = []
 
 i1 = 1
-for i in range(len(AccountsBet365)):
+for i in range(1):
     print(f'Запуск аккаунта {i1}')
     account_data = AccountsBet365[i]
 
