@@ -177,6 +177,71 @@ class FireFoxDriverMain:
         print(f'Вы успешно вошли в аккаунт {login}')
         return 'Успешный вход в аккаунт'
 
+    def log_in_bet365_v2(self, login, password):
+        self.bet365_login = login
+        self.bet365_password = password
+
+        for i in range(2):
+            try:
+                try:
+                    time.sleep(2)
+                    self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
+                    break
+                except:
+                    print('refresh')
+                    self.driver.get('https://www.bet365.com/')
+            except:
+                pass
+
+        print(f'Вход в аккаунт: {login}')
+        time.sleep(1.5)
+        # вход в аккаунт bet365ru
+        try:
+            self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer').click()
+        except:
+            print(f'Не удалось войти в аккаунт {login}!')
+            return f'Не удалось войти в аккаунт {login}!'
+
+        time.sleep(2)
+        for i in range(10):
+            try:
+                self.driver.find_element_by_class_name('lms-StandardLogin_Username').send_keys(login)
+                time.sleep(0.7)
+                self.driver.find_element_by_class_name('lms-StandardLogin_Password').send_keys(password)
+                time.sleep(0.7)
+                break
+            except:
+                time.sleep(1)
+                print(f'Не удалось войти в аккаунт {login}')
+                return
+
+        # new class: 'lms-LoginButton'
+        self.driver.find_element_by_class_name('lms-LoginButton').click()
+        time.sleep(10)
+        self.bet365_account_name = login
+
+        # закрываем окно с почтой
+        try:
+            time.sleep(3)
+            frame = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame')
+            self.driver.switch_to.frame(frame)
+            # print('open page')
+            self.driver.find_element_by_id('RemindMeLater').click()
+        except Exception as er:
+            # print(er)
+            pass
+        finally:
+            self.driver.switch_to.default_content()
+
+        try:
+            time.sleep(3)
+            self.driver.find_element_by_class_name('pm-MessageOverlayCloseButton ').click()
+        except:
+            pass
+
+        print(f'Вы успешно вошли в аккаунт {login}')
+        return 'Успешный вход в аккаунт'
+
     def relogin_in_bet365_if_take_off(self):
         try:
             self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
@@ -2194,9 +2259,12 @@ class FireFoxDriverMain:
 
 
 class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
-    def __init__(self, driver, bet_value):
+    def __init__(self, driver, bet_value, login, password):
         self.driver = driver
         self.bet_value = bet_value
+
+        self.bet365_login = login
+        self.bet365_password = password
 
 
 class FireFoxForPimatch:

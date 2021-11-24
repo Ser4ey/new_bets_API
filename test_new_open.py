@@ -89,11 +89,18 @@ def add_accounts_to_list(a=''):
             pass
 
 
+def log_in_driver(driver_class):
+    login = driver_class.bet365_login
+    passwd = driver_class.bet365_password
+    driver_class.log_in_bet365_v2(login, passwd)
+
+
 List_of_Bet365_open = []
 list_of_start_info = []
 
 i1 = 1
-for i in range(len(AccountsBet365)):
+# for i in range(len(AccountsBet365)):
+for i in range(4):
     account_data = AccountsBet365[i]
     start_info = [account_data['bet365_login'], account_data['bet365_password'], account_data['bet_value']]
     list_of_start_info.append(start_info)
@@ -101,10 +108,26 @@ for i in range(len(AccountsBet365)):
 
 
 while len(List_of_Bet365_open) < len(list_of_start_info):
-    with Pool(processes=len(list_of_start_info)) as p:
+    with Pool(processes=9) as p:
         p.map(add_accounts_to_list, [i for i in range(9)])
 
     print(f'Необходимо ещё открыть сайтов: {len(list_of_start_info) - len(List_of_Bet365_open)}')
 
+
+List_of_bet_account = []
+
+for i in range(len(list_of_start_info)):
+    driver_class = FireFoxDriverMainNoAutoOpen(
+        driver=List_of_Bet365_open[i],
+        login=list_of_start_info[i][0],
+        password=list_of_start_info[i][1],
+        bet_value=list_of_start_info[i][2]
+    )
+
+    List_of_Bet365_open.append(driver_class)
+
+
+with Pool(processes=9) as p:
+    p.map(log_in_driver, List_of_bet_account)
 
 
