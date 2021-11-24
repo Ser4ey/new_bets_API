@@ -64,8 +64,8 @@ class FireFoxDriverMain:
         self.driver = driver
 
     def open_bet365com(self):
-        time.sleep(3)
-        # self.driver.get('https://2ip.ru/')
+        time.sleep(7)
+        self.driver.get('https://2ip.ru/')
         self.driver.set_page_load_timeout(10)
         try:
             self.driver.get('https://www.bet365.com/')
