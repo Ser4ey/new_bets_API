@@ -64,23 +64,25 @@ class FireFoxDriverMain:
         self.driver = driver
 
     def open_bet365com(self):
-        time.sleep(10)
+        time.sleep(3)
         self.driver.get('https://2ip.ru/')
-        self.driver.set_page_load_timeout(10)
+        self.driver.set_page_load_timeout(7)
         try:
             self.driver.get('https://www.bet365.com/')
+            self.driver.set_page_load_timeout(25)
             return 'Success'
         except:
             pass
 
-        self.driver.set_page_load_timeout(45)
+        self.driver.set_page_load_timeout(15)
 
-        for i in range(3):
+        for i in range(2):
             self.open_new_window_2ip()
             time.sleep(1)
 
         try:
             self.driver.get('https://www.bet365.com/')
+            self.driver.set_page_load_timeout(25)
             return 'Success'
         except:
             print('Сайт bet365 не загрузился')
@@ -171,7 +173,8 @@ class FireFoxDriverMain:
         #     self.driver.get('https://www.bet365.com/')
         # except:
         #     pass
-        time.sleep(5)
+        # hm-MainHeaderMembersWide_Balance
+        # time.sleep(5)
         try:
             self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
             print(f'Аккаунт {self.bet365_login} вылетел!')

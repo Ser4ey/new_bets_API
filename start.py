@@ -53,7 +53,7 @@ def register_bet365_multipotok(AccountData):
             else:
                 print(f'Не удалось войти в аккаунт {login}, браузер будет перезагружен')
                 driver2.restart_driver()
-                time.sleep(5)
+                time.sleep(2)
                 print(f'Перезапуск браузера для {login}')
         except:
             print('!'*100)
