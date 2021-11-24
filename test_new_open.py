@@ -44,7 +44,7 @@ def get_driver():
         return driver, 'Сайт bet365 не загрузился'
 
 
-def add_accounts_to_list():
+def add_accounts_to_list(a=''):
     global List_of_Bet365_open
     driver, info = get_driver()
     if info == 'OK':
