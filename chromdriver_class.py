@@ -178,12 +178,6 @@ class FireFoxDriverMain:
         return 'Успешный вход в аккаунт'
 
     def relogin_in_bet365_if_take_off(self):
-        # try:
-        #     self.driver.get('https://www.bet365.com/')
-        # except:
-        #     pass
-        # hm-MainHeaderMembersWide_Balance
-        # time.sleep(5)
         try:
             self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
             print(f'Аккаунт {self.bet365_login} вылетел!')
