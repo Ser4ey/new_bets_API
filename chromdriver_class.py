@@ -2266,6 +2266,9 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
 
         self.bet365_login = login
         self.bet365_password = password
+        self.is_VPN = True
+        # аккаунт рабочий, если значение меняется на False, то аккаунт закрывается
+        self.is_valud_account = True
 
 
 class FireFoxForPimatch:
