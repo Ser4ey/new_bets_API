@@ -7,7 +7,7 @@ from telegram_API import telegram_notify1
 from selenium import webdriver
 import data
 from API_worker import APIWorker1
-
+import random
 
 # needed f
 def make_bet_multipotok(All_elements_array):
@@ -109,6 +109,9 @@ def get_driver():
 
 def add_accounts_to_list(a=''):
     global List_of_Bet365_open
+    # задержка
+    time_to_sleep = random.randint(1, 1000) / 500
+    time.sleep(time_to_sleep)
     print(f'start: {a}')
     driver, info = get_driver()
     if info == 'OK':
@@ -129,9 +132,7 @@ def log_in_driver(driver_class):
     driver_class.log_in_bet365_v2(login, passwd)
 
 
-
-# driverParimatch = FireFoxForPimatch()
-
+driverParimatch = FireFoxForPimatch()
 
 List_of_Bet365_open = []
 list_of_start_info = []
@@ -179,7 +180,7 @@ for i in range(len(list_of_start_info)):
 with Pool(processes=numbers_of_processes) as p:
     p.map(log_in_driver, List_of_bet_account)
 
-exit()
+print(f'Все аккаунты успешно авторизованы!')
 # START OF PROGRAM
 
 porezan_counter = 1

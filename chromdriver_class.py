@@ -217,9 +217,10 @@ class FireFoxDriverMain:
 
         # new class: 'lms-LoginButton'
         self.driver.find_element_by_class_name('lms-LoginButton').click()
-        time.sleep(10)
+        time.sleep(6)
         self.bet365_account_name = login
-
+        self.driver.refresh()
+        time.sleep(7)
         # закрываем окно с почтой
         try:
             time.sleep(3)
