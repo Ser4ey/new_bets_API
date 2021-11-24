@@ -1,4 +1,4 @@
-from chromdriver_class import FireFoxDriverMain, FireFoxForPimatch
+from chromdriver_class import FireFoxDriverMainNoAutoOpen
 from data import AccountsBet365, path_to_accounts_file
 import datetime
 from multiprocessing.dummy import Pool
@@ -27,7 +27,6 @@ def check_bet365(driver):
     except Exception as er:
         print(f'Сайт bet365 открыт не правильно: {er}')
         return False
-
 
 
 def get_driver():
@@ -103,12 +102,9 @@ for i in range(len(AccountsBet365)):
 
 while len(List_of_Bet365_open) < len(list_of_start_info):
     with Pool(processes=len(list_of_start_info)) as p:
-        p.map(add_accounts_to_list, [i for i in range(20)])
+        p.map(add_accounts_to_list, [i for i in range(9)])
 
     print(f'Необходимо ещё открыть сайтов: {len(list_of_start_info) - len(List_of_Bet365_open)}')
-    print(f'Уже аккаунтов открыто: {len(List_of_Bet365_open)}')
 
 
-print(f'Numbers of accounts: {len(List_of_Bet365_open)}')
-print(List_of_Bet365_open)
 
