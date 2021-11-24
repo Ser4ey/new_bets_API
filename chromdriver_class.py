@@ -65,14 +65,16 @@ class FireFoxDriverMain:
 
     def open_bet365com(self):
         time.sleep(3)
-        self.driver.get('https://2ip.ru/')
-        self.driver.set_page_load_timeout(7)
+        # self.driver.get('https://2ip.ru/')
+        self.driver.set_page_load_timeout(10)
         try:
             self.driver.get('https://www.bet365.com/')
             self.driver.set_page_load_timeout(25)
             return 'Success'
         except:
             pass
+        return 'Сайт bet365 не загрузился'
+
 
         self.driver.set_page_load_timeout(15)
 
