@@ -95,7 +95,7 @@ for i in range(len(AccountsBet365)):
 
 while len(List_of_Bet365_open) < len(list_of_start_info):
     with Pool(processes=len(list_of_start_info)) as p:
-        p.map(add_accounts_to_list, [i for i in range(10)])
+        p.map(add_accounts_to_list, [i for i in range(7)])
 
     print(f'Необходимо ещё открыть сайтов: {len(list_of_start_info) - len(List_of_Bet365_open)}')
     print(f'Уже аккаунтов открыто: {len(List_of_Bet365_open)}')
