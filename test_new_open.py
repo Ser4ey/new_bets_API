@@ -77,7 +77,6 @@ def get_driver():
 def add_accounts_to_list(a=''):
     global List_of_Bet365_open
     driver, info = get_driver()
-    print(info)
     if info == 'OK':
         List_of_Bet365_open.append(driver)
         print('+1 открытый сайт bet365')
@@ -112,13 +111,19 @@ while True:
     with Pool(processes=numbers_of_processes) as p:
         p.map(add_accounts_to_list, [i for i in range(numbers_of_processes)])
 
-    print(f'Необходимо ещё открыть сайтов: {len(list_of_start_info) - len(List_of_Bet365_open)}')
+    print(f'Необходимо ещё открыть сайтов: {len(list_of_start_info) - len(List_of_Bet365_open)} из {len(list_of_start_info)}')
     if (len(list_of_start_info) - len(List_of_Bet365_open)) < 1:
         print('Все аккаунты загружены')
         break
 
-List_of_bet_account = []
+# удаление избыточсных аккаунтов
+while len(List_of_Bet365_open) > len(list_of_start_info):
+    List_of_Bet365_open[-1].quit()
+    List_of_Bet365_open.pop(-1)
+    print('1 лишний аккаунт удалён')
 
+
+List_of_bet_account = []
 for i in range(len(list_of_start_info)):
     driver_class = FireFoxDriverMainNoAutoOpen(
         driver=List_of_Bet365_open[i],
@@ -129,8 +134,10 @@ for i in range(len(list_of_start_info)):
 
     List_of_bet_account.append(driver_class)
 
-
-with Pool(processes=9) as p:
+# авторизация аккаунтов
+with Pool(processes=numbers_of_processes) as p:
     p.map(log_in_driver, List_of_bet_account)
+
+
 
 
