@@ -468,7 +468,7 @@ class FireFoxDriverMain:
 
         self.relogin_in_bet365_if_take_off()
 
-        self.restart_browser_and_bet365_account()
+        # self.restart_browser_and_bet365_account()
 
     def close_cupon(self):
         '''Попытка Закрытие купонов(а_ если он есть)'''
