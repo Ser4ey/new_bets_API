@@ -310,7 +310,7 @@ class FireFoxDriverMain:
                 self.driver.get('https://www.bet365.com/')
             except:
                 pass
-            time.sleep(2)
+            time.sleep(5)
 
             try:
                 account_balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
@@ -319,47 +319,118 @@ class FireFoxDriverMain:
             except:
                 print(f'Аккаунт: {self.bet365_login} - завис. Перезапуск браузера!')
 
+
+        get_driver_suscess, new_driver = self.get_work_driver_browcer()
+        if not get_driver_suscess:
+            print('Не удалось открыть сайт для перезгрузки аккаунта, это будет сделано позднее')
+            return 'Не удалось открыть сайт для перезгрузки аккаунта, это будет сделано позднее'
+
         self.driver.close()
         self.driver.quit()
-        self.restart_driver()
 
-        for i in range(3):
+        self.driver = new_driver
+        self.log_in_bet365_v2(self.bet365_login, self.bet365_password)
+        print('Новый браузер для зависшего аккаунта открыт!')
+        return 'Новый браузер для зависшего аккаунта открыт!'
+
+    def get_work_driver_browcer(self):
+        '''Получение браузера с открытым bet365'''
+        def check_bet365(driver):
+            # провепка правильно ли открылся сайт bet365
             try:
-                r = self.open_bet365com()
+                time.sleep(2)
+                driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
+                return True
+            except Exception as er:
+                print(f'Сайт bet365 открыт не правильно: {er}')
+                return False
+
+        def open_new_window_2ip(driver):
+            current_window = driver.current_window_handle
+            driver.execute_script(f"window.open('https://2ip.ru/', '_blank')")
+            time.sleep(7)
+            driver.switch_to.window(driver.window_handles[-1])
+            driver.close()
+            driver.switch_to.window(current_window)
+
+        def get_driver():
+            firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
+            firefox_capabilities['marionette'] = True
+
+            fp = webdriver.FirefoxProfile(data.firefox_profile_path)
+            fp.set_preference("browser.privatebrowsing.autostart", True)
+
+            options = webdriver.FirefoxOptions()
+            options.add_argument("-private")
+            options.set_preference("dom.webdriver.enabled", False)
+            options.set_preference("dom.webnotifications.enabled", False)
+            binary = data.firefox_binary
+            options.binary = binary
+
+            driver = webdriver.Firefox(capabilities=firefox_capabilities, firefox_profile=fp,
+                                       firefox_binary=data.firefox_binary,
+                                       executable_path=data.path_to_geckodriver,
+                                       options=options)
+
+            time.sleep(10)
+            driver.get('https://2ip.ru/')
+            driver.set_page_load_timeout(15)
+            try:
+                driver.get('https://www.bet365.com/')
+                driver.set_page_load_timeout(25)
+                if check_bet365(driver):
+                    return driver, 'OK'
             except:
-                print(f'! Перезагрузка драйвера для {self.bet365_login}')
-                self.restart_driver()
-                continue
+                pass
 
-            if r == 'Success':
-                print(f'Сайт успешно открылся для {self.bet365_login}')
-            else:
-                print('-' * 100)
-                print(f'Сайт bet365 не загрузился для {self.bet365_login}')
-                print('-' * 100)
-                self.restart_driver()
-                time.sleep(5)
-                print(f'Перезапуск браузера для {self.bet365_login}')
-                continue
+            driver.set_page_load_timeout(25)
+            for i in range(2):
+                open_new_window_2ip(driver)
+                time.sleep(0.3)
 
             try:
-                login_info = self.log_in_bet365(self.bet365_login, self.bet365_password)
-                if login_info == 'Успешный вход в аккаунт':
-                    return
+                driver.get('https://www.bet365.com/')
+                if check_bet365(driver):
+                    return driver, 'OK'
                 else:
-                    print(f'Не удалось войти в аккаунт {self.bet365_login}, браузер будет перезагружен')
-                    self.restart_driver()
-                    time.sleep(2)
-                    print(f'Перезапуск браузера для {self.bet365_login}')
+                    return driver, 'Сайт bet365 не загрузился'
             except:
-                print('!' * 100)
-                print(f'Не удалось войти в аккаунт {self.bet365_login}')
-                print('!' * 100)
+                return driver, 'Сайт bet365 не загрузился'
 
-        print(f'Не удалось войти в аккаунт {self.bet365_login}')
-        self.account_status = 'need_restart'
-        self.driver.close()
-        self.driver.quit()
+        def add_accounts_to_list(Browsers_List=[]):
+            # задержка
+            time_to_sleep = random.randint(1, 1000) / 500
+            time.sleep(time_to_sleep)
+            driver, info = get_driver()
+            if info == 'OK':
+                Browsers_List.append(driver)
+            else:
+                try:
+                    driver.close()
+                    driver.quit()
+                except:
+                    pass
+
+        Browser_List = []
+        # число браузеров, которое будет открыто
+        number_of_tries = 8
+
+        try:
+            with Pool(processes=number_of_tries) as p:
+                p.map(add_accounts_to_list, [Browser_List for i in range(number_of_tries)])
+        except Exception as er:
+            print(f'Ошибка при выполнениии Poll: {er}')
+
+        if len(Browser_List) == 0:
+            print('Не удалось открыть ни одного сайта bet365 для перезагрузки аккаунта,'
+                  ' аккаунт будет перезагружен познеею')
+            return False, False
+
+        while len(Browser_List) > 1:
+            Browser_List.pop(-1).quit()
+            print('1 лишний аккаунт удалён')
+
+        return True, Browser_List[0]
 
     def get_balance(self):
         try:
