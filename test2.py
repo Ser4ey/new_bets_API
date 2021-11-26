@@ -136,7 +136,7 @@ def log_in_driver(driver_class):
     driver_class.log_in_bet365_v2(login, passwd)
 
 
-driverParimatch = FireFoxForPimatch()
+# driverParimatch = FireFoxForPimatch()
 
 List_of_Bet365_open = []
 list_of_start_info = []
