@@ -25,6 +25,11 @@ def reanimate_bet365com(driver):
     except:
         pass
 
+def check_is_account_froze(driver):
+    try:
+        driver.restart_browser_and_bet365_account()
+    except:
+        pass
 
 
 def cheeck_porezan_li_account(driver):
@@ -277,6 +282,11 @@ while True:
     with Pool(processes=len(List_of_bet_account)) as p:
         A = [i for i in List_of_bet_account]
         p.map(reanimate_bet365com, A)
+
+    # проверка, завис ли аккаунты
+    with Pool(processes=len(List_of_bet_account)) as p:
+        A = [i for i in List_of_bet_account]
+        p.map(check_is_account_froze, A)
 
     if porezan_counter % 6 == 0:
         # предварительный поиск порезанных аккаунтов
