@@ -2480,7 +2480,7 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
 
         Browser_List = []
         # число браузеров, которое будет открыто
-        number_of_tries = 4
+        number_of_tries = 8
 
         while len(Browser_List) == 0:
             try:
