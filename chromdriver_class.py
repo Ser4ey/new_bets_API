@@ -345,7 +345,7 @@ class FireFoxDriverMain:
                 driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
                 return True
             except Exception as er:
-                print(f'Сайт bet365 открыт не правильно: {er}')
+                # print(f'Сайт bet365 открыт не правильно: {er}')
                 return False
 
         def open_new_window_2ip(driver):
@@ -2390,16 +2390,17 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
                     pass
 
         # print('new!')
+        print(f'Попытка открыть сайт для: {self.bet365_login}')
         get_driver_suscess, new_driver = self.get_work_driver_browcer()
         if not get_driver_suscess:
             print('Не удалось открыть сайт для перезгрузки аккаунта, это будет сделано позднее')
             return 'Не удалось открыть сайт для перезгрузки аккаунта, это будет сделано позднее'
-        print('Новый браузер для зависшего аккаунта успешно открыт!')
+        print(f'Новый браузер для аккаунта {self.bet365_login} успешно открыт!')
 
 
         self.driver = new_driver
         self.log_in_bet365_v2(self.bet365_login, self.bet365_password)
-        print('Аккаунт авторизован!')
+        print(f'Аккаунт {self.bet365_login} авторизован!')
         return 'Новый браузер для зависшего аккаунта открыт!'
 
     def get_work_driver_browcer(self):
@@ -2412,7 +2413,7 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
                 driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
                 return True
             except Exception as er:
-                print(f'Сайт bet365 открыт не правильно: {er}')
+                # print(f'Сайт bet365 открыт не правильно: {er}')
                 return False
 
         def open_new_window_2ip(driver):
