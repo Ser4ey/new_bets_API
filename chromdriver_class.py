@@ -2330,8 +2330,16 @@ class FireFoxDriverMain:
         self.driver.quit()
 
 
+def cool_decorator(method_to_decorate, type_of_account):
+    def wrapper(url):
+        if (type_of_account == 'RU') and ('bet365' in url):
+            url = url.replace('.com', '.ru')
+        return method_to_decorate(url)
+    return wrapper
+
+
 class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
-    def __init__(self, driver, bet_value, login, password):
+    def __init__(self, driver, bet_value, login, password, vpn_country):
         self.driver = driver
         self.bet_value = bet_value
 
@@ -2340,6 +2348,154 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
         self.is_VPN = True
         # аккаунт рабочий, если значение меняется на False, то аккаунт закрывается
         self.is_valud_account = True
+
+        # путь к firefox profile
+        self.firefox_profile = data.VPN_dict['UK']
+
+        # какое VPN, профиль и ссылки
+        self.vpn_country = vpn_country
+        self.ru_account = False
+        if self.vpn_country == 'RU':
+            self.ru_account = True
+            self.firefox_profile = data.VPN_dict['RU']
+        elif self.vpn_country == 'UK':
+            self.firefox_profile = data.VPN_dict['UK']
+        elif self.vpn_country == 'CH':
+            self.firefox_profile = data.VPN_dict['CH']
+
+    def restart_browser_and_bet365_account(self, check_valid=True):
+        # перезапус браузера, если сайта bet365, если он завис
+        # если флаг check_valid=False, то просто перезагрузка браузера
+
+        if check_valid:
+            try:
+                self.driver.get('https://www.bet365.com/')
+            except:
+                pass
+            time.sleep(5)
+
+            try:
+                account_balance = self.driver.find_element_by_class_name('hm-MainHeaderMembersWide_Balance').text
+                print(f'Аккаунт: {self.bet365_login} - работает. Баланс: {account_balance}')
+                return account_balance
+            except:
+                print(f'Аккаунт: {self.bet365_login} - завис. Перезапуск браузера!')
+
+        get_driver_suscess, new_driver = self.get_work_driver_browcer()
+        if not get_driver_suscess:
+            print('Не удалось открыть сайт для перезгрузки аккаунта, это будет сделано позднее')
+            return 'Не удалось открыть сайт для перезгрузки аккаунта, это будет сделано позднее'
+        print('Новый браузер для зависшего аккаунта успешно открыт!')
+        try:
+            self.driver.close()
+            self.driver.quit()
+        except:
+            pass
+
+        self.driver = new_driver
+        self.log_in_bet365_v2(self.bet365_login, self.bet365_password)
+        print('Новый браузер для зависшего аккаунта открыт!')
+        return 'Новый браузер для зависшего аккаунта открыт!'
+
+    def get_work_driver_browcer(self):
+        '''Получение браузера с открытым bet365'''
+
+        def check_bet365(driver):
+            # провепка правильно ли открылся сайт bet365
+            try:
+                time.sleep(2)
+                driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
+                return True
+            except Exception as er:
+                print(f'Сайт bet365 открыт не правильно: {er}')
+                return False
+
+        def open_new_window_2ip(driver):
+            current_window = driver.current_window_handle
+            driver.execute_script(f"window.open('https://2ip.ru/', '_blank')")
+            time.sleep(7)
+            driver.switch_to.window(driver.window_handles[-1])
+            driver.close()
+            driver.switch_to.window(current_window)
+
+        def get_driver():
+            firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
+            firefox_capabilities['marionette'] = True
+
+            fp = webdriver.FirefoxProfile(self.firefox_profile)
+            fp.set_preference("browser.privatebrowsing.autostart", True)
+
+            options = webdriver.FirefoxOptions()
+            options.add_argument("-private")
+            options.set_preference("dom.webdriver.enabled", False)
+            options.set_preference("dom.webnotifications.enabled", False)
+            binary = data.firefox_binary
+            options.binary = binary
+
+            driver = webdriver.Firefox(capabilities=firefox_capabilities, firefox_profile=fp,
+                                       firefox_binary=data.firefox_binary,
+                                       executable_path=data.path_to_geckodriver,
+                                       options=options)
+            driver.get = cool_decorator(driver.get, self.vpn_country)
+
+            time.sleep(10)
+            driver.get('https://2ip.ru/')
+            driver.set_page_load_timeout(15)
+            try:
+                driver.get('https://www.bet365.com/')
+                driver.set_page_load_timeout(25)
+                if check_bet365(driver):
+                    return driver, 'OK'
+            except:
+                pass
+
+            driver.set_page_load_timeout(25)
+            for i in range(2):
+                open_new_window_2ip(driver)
+                time.sleep(0.3)
+
+            try:
+                driver.get('https://www.bet365.com/')
+                if check_bet365(driver):
+                    return driver, 'OK'
+                else:
+                    return driver, 'Сайт bet365 не загрузился'
+            except:
+                return driver, 'Сайт bet365 не загрузился'
+
+        def add_accounts_to_list(Browsers_List=[]):
+            # задержка
+            time_to_sleep = random.randint(1, 1000) / 500
+            time.sleep(time_to_sleep)
+            driver, info = get_driver()
+            if info == 'OK':
+                Browsers_List.append(driver)
+            else:
+                try:
+                    driver.close()
+                    driver.quit()
+                except:
+                    pass
+
+        Browser_List = []
+        # число браузеров, которое будет открыто
+        number_of_tries = 4
+
+        while len(Browser_List) == 0:
+            try:
+                with Pool(processes=number_of_tries) as p:
+                    p.map(add_accounts_to_list, [Browser_List for i in range(number_of_tries)])
+            except Exception as er:
+                print(f'Ошибка при выполнениии Poll: {er}')
+
+            if len(Browser_List) == 0:
+                print('Не удалось открыть ни одного сайта bet365 для перезагрузки аккаунта.\nЕщё одна попытка')
+
+        while len(Browser_List) > 1:
+            Browser_List.pop(-1).quit()
+            print('1 лишний аккаунт удалён')
+
+        return True, Browser_List[0]
 
 
 class FireFoxForPimatch:
