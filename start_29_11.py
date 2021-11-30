@@ -61,7 +61,7 @@ def open_stable_bet365(driver_class):
     driver_class.restart_browser_and_bet365_account(check_valid=False)
 
 
-# driverParimatch = FireFoxForPimatch()
+driverParimatch = FireFoxForPimatch()
 
 List_of_Bet365_open = []
 list_of_start_info = []
