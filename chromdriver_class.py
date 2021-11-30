@@ -318,13 +318,12 @@ class FireFoxDriverMain:
                 return account_balance
             except:
                 print(f'Аккаунт: {self.bet365_login} - завис. Перезапуск браузера!')
-
-
-        try:
-            self.driver.close()
-            self.driver.quit()
-        except:
-            pass
+                try:
+                    print(f'Аккаунт {self.bet365_login} завис, перезапускаем его')
+                    self.driver.close()
+                    self.driver.quit()
+                except:
+                    pass
 
         get_driver_suscess, new_driver = self.get_work_driver_browcer()
         if not get_driver_suscess:
@@ -2384,6 +2383,11 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
                 return account_balance
             except:
                 print(f'Аккаунт: {self.bet365_login} - завис. Перезапуск браузера!')
+                try:
+                    self.driver.close()
+                    self.driver.quit()
+                except:
+                    pass
 
         # print('new!')
         get_driver_suscess, new_driver = self.get_work_driver_browcer()
@@ -2391,15 +2395,11 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
             print('Не удалось открыть сайт для перезгрузки аккаунта, это будет сделано позднее')
             return 'Не удалось открыть сайт для перезгрузки аккаунта, это будет сделано позднее'
         print('Новый браузер для зависшего аккаунта успешно открыт!')
-        try:
-            self.driver.close()
-            self.driver.quit()
-        except:
-            pass
+
 
         self.driver = new_driver
         self.log_in_bet365_v2(self.bet365_login, self.bet365_password)
-        print('Новый браузер для зависшего аккаунта открыт!')
+        print('Аккаунт авторизован!')
         return 'Новый браузер для зависшего аккаунта открыт!'
 
     def get_work_driver_browcer(self):
