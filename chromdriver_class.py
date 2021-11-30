@@ -320,13 +320,17 @@ class FireFoxDriverMain:
                 print(f'Аккаунт: {self.bet365_login} - завис. Перезапуск браузера!')
 
 
+        try:
+            self.driver.close()
+            self.driver.quit()
+        except:
+            pass
+
         get_driver_suscess, new_driver = self.get_work_driver_browcer()
         if not get_driver_suscess:
             print('Не удалось открыть сайт для перезгрузки аккаунта, это будет сделано позднее')
             return 'Не удалось открыть сайт для перезгрузки аккаунта, это будет сделано позднее'
         print('Новый браузер для зависшего аккаунта успешно открыт!')
-        self.driver.close()
-        self.driver.quit()
 
         self.driver = new_driver
         self.log_in_bet365_v2(self.bet365_login, self.bet365_password)
