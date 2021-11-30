@@ -2382,8 +2382,8 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
                 print(f'Аккаунт: {self.bet365_login} - работает. Баланс: {account_balance}')
                 return account_balance
             except:
-                print(f'Аккаунт: {self.bet365_login} - завис. Перезапуск браузера!')
                 try:
+                    print(f'Аккаунт: {self.bet365_login} - завис. Перезапуск браузера!')
                     self.driver.close()
                     self.driver.quit()
                 except:
@@ -2496,6 +2496,8 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
             if len(Browser_List) == 0:
                 print('Не удалось открыть ни одного сайта bet365 для перезагрузки аккаунта.\nЕщё одна попытка')
 
+        print('Браузер успешно открыт, закрываем лишние!')
+        time.sleep(3)
         while len(Browser_List) > 1:
             Browser_List.pop(-1).quit()
             print('1 лишний аккаунт удалён')
