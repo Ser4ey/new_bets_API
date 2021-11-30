@@ -2381,7 +2381,7 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
             except:
                 print(f'Аккаунт: {self.bet365_login} - завис. Перезапуск браузера!')
 
-        print('new!')
+        # print('new!')
         get_driver_suscess, new_driver = self.get_work_driver_browcer()
         if not get_driver_suscess:
             print('Не удалось открыть сайт для перезгрузки аккаунта, это будет сделано позднее')
@@ -2480,7 +2480,7 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
 
         Browser_List = []
         # число браузеров, которое будет открыто
-        number_of_tries = 5
+        number_of_tries = 4
 
         while len(Browser_List) == 0:
             try:

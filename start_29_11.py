@@ -87,7 +87,7 @@ for i in range(len(list_of_start_info)):
     List_of_bet_account.append(driver_class)
 
 # запуск аккаунтов (открытие bet365)
-with Pool(processes=4) as p:
+with Pool(processes=3) as p:
     p.map(open_stable_bet365, List_of_bet_account)
 print('Все сайты bet365 открыты!')
 # авторизация аккаунтов
