@@ -90,7 +90,9 @@ for i in range(len(list_of_start_info)):
 # with Pool(processes=1) as p:
 #     p.map(open_stable_bet365, List_of_bet_account)
 
+counter = 1
 for account in List_of_bet_account:
+    print(f'Открытие аккаунта {counter} из {len(List_of_bet_account)}')
     open_stable_bet365(account)
 
 print('Все сайты bet365 открыты!')
