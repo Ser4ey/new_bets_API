@@ -2476,6 +2476,7 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
             driver, info = get_driver()
             if info == 'OK':
                 Browsers_List.append(driver)
+                print('bet365 - открыт')
             else:
                 try:
                     driver.close()
@@ -2485,7 +2486,7 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
 
         Browser_List = []
         # число браузеров, которое будет открыто
-        number_of_tries = 8
+        number_of_tries = 6
 
         while len(Browser_List) == 0:
             try:
