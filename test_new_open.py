@@ -56,7 +56,7 @@ class FireFoxDriverWithProxy:
 
 
 
-d1 = FireFoxDriverWithProxy('185.173.39.119:8245', 'abramyanpr:abramyanpr')
+d1 = FireFoxDriverWithProxy('78.157.219.235:10321', 'avraint2305:01bbbe')
 d1.driver.get('https://2ip.ru')
 
 try:
