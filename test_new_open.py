@@ -25,9 +25,9 @@ class FireFoxDriverWithProxy:
             "sslProxy": proxy
         }
 
-        # fp = webdriver.FirefoxProfile(data.firefox_profile_path)
-        fp = webdriver.FirefoxProfile()
-        fp.set_preference("browser.privatebrowsing.autostart", True)
+        fp = webdriver.FirefoxProfile(data.firefox_profile_path)
+        # fp = webdriver.FirefoxProfile()
+        # fp.set_preference("browser.privatebrowsing.autostart", True)
 
         options = webdriver.FirefoxOptions()
         options.add_argument("-private")
