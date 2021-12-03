@@ -62,8 +62,8 @@ try:
     print('Bet365 open:')
     d1.driver.get('https://bet365.com')
     print(f'bet365 open - {time.time()}')
-except:
-    pass
+except Exception as er:
+    print(er)
 
 for i in range(1000):
     print(f'is valid {i}')
@@ -71,3 +71,4 @@ for i in range(1000):
         break
 
 print(f'end: {time.time()}')
+
