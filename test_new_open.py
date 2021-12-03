@@ -43,16 +43,31 @@ class FireFoxDriverWithProxy:
         self.driver = driver
         self.bet_value = bet_value
 
-        if proxy_login_and_password == 'no_login_for_proxy':
-            print('Вы используете прокси с привязкой к ip!')
-        else:
-            print(f'Введите логин и пароль от прокси - {proxy_login_and_password}')
-            input('Затем нажмите Enter:')
+    def check_bet365(self):
+        # провепка правильно ли открылся сайт bet365
+        try:
+            time.sleep(2)
+            self.driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
+            return True
+        except Exception as er:
+            # print(f'Сайт bet365 открыт не правильно: {er}')
+            return False
+
 
 
 d1 = FireFoxDriverWithProxy('185.173.39.119:8245', 'abramyanpr:abramyanpr')
 d1.driver.get('https://2ip.ru')
-print('Bet365 open:')
-d1.driver.get('https://bet365.com')
 
+try:
+    print('Bet365 open:')
+    d1.driver.get('https://bet365.com')
+    print(f'bet365 open - {time.time()}')
+except:
+    pass
 
+for i in range(1000):
+    print(f'is valid {i}')
+    if d1.check_bet365():
+        break
+
+print(f'end: {time.time()}')
