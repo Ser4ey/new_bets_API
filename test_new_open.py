@@ -44,6 +44,7 @@ class FireFoxDriverWithProxy:
         self.driver = driver
         self.bet_value = bet_value
 
+        input(f'Proxy login and password: {proxy_login_and_password}')
     def check_bet365(self):
         # провепка правильно ли открылся сайт bet365
         try:
