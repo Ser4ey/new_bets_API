@@ -18,16 +18,18 @@ class FireFoxDriverWithProxy:
         firefox_capabilities['marionette'] = True
 
         print(proxy, ':', proxy_login_and_password, sep='')
+
         firefox_capabilities['proxy'] = {
             "proxyType": "MANUAL",
             "httpProxy": proxy,
-            # "ftpProxy": proxy,
+            "ftpProxy": proxy,
             "sslProxy": proxy
         }
 
+
         fp = webdriver.FirefoxProfile(data.firefox_profile_path)
         # fp = webdriver.FirefoxProfile()
-        # fp.set_preference("browser.privatebrowsing.autostart", True)
+        fp.set_preference("browser.privatebrowsing.autostart", True)
 
         options = webdriver.FirefoxOptions()
         options.add_argument("-private")
@@ -44,7 +46,8 @@ class FireFoxDriverWithProxy:
         self.driver = driver
         self.bet_value = bet_value
 
-        input(f'Proxy login and password: {proxy_login_and_password}')
+        # input(f'Proxy login and password: {proxy_login_and_password}')
+
     def check_bet365(self):
         # провепка правильно ли открылся сайт bet365
         try:
