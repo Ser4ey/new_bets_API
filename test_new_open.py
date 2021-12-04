@@ -8,6 +8,8 @@ import random
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 from multiprocessing.dummy import Pool
+from selenium.webdriver.common.proxy import Proxy, ProxyType
+
 
 
 class FireFoxDriverWithProxy:
@@ -19,12 +21,13 @@ class FireFoxDriverWithProxy:
 
         print(proxy, ':', proxy_login_and_password, sep='')
 
-        firefox_capabilities['proxy'] = {
-            "proxyType": "MANUAL",
-            "httpProxy": proxy,
-            "ftpProxy": proxy,
-            "sslProxy": proxy
-        }
+        proxy = Proxy({
+            'proxyType': ProxyType.MANUAL,
+            'httpProxy': proxy,
+            'ftpProxy': proxy,
+            'sslProxy': proxy,
+            'noProxy': ''  # set this value as desired
+        })
 
 
         fp = webdriver.FirefoxProfile(data.firefox_profile_path)
@@ -41,7 +44,8 @@ class FireFoxDriverWithProxy:
         driver = webdriver.Firefox(capabilities=firefox_capabilities, firefox_profile=fp,
                                    firefox_binary=data.firefox_binary,
                                    executable_path=data.path_to_geckodriver,
-                                   options=options)
+                                   options=options,
+                                   proxy=proxy)
 
         self.driver = driver
         self.bet_value = bet_value
