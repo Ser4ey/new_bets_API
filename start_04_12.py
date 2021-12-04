@@ -89,11 +89,10 @@ Dict_of_Drivers_count = {}
 for i in Set_of_countries:
     Dict_of_Drivers_count[i] = countries.count(i)
 
-Dict_of_Drivers = {}
 
 for i in Set_of_countries:
-    print(f'Открываем {Dict_of_Drivers[i]} аккаунтов для {i}')
-    accounts_get_class = GetWorkAccountsList(number_of_accounts=Dict_of_Drivers[i], vpn_country=i)
+    print(f'Открываем {Dict_of_Drivers_count[i]} аккаунтов для {i}')
+    accounts_get_class = GetWorkAccountsList(number_of_accounts=Dict_of_Drivers_count[i], vpn_country=i)
     Accounts = accounts_get_class.return_Browser_List()
 
     for account_info in list_of_start_info:
@@ -111,7 +110,7 @@ for i in Set_of_countries:
 
         List_of_bet_account.append(driver_class)
 
-
+print('Все аккаунты успешно открыты')
 # авторизация аккаунтов
 with Pool(processes=len(List_of_bet_account)) as p:
     p.map(log_in_driver, List_of_bet_account)
