@@ -230,20 +230,21 @@ class FireFoxDriverMain:
 
         # new class: 'lms-LoginButton' accept-button
         self.driver.find_element_by_class_name('lms-LoginButton').click()
-        time.sleep(6)
+        time.sleep(3)
         self.bet365_account_name = login
-        self.driver.refresh()
-        time.sleep(7)
+        # self.driver.refresh()
+        # time.sleep(7)
 
         # закрываем новое окно 4 дек 2021
         try:
             time.sleep(3)
+            print('Close window!')
             frame = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame ')
             self.driver.switch_to.frame(frame)
             # print('open page')
             self.driver.find_element_by_id('accept-button').click()
         except Exception as er:
-            # print(er)
+            print(er)
             pass
         finally:
             self.driver.switch_to.default_content()

@@ -98,8 +98,8 @@ for account in List_of_bet_account:
 
 print('Все сайты bet365 открыты!')
 # авторизация аккаунтов
-with Pool(processes=len(List_of_bet_account)) as p:
-    p.map(log_in_driver, List_of_bet_account)
+# with Pool(processes=len(List_of_bet_account)) as p:
+#     p.map(log_in_driver, List_of_bet_account)
 
 print(f'Все аккаунты успешно авторизованы!')
 # START OF PROGRAM
