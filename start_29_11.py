@@ -93,7 +93,9 @@ for i in range(len(list_of_start_info)):
 counter = 1
 for account in List_of_bet_account:
     print(f'Открытие аккаунта {counter} из {len(List_of_bet_account)}')
+    start_time = time.time()
     open_stable_bet365(account)
+    print(f'Времени затрачено: {time.time() - start_time}')
     counter += 1
 
 print('Все сайты bet365 открыты!')
