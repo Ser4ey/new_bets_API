@@ -242,7 +242,7 @@ class FireFoxDriverMain:
             frame = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame ')
             self.driver.switch_to.frame(frame)
             # print('open page')
-            self.driver.find_element_by_id('accept-button').click()
+            self.driver.find_element_by_class_name('accept-button').click()
         except Exception as er:
             print(er)
             pass
