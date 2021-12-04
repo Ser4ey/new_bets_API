@@ -23,6 +23,7 @@ class FireFoxDriverWithProxy:
 
         proxy_host = proxy.split(':')[0]
         proxy_port = proxy.split(':')[1]
+        print(proxy_host, proxy_port)
 
         fp = webdriver.FirefoxProfile()
         fp.set_preference("network.proxy.type", 1)
@@ -40,8 +41,8 @@ class FireFoxDriverWithProxy:
 
         # fp = webdriver.FirefoxProfile(data.firefox_profile_path)
         # fp = webdriver.FirefoxProfile()
-        fp.set_preference("browser.privatebrowsing.autostart", True)
-        fp.update_preferences()
+        # fp.set_preference("browser.privatebrowsing.autostart", True)
+        # fp.update_preferences()
 
         options = webdriver.FirefoxOptions()
         options.add_argument("-private")
