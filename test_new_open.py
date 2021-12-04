@@ -46,7 +46,7 @@ class FireFoxDriverWithProxy:
         self.driver = driver
         self.bet_value = bet_value
 
-        # input(f'Proxy login and password: {proxy_login_and_password}')
+        input(f'Tab Enter:')
 
     def check_bet365(self):
         # провепка правильно ли открылся сайт bet365
@@ -61,6 +61,7 @@ class FireFoxDriverWithProxy:
 
 
 d1 = FireFoxDriverWithProxy('78.157.219.235:10321', 'avraint2305:01bbbe')
+print('go')
 d1.driver.get('https://2ip.ru')
 
 try:
