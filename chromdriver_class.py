@@ -155,6 +155,19 @@ class FireFoxDriverMain:
         time.sleep(10)
         self.bet365_account_name = login
 
+        # закрываем новое окно 4 дек 2021
+        try:
+            time.sleep(3)
+            frame = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame ')
+            self.driver.switch_to.frame(frame)
+            # print('open page')
+            self.driver.find_element_by_id('accept-button').click()
+        except Exception as er:
+            # print(er)
+            pass
+        finally:
+            self.driver.switch_to.default_content()
+
         # закрываем окно с почтой
         try:
             time.sleep(3)
@@ -215,12 +228,26 @@ class FireFoxDriverMain:
                 print(f'Не удалось войти в аккаунт {login}')
                 return
 
-        # new class: 'lms-LoginButton'
+        # new class: 'lms-LoginButton' accept-button
         self.driver.find_element_by_class_name('lms-LoginButton').click()
         time.sleep(6)
         self.bet365_account_name = login
         self.driver.refresh()
         time.sleep(7)
+
+        # закрываем новое окно 4 дек 2021
+        try:
+            time.sleep(3)
+            frame = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame ')
+            self.driver.switch_to.frame(frame)
+            # print('open page')
+            self.driver.find_element_by_id('accept-button').click()
+        except Exception as er:
+            # print(er)
+            pass
+        finally:
+            self.driver.switch_to.default_content()
+
         # закрываем окно с почтой
         try:
             time.sleep(3)

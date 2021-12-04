@@ -13,36 +13,25 @@ from selenium.webdriver.common.proxy import Proxy, ProxyType
 
 
 class FireFoxDriverWithProxy:
-    def __init__(self, proxy, bet_value='5'):
+    def __init__(self, proxy, proxy_login_and_password, bet_value='5'):
 
         self.is_VPN = True
         firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
         firefox_capabilities['marionette'] = True
 
-        print(proxy, sep='')
+        print(proxy, ':', proxy_login_and_password, sep='')
 
-        proxy_host = proxy.split(':')[0]
-        proxy_port = proxy.split(':')[1]
-        print(proxy_host, proxy_port)
-
-        fp = webdriver.FirefoxProfile()
-        fp.set_preference("network.proxy.type", 1)
-        fp.set_preference("network.proxy.http", proxy_host)
-        fp.set_preference("network.proxy.http_port", proxy_port)
-        fp.set_preference("network.proxy.https", proxy_host)
-        fp.set_preference("network.proxy.https_port", proxy_port)
-        fp.set_preference("network.proxy.ssl", proxy_host)
-        fp.set_preference("network.proxy.ssl_port", proxy_port)
-        fp.set_preference("network.proxy.ftp", proxy_host)
-        fp.set_preference("network.proxy.ftp_port", proxy_port)
-        fp.set_preference("network.proxy.socks", proxy_host)
-        fp.set_preference("network.proxy.socks_port", proxy_port)
+        firefox_capabilities['proxy'] = {
+            "proxyType": "MANUAL",
+            "httpProxy": proxy,
+            # "ftpProxy": proxy,
+            "sslProxy": proxy
+        }
 
 
-        # fp = webdriver.FirefoxProfile(data.firefox_profile_path)
+        fp = webdriver.FirefoxProfile(data.firefox_profile_path)
         # fp = webdriver.FirefoxProfile()
-        # fp.set_preference("browser.privatebrowsing.autostart", True)
-        # fp.update_preferences()
+        fp.set_preference("browser.privatebrowsing.autostart", True)
 
         options = webdriver.FirefoxOptions()
         options.add_argument("-private")
@@ -73,7 +62,7 @@ class FireFoxDriverWithProxy:
 
 
 
-d1 = FireFoxDriverWithProxy('78.157.219.235:10321')
+d1 = FireFoxDriverWithProxy('78.157.219.235:10321', 'avraint2305:01bbbe')
 print('go')
 d1.driver.get('https://2ip.ru')
 
