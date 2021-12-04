@@ -70,7 +70,7 @@ i1 = 1
 for i in range(len(AccountsBet365)):
 # for i in range(4):
     account_data = AccountsBet365[i]
-    start_info = [account_data['bet365_login'], account_data['bet365_password'], account_data['bet_value'], account_data['vpn_country']]
+    start_info = [account_data['bet365_login'], account_data['bet365_password'], account_data['bet_value'], 'UK']
     list_of_start_info.append(start_info)
     i1 += 1
 
