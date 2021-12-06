@@ -2424,7 +2424,6 @@ class GetWorkAccountsList:
             time.sleep(10)
 
             driver.get = cool_decorator(driver.get, self.vpn_country)
-            driver.set_page_load_timeout(20)
             driver.get('https://2ip.ru/')
             driver.set_page_load_timeout(15)
             try:
