@@ -2473,6 +2473,7 @@ class GetWorkAccountsList:
                     p.map(add_accounts_to_list, [Browser_List for i in range(number_of_tries)])
             except Exception as er:
                 print(f'Ошибка при выполнениии Poll: {er}')
+            print(f'Открыто {len(Browser_List)} из {self.number_of_accounts} аккаунтов')
 
 
         while len(Browser_List) > self.number_of_accounts:
@@ -2659,11 +2660,11 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
 
 
 class FireFoxForPimatch:
-    def __init__(self):
+    def __init__(self, firefox_profile_path=data.firefox_profile_path):
         firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
         firefox_capabilities['marionette'] = True
 
-        fp = webdriver.FirefoxProfile(data.firefox_profile_path)
+        fp = webdriver.FirefoxProfile(firefox_profile_path)
         fp.set_preference("browser.privatebrowsing.autostart", True)
 
         options = webdriver.FirefoxOptions()
@@ -2681,7 +2682,7 @@ class FireFoxForPimatch:
         self.driver = driver
         self.driver.set_page_load_timeout(75)
         time.sleep(10)
-        input('Смените VPN:')
+        # input('Смените VPN:')
 
         self.driver.get('https://www.parimatch.ru/')
 

@@ -60,7 +60,7 @@ def open_stable_bet365(driver_class):
     driver_class.restart_browser_and_bet365_account(check_valid=False)
 
 
-driverParimatch = FireFoxForPimatch()
+driverParimatch = FireFoxForPimatch(data.VPN_dict['RU'])
 
 List_of_Bet365_open = []
 list_of_start_info = []
@@ -92,7 +92,7 @@ for i in Set_of_countries:
 
 start_time_for_all = time.time()
 for i in Set_of_countries:
-    print(f'Открываем {Dict_of_Drivers_count[i]} аккаунтов для {i}')
+    print(f'Открываем {Dict_of_Drivers_count[i]} аккаунта для {i}')
     start_time_for_type = time.time()
     accounts_get_class = GetWorkAccountsList(number_of_accounts=Dict_of_Drivers_count[i], vpn_country=i)
     Accounts = accounts_get_class.return_Browser_List()
