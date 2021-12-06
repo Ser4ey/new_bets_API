@@ -2424,7 +2424,7 @@ class GetWorkAccountsList:
             time.sleep(10)
 
             driver.get = cool_decorator(driver.get, self.vpn_country)
-
+            driver.set_page_load_timeout(20)
             driver.get('https://2ip.ru/')
             driver.set_page_load_timeout(15)
             try:
@@ -2681,7 +2681,7 @@ class FireFoxForPimatch:
 
         self.driver = driver
         self.driver.set_page_load_timeout(75)
-        time.sleep(10)
+        time.sleep(7)
         # input('Смените VPN:')
 
         self.driver.get('https://www.parimatch.ru/')
