@@ -2456,6 +2456,7 @@ class GetWorkAccountsList:
             driver, info = get_driver()
             if info == 'OK':
                 Browsers_List.append(driver)
+                print('+1 browser')
             else:
                 try:
                     driver.close()
