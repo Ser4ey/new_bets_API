@@ -510,8 +510,9 @@ class FireFoxDriverMain:
             time.sleep(2)
             return
 
-        self.driver.find_element_by_class_name('qbs-NormalBetItem_DetailsContainer ') \
-            .find_element_by_class_name('qbs-StakeBox_StakeInput ').click()
+        # self.driver.find_element_by_class_name('qbs-NormalBetItem_DetailsContainer ') \
+        #     .find_element_by_class_name('qbs-StakeBox_StakeInput ').click()
+        self.driver.find_element_by_class_name('lqb-StakeBox_StakeInput ').click()
         time.sleep(0.3)
         for simvol in str(value):
             self.driver.find_element_by_tag_name("body").send_keys(simvol)
@@ -519,16 +520,23 @@ class FireFoxDriverMain:
         time.sleep(0.5)
         try:
             # нажимаем на кнопку стандартной ставки
-            self.driver.find_element_by_class_name('qbs-BetPlacement ').click()
+            # self.driver.find_element_by_class_name('qbs-BetPlacement').click()
+            self.driver.find_element_by_class_name('lqb-BetPlacement').click()
+
         except:
             # нажимаем на кнопку ставки, которую нужно одобрить
-            self.driver.find_element_by_class_name('qbs-PlaceBetReferButton ').click()
+            try:
+                # self.driver.find_element_by_class_name('qbs-PlaceBetReferButton ').click()
+                self.driver.find_element_by_class_name('lqb-PlaceBetReferButton ').click()
+            except:
+                pass
 
         flag = False
 
         for i in range(15):
             try:
-                self.driver.find_element_by_class_name('qbs-QuickBetHeader_DoneButton ').click()
+                # self.driver.find_element_by_class_name('qbs-QuickBetHeader_DoneButton ').click()
+                self.driver.find_element_by_class_name('lqb-QuickBetHeader_DoneButton-QuickBetHeader_DoneButton-QuickBetHeader_DoneButton-QuickBetHeader_DoneButton ').click()
                 print('Ставка проставлена!')
                 return 'Ставка проставлена!'
             except:
@@ -536,7 +544,8 @@ class FireFoxDriverMain:
 
         print('[-] Не удалось поставить ставку')
         try:
-            self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
+            # self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
+            self.driver.find_element_by_class_name('lqb-NormalBetItem_Indicator ').click()
         except:
             pass
 
@@ -547,7 +556,8 @@ class FireFoxDriverMain:
     def reanimaite_bet365com(self):
         # попытка закрыть купон
         try:
-            self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
+            # self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
+            self.driver.find_element_by_class_name('lqb-NormalBetItem_Indicator ').click()
             time.sleep(2)
         except:
             pass
