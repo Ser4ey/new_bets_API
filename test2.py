@@ -3,6 +3,8 @@ import time
 from selenium import webdriver
 from multiprocessing.dummy import Pool
 import data
+from chromdriver_class import FireFoxDriverMainNoAutoOpen
+from data import AccountsBet365, path_to_accounts_file
 
 
 def cool_decorator(method_to_decorate, type_of_account):
@@ -129,6 +131,40 @@ class GetWorkAccountsList:
     def return_Browser_List(self):
         return self.Browser_List
 
+List_of_Bet365_open = []
+list_of_start_info = []
 
-accounts_get_class = GetWorkAccountsList(number_of_accounts=3, vpn_country='UK')
+i1 = 1
+for i in range(len(AccountsBet365)):
+    account_data = AccountsBet365[i]
+    start_info = [account_data['bet365_login'], account_data['bet365_password'], account_data['bet_value'], account_data['vpn_country']]
+    list_of_start_info.append(start_info)
+    i1 += 1
+
+List_of_bet_account = []
+
+accounts_get_class = GetWorkAccountsList(number_of_accounts=1, vpn_country='UK')
 Accounts = accounts_get_class.return_Browser_List()
+
+
+for account_info in list_of_start_info[:1]:
+    bet365login, bet365password, bet_value, vpn_country = account_info
+
+    driver_class = FireFoxDriverMainNoAutoOpen(
+        driver=Accounts.pop(-1),
+        login=bet365login,
+        password=bet365password,
+        bet_value=bet_value,
+        vpn_country=vpn_country
+    )
+
+    List_of_bet_account.append(driver_class)
+
+
+account1 = List_of_bet_account[0]
+
+while True:
+    url = input('url')
+    bet_type = input('bet_type')
+
+    account1.make_cyber_football_bet(url, bet_type, '0')
