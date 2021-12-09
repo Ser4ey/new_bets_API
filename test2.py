@@ -43,7 +43,7 @@ class GetWorkAccountsList:
             driver.execute_script(f"window.open('https://2ip.ru/', '_blank')")
             time.sleep(7)
             driver.switch_to.window(driver.window_handles[-1])
-            driver.close()
+            # driver.close()
             driver.switch_to.window(current_window)
 
         def get_driver():
@@ -105,7 +105,7 @@ class GetWorkAccountsList:
                 print('+0 browser')
 
         # число браузеров, которое будет открыто за раз
-        number_of_tries = 6
+        number_of_tries = 3
         Browser_List = []
 
         while len(Browser_List) < self.number_of_accounts:
