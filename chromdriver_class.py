@@ -2456,8 +2456,20 @@ class GetWorkAccountsList:
                 if check_bet365(driver):
                     return driver, 'OK'
                 else:
+                    try:
+                        print('close4')
+                        driver.close()
+                        driver.quit()
+                    except:
+                        pass
                     return driver, 'Сайт bet365 не загрузился'
             except:
+                try:
+                    print('close4')
+                    driver.close()
+                    driver.quit()
+                except:
+                    pass
                 return driver, 'Сайт bet365 не загрузился'
 
         def add_accounts_to_list(Browsers_List=[]):
@@ -2470,12 +2482,7 @@ class GetWorkAccountsList:
                 print('+1 browser')
                 return
             else:
-                try:
-                    print('close4')
-                    driver.close()
-                    driver.quit()
-                except:
-                    pass
+                print('+0 browser')
 
         # число браузеров, которое будет открыто за раз
         number_of_tries = 6
