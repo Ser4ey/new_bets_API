@@ -2473,7 +2473,7 @@ class GetWorkAccountsList:
                 except:
                     pass
 
-        # число браузеров, которое будет открыто
+        # число браузеров, которое будет открыто за раз
         number_of_tries = 6
         Browser_List = []
 
@@ -2484,6 +2484,7 @@ class GetWorkAccountsList:
             except Exception as er:
                 print(f'Ошибка при выполнениии Poll: {er}')
 
+            print('Проверка браузеров!')
             Browser_List_checked = []
             for i in range(len(Browser_List)):
                 browser_ = Browser_List[i]
