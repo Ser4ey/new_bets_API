@@ -600,8 +600,8 @@ class FireFoxDriverMain:
             self.driver.find_element_by_class_name('lbs-DefaultContent_BetCount ').click()
             time.sleep(1)
             self.driver.find_element_by_class_name('lbl-ControlBar_RemoveAll ').click()
-        except:
-            pass
+        except Exception as er:
+            print(er)
 
     def check_is_account_not_valid_mean_porezan(self):
         '''Провепка порезан ли аккаунт'''
