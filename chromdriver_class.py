@@ -2456,10 +2456,10 @@ class GetWorkAccountsList:
                 if check_bet365(driver):
                     return driver, 'OK'
                 else:
-                    driver.quit()
+                    # driver.quit()
                     return driver, 'Сайт bet365 не загрузился'
             except:
-                driver.quit()
+                # driver.quit()
                 return driver, 'Сайт bet365 не загрузился'
 
         def add_accounts_to_list(Browsers_List):
