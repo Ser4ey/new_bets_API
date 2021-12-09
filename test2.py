@@ -45,7 +45,6 @@ class GetWorkAccountsList:
             driver.switch_to.window(driver.window_handles[-1])
             driver.close()
             driver.switch_to.window(current_window)
-            print('close1')
             return
 
         def get_driver():
@@ -107,7 +106,7 @@ class GetWorkAccountsList:
                 print('+0 browser')
 
         # число браузеров, которое будет открыто за раз
-        number_of_tries = 3
+        number_of_tries = 6
         Browser_List = []
 
         while len(Browser_List) < self.number_of_accounts:
@@ -126,11 +125,11 @@ class GetWorkAccountsList:
                     Browser_List_checked.append(browser_)
                 else:
                     print(f'{i} браузер - не загрузился!')
-                    # try:
-                    #     browser_.close()
-                    #     browser_.quit()
-                    # except:
-                    #     pass
+                    try:
+                        browser_.close()
+                        browser_.quit()
+                    except:
+                        pass
             Browser_List = Browser_List_checked[:]
 
             print(f'Открыто {len(Browser_List)} из {self.number_of_accounts} аккаунтов')
