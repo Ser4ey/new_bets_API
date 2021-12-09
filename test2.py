@@ -89,10 +89,10 @@ class GetWorkAccountsList:
                 if check_bet365(driver):
                     return driver, 'OK'
                 else:
-                    # driver.quit()
+                    driver.quit()
                     return driver, 'Сайт bet365 не загрузился'
             except:
-                # driver.quit()
+                driver.quit()
                 return driver, 'Сайт bet365 не загрузился'
 
         def add_accounts_to_list(Browsers_List):
@@ -106,7 +106,7 @@ class GetWorkAccountsList:
                 print('+0 browser')
 
         # число браузеров, которое будет открыто за раз
-        number_of_tries = 6
+        number_of_tries = 3
         Browser_List = []
 
         while len(Browser_List) < self.number_of_accounts:
@@ -117,20 +117,6 @@ class GetWorkAccountsList:
                 print(f'Ошибка при выполнениии Poll: {er}')
 
             print('Проверка браузеров!')
-            Browser_List_checked = []
-            for i in range(len(Browser_List)):
-                browser_ = Browser_List[i]
-                if check_bet365(browser_):
-                    print(f'{i} браузер - работает')
-                    Browser_List_checked.append(browser_)
-                else:
-                    print(f'{i} браузер - не загрузился!')
-                    try:
-                        browser_.close()
-                        browser_.quit()
-                    except:
-                        pass
-            Browser_List = Browser_List_checked[:]
 
             print(f'Открыто {len(Browser_List)} из {self.number_of_accounts} аккаунтов')
 
