@@ -166,5 +166,9 @@ account1 = List_of_bet_account[0]
 while True:
     url = input('url')
     bet_type = input('bet_type')
+    coef = input('coef:')
 
-    account1.make_cyber_football_bet(url, bet_type, '0')
+    account1.make_cyber_football_bet(url, bet_type, coef)
+
+    input(':::')
+    account1.close_cupon2()

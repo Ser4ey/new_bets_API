@@ -555,14 +555,6 @@ class FireFoxDriverMain:
         time.sleep(2)
 
     def reanimaite_bet365com(self):
-        # попытка закрыть купон
-        try:
-            # self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
-            self.driver.find_element_by_class_name('lqb-NormalBetItem_Indicator ').click()
-            time.sleep(2)
-        except:
-            pass
-
         # попытка закрыть окно неактивности
         try:
             self.driver.find_element_by_class_name('alm-ActivityLimitStayButton ').click()
@@ -577,24 +569,39 @@ class FireFoxDriverMain:
         except:
             pass
 
-        self.close_cupon()
+        # попытка закрыть купон
+        try:
+            # self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
+            self.driver.find_element_by_class_name('lqb-NormalBetItem_Indicator ').click()
+            time.sleep(2)
+        except:
+            pass
+
+        self.close_cupon2()
 
         self.relogin_in_bet365_if_take_off()
 
         # self.restart_browser_and_bet365_account()
 
-    def close_cupon(self):
-        '''Попытка Закрытие купонов(а_ если он есть)'''
+    # def close_cupon(self):
+    #     '''Попытка Закрытие купонов(а_ если он есть)'''
+    #     try:
+    #         #open_cupon
+    #         self.driver.find_element_by_class_name('bss-StandardHeader ').click()
+    #         time.sleep(4)
+    #         #очистка купона
+    #         self.driver.find_element_by_class_name('bs-ControlBar_RemoveButton ').click()
+    #         time.sleep(4)
+    #     except Exception as er:
+    #         pass
+
+    def close_cupon2(self):
         try:
-            #open_cupon
-            self.driver.find_element_by_class_name('bss-StandardHeader ').click()
-            time.sleep(4)
-            #очистка купона
-            self.driver.find_element_by_class_name('bs-ControlBar_RemoveButton ').click()
-            time.sleep(4)
-        except Exception as er:
+            self.driver.find_element_by_class_name('lbs-DefaultContent_BetCount ').click()
+            time.sleep(1)
+            self.driver.find_element_by_class_name('lbl-ControlBar_RemoveAll ').click()
+        except:
             pass
-            # print('нет купонов', er)
 
     def check_is_account_not_valid_mean_porezan(self):
         '''Провепка порезан ли аккаунт'''
@@ -632,7 +639,6 @@ class FireFoxDriverMain:
 
         self.is_valud_account = False
         return True
-
 
     def make_any_sport_bet(self, sport, url, bet_type, coef):
         # Попытка закрыть окно неактивности
