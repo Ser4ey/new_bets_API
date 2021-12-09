@@ -2483,6 +2483,22 @@ class GetWorkAccountsList:
                     p.map(add_accounts_to_list, [Browser_List for i in range(number_of_tries)])
             except Exception as er:
                 print(f'Ошибка при выполнениии Poll: {er}')
+
+            Browser_List_checked = []
+            for i in range(len(Browser_List)):
+                browser_ = Browser_List[i]
+                if check_bet365(browser_):
+                    print(f'{i} браузер - работает')
+                    Browser_List_checked.append(browser_)
+                else:
+                    print(f'{i} браузер - не загрузился!')
+                    try:
+                        browser_.close()
+                        browser_.quit()
+                    except:
+                        pass
+            Browser_List = Browser_List_checked[:]
+
             print(f'Открыто {len(Browser_List)} из {self.number_of_accounts} аккаунтов')
 
 
