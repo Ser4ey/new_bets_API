@@ -106,7 +106,7 @@ class GetWorkAccountsList:
                 print('+0 browser')
 
         # число браузеров, которое будет открыто за раз
-        number_of_tries = 3
+        number_of_tries = 6
         Browser_List = []
 
         while len(Browser_List) < self.number_of_accounts:
