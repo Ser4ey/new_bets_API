@@ -437,6 +437,7 @@ class FireFoxDriverMain:
                 Browsers_List.append(driver)
             else:
                 try:
+                    print('close1')
                     driver.close()
                     driver.quit()
                 except:
@@ -2368,6 +2369,7 @@ class FireFoxDriverMain:
 
 
     def close_session(self):
+        print('close session')
         self.driver.quit()
 
 
@@ -2466,8 +2468,10 @@ class GetWorkAccountsList:
             if info == 'OK':
                 Browsers_List.append(driver)
                 print('+1 browser')
+                return
             else:
                 try:
+                    print('close4')
                     driver.close()
                     driver.quit()
                 except:
@@ -2494,6 +2498,7 @@ class GetWorkAccountsList:
                 else:
                     print(f'{i} браузер - не загрузился!')
                     try:
+                        print('close5')
                         browser_.close()
                         browser_.quit()
                     except:
@@ -2658,6 +2663,7 @@ class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
                 print('bet365 - открыт')
             else:
                 try:
+                    print('close6')
                     driver.close()
                     driver.quit()
                 except:
