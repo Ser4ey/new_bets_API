@@ -2403,7 +2403,7 @@ class GetWorkAccountsList:
                 time.sleep(2)
                 driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
                 return True
-            except Exception as er:
+            except:
                 return False
 
         def open_new_window_2ip(driver):
@@ -2492,11 +2492,11 @@ class GetWorkAccountsList:
                     Browser_List_checked.append(browser_)
                 else:
                     print(f'{i} браузер - не загрузился!')
-                    try:
-                        browser_.close()
-                        browser_.quit()
-                    except:
-                        pass
+                    # try:
+                    #     browser_.close()
+                    #     browser_.quit()
+                    # except:
+                    #     pass
             Browser_List = Browser_List_checked[:]
 
             print(f'Открыто {len(Browser_List)} из {self.number_of_accounts} аккаунтов')
