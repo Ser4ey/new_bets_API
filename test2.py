@@ -14,6 +14,11 @@ def cool_decorator(method_to_decorate, type_of_account):
         return method_to_decorate(url)
     return wrapper
 
+def log_in_driver(driver_class):
+    login = driver_class.bet365_login
+    passwd = driver_class.bet365_password
+    driver_class.log_in_bet365_v2(login, passwd)
+
 
 class GetWorkAccountsList:
     def __init__(self, number_of_accounts, vpn_country):
@@ -147,6 +152,8 @@ accounts_get_class = GetWorkAccountsList(number_of_accounts=1, vpn_country='UK')
 Accounts = accounts_get_class.return_Browser_List()
 
 
+print(f'Все аккаунты успешно авторизованы!')
+
 for account_info in list_of_start_info[:1]:
     bet365login, bet365password, bet_value, vpn_country = account_info
 
@@ -160,12 +167,13 @@ for account_info in list_of_start_info[:1]:
 
     List_of_bet_account.append(driver_class)
 
-
+with Pool(processes=len(List_of_bet_account)) as p:
+    p.map(log_in_driver, List_of_bet_account)
 account1 = List_of_bet_account[0]
 
 while True:
-    url = input('url')
-    bet_type = input('bet_type')
+    url = input('url:')
+    bet_type = input('bet_type:')
     coef = input('coef:')
 
     account1.make_cyber_football_bet(url, bet_type, coef)
