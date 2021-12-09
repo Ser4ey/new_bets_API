@@ -597,7 +597,7 @@ class FireFoxDriverMain:
 
     def close_cupon2(self):
         try:
-            self.driver.find_element_by_class_name('lbs-DefaultContent_BetCount ').click()
+            self.driver.find_element_by_class_name('lbs-DefaultContent  ').click()
             time.sleep(1)
             self.driver.find_element_by_class_name('lbl-ControlBar_RemoveAll ').click()
         except Exception as er:
