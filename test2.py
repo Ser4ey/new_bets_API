@@ -35,7 +35,7 @@ class GetWorkAccountsList:
                 time.sleep(2)
                 driver.find_element_by_class_name('hm-MainHeaderRHSLoggedOutWide_LoginContainer')
                 return True
-            except:
+            except Exception as er:
                 return False
 
         def open_new_window_2ip(driver):
@@ -45,7 +45,6 @@ class GetWorkAccountsList:
             driver.switch_to.window(driver.window_handles[-1])
             driver.close()
             driver.switch_to.window(current_window)
-            return
 
         def get_driver():
             firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
@@ -89,13 +88,12 @@ class GetWorkAccountsList:
                 if check_bet365(driver):
                     return driver, 'OK'
                 else:
-                    driver.quit()
                     return driver, 'Сайт bet365 не загрузился'
             except:
-                driver.quit()
                 return driver, 'Сайт bet365 не загрузился'
 
-        def add_accounts_to_list(Browsers_List):
+        def add_accounts_to_list(Browsers_List=[]):
+            # задержка
             time_to_sleep = random.randint(1, 1000) / 500
             time.sleep(time_to_sleep)
             driver, info = get_driver()
@@ -103,10 +101,14 @@ class GetWorkAccountsList:
                 Browsers_List.append(driver)
                 print('+1 browser')
             else:
-                print('+0 browser')
+                try:
+                    driver.close()
+                    driver.quit()
+                except:
+                    pass
 
-        # число браузеров, которое будет открыто за раз
-        number_of_tries = 4
+        # число браузеров, которое будет открыто
+        number_of_tries = 6
         Browser_List = []
 
         while len(Browser_List) < self.number_of_accounts:
@@ -115,9 +117,6 @@ class GetWorkAccountsList:
                     p.map(add_accounts_to_list, [Browser_List for i in range(number_of_tries)])
             except Exception as er:
                 print(f'Ошибка при выполнениии Poll: {er}')
-
-            print('Проверка браузеров!')
-
             print(f'Открыто {len(Browser_List)} из {self.number_of_accounts} аккаунтов')
 
 
