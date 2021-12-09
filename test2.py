@@ -43,8 +43,10 @@ class GetWorkAccountsList:
             driver.execute_script(f"window.open('https://2ip.ru/', '_blank')")
             time.sleep(7)
             driver.switch_to.window(driver.window_handles[-1])
-            # driver.close()
+            driver.close()
             driver.switch_to.window(current_window)
+            print('close1')
+            return
 
         def get_driver():
             firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
