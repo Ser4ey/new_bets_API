@@ -2456,31 +2456,19 @@ class GetWorkAccountsList:
                 if check_bet365(driver):
                     return driver, 'OK'
                 else:
-                    try:
-                        print('close4')
-                        driver.close()
-                        driver.quit()
-                    except:
-                        pass
+                    driver.quit()
                     return driver, 'Сайт bet365 не загрузился'
             except:
-                try:
-                    print('close4')
-                    driver.close()
-                    driver.quit()
-                except:
-                    pass
+                driver.quit()
                 return driver, 'Сайт bet365 не загрузился'
 
-        def add_accounts_to_list(Browsers_List=[]):
-            # задержка
+        def add_accounts_to_list(Browsers_List):
             time_to_sleep = random.randint(1, 1000) / 500
             time.sleep(time_to_sleep)
             driver, info = get_driver()
             if info == 'OK':
                 Browsers_List.append(driver)
                 print('+1 browser')
-                return
             else:
                 print('+0 browser')
 
@@ -2505,7 +2493,6 @@ class GetWorkAccountsList:
                 else:
                     print(f'{i} браузер - не загрузился!')
                     try:
-                        print('close5')
                         browser_.close()
                         browser_.quit()
                     except:
