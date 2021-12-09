@@ -2477,6 +2477,10 @@ class GetWorkAccountsList:
 
         # число браузеров, которое будет открыто
         number_of_tries = 6
+        try:
+            number_of_tries = data.number_of_tries
+        except:
+            pass
         Browser_List = []
 
         while len(Browser_List) < self.number_of_accounts:
