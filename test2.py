@@ -115,7 +115,7 @@ class GetWorkAccountsList:
                     pass
 
         # число браузеров, которое будет открыто
-        number_of_tries = 6
+        number_of_tries = 1
         Browser_List = []
 
         while len(Browser_List) < self.number_of_accounts:
@@ -156,6 +156,7 @@ print(f'Все аккаунты успешно авторизованы!')
 
 for account_info in list_of_start_info[:1]:
     bet365login, bet365password, bet_value, vpn_country = account_info
+    print(vpn_country)
 
     driver_class = FireFoxDriverMainNoAutoOpen(
         driver=Accounts.pop(-1),
@@ -180,3 +181,5 @@ while True:
 
     input(':::')
     account1.close_cupon2()
+
+
