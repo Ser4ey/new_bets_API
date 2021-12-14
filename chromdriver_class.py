@@ -564,7 +564,11 @@ class FireFoxDriverMain:
         for i in range(15):
             try:
                 self.try_click_many_class(['lqb-QuickBetHeader_DoneButton ', 'qbs-QuickBetHeader_DoneButton '])
-                self.try_click_many_class(['hm-MainHeaderLogoWide_Bet365LogoImage '])
+                actions = ActionChains(self.driver)
+                actions.move_by_offset(100, 100).perform()
+                time.sleep(1)
+                actions.click().perform()
+                print('Закрываем купон!')
                 # print('A')*100
                 # time.sleep(100)
                 # self.driver.find_element_by_class_name('qbs-QuickBetHeader_DoneButton ').click()
