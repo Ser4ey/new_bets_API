@@ -158,10 +158,10 @@ while True:
             time.sleep(10)
             continue
 
-        if fork_info['fork_id'] in AllBetsSet:
-            print(f"Ставка {fork_info['fork_id']} уже проставлена!")
-            time.sleep(10)
-            continue
+        # if fork_info['fork_id'] in AllBetsSet:
+        #     print(f"Ставка {fork_info['fork_id']} уже проставлена!")
+        #     time.sleep(10)
+        #     continue
         AllBetsSet.add(fork_info['fork_id'])
 
         # проставление ставок на всех аккаунтах (Pool)
