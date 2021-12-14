@@ -2,7 +2,7 @@ import requests
 import json
 import time
 from datetime import datetime
-
+import data
 
 def check_time(time_string):
     # BK1_score	"1:1 65:14"
@@ -17,7 +17,7 @@ def check_time(time_string):
 TOKEN = 'ec02c59dee6faaca3189bace969c22d7'
 URL = 'http://api.oddscp.com:8111/valuebets'
 
-min_fi_valuebet = 3
+min_fi_valuebet = data.min_fi_valuebet
 
 params = {
     "token": TOKEN,
