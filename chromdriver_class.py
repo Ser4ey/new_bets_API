@@ -47,6 +47,17 @@ class FireFoxDriverMain:
         except:
             self.try_click_many_class(class_list)
 
+    def try_get_text_many_class(self, class_list):
+        if len(class_list) == 0:
+            print('Не удалось get text не на один из classov')
+            return 'Не удалось get text не на один из classov'
+
+        try:
+            click_element = class_list.pop(0)
+            return self.driver.find_element_by_class_name(click_element).text
+        except:
+            self.try_click_many_class(class_list)
+
     def restart_driver(self):
         try:
             self.driver.close()
@@ -510,7 +521,9 @@ class FireFoxDriverMain:
             value = round(value, 2)
             print('value:', value)
 
-        coef_now = self.driver.find_element_by_class_name('bsc-OddsDropdownLabel').text
+        # coef_now = self.driver.find_element_by_class_name('bsc-OddsDropdownLabel').text
+        coef_now = self.try_get_text_many_class(['lbc-OddsDropdownLabel', 'bsc-OddsDropdownLabel'])
+        # lbc-OddsDropdownLabel
         coef_now = float(coef_now)
         print(f'Текущий коэффициент - {coef_now} Нужный коэффициент - {coef}')
         coef = float(coef)
