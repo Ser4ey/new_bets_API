@@ -563,7 +563,7 @@ class FireFoxDriverMain:
 
         for i in range(15):
             try:
-                self.try_click_many_class(['qbs-QuickBetHeader_DoneButton ', 'lqb-QuickBetHeader_DoneButton '])
+                self.try_click_many_class(['lqb-QuickBetHeader_DoneButton ', 'qbs-QuickBetHeader_DoneButton '])
                 # self.driver.find_element_by_class_name('qbs-QuickBetHeader_DoneButton ').click()
                 # self.driver.find_element_by_class_name('lqb-QuickBetHeader_DoneButton ').click()
                 print('Ставка проставлена!')
