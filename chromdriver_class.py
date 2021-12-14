@@ -36,6 +36,17 @@ class FireFoxDriverMain:
         self.driver = driver
         self.bet_value = bet_value
 
+    def try_click_many_class(self, class_list):
+        if len(class_list) == 0:
+            return 'Не удалось нажать не на один из classov'
+
+        try:
+            click_element = class_list.pop(0)
+            self.driver.find_element_by_class_name(click_element).click()
+            return 'Успешное нажатие на класс'
+        except:
+            self.try_click_many_class(class_list)
+
     def restart_driver(self):
         try:
             self.driver.close()
@@ -511,10 +522,10 @@ class FireFoxDriverMain:
             time.sleep(2)
             return
 
-        # self.driver.find_element_by_class_name('qbs-NormalBetItem_DetailsContainer ') \
-        #     .find_element_by_class_name('qbs-StakeBox_StakeInput ').click()
+
+        self.try_click_many_class(['lqb-StakeBox_StakeInput', 'qbs-StakeBox_StakeInput '])
         # self.driver.find_element_by_class_name('lqb-StakeBox_StakeInput ').click()
-        self.driver.find_element_by_class_name('qbs-StakeBox_StakeInput ').click()
+        # self.driver.find_element_by_class_name('qbs-StakeBox_StakeInput ').click()
         time.sleep(0.3)
         for simvol in str(value):
             self.driver.find_element_by_tag_name("body").send_keys(simvol)
@@ -522,13 +533,15 @@ class FireFoxDriverMain:
         time.sleep(0.5)
         try:
             # нажимаем на кнопку стандартной ставки
-            self.driver.find_element_by_class_name('qbs-BetPlacement').click()
+            self.try_click_many_class(['qbs-BetPlacement', 'lqb-BetPlacement'])
+            # self.driver.find_element_by_class_name('qbs-BetPlacement').click()
             # self.driver.find_element_by_class_name('lqb-BetPlacement').click()
 
         except:
             # нажимаем на кнопку ставки, которую нужно одобрить
             try:
-                self.driver.find_element_by_class_name('qbs-PlaceBetReferButton ').click()
+                self.try_click_many_class(['qbs-PlaceBetReferButton ', 'lqb-PlaceBetReferButton '])
+                # self.driver.find_element_by_class_name('qbs-PlaceBetReferButton ').click()
                 # self.driver.find_element_by_class_name('lqb-PlaceBetReferButton ').click()
             except:
                 pass
@@ -537,7 +550,8 @@ class FireFoxDriverMain:
 
         for i in range(15):
             try:
-                self.driver.find_element_by_class_name('qbs-QuickBetHeader_DoneButton ').click()
+                self.try_click_many_class(['qbs-QuickBetHeader_DoneButton ', 'lqb-QuickBetHeader_DoneButton '])
+                # self.driver.find_element_by_class_name('qbs-QuickBetHeader_DoneButton ').click()
                 # self.driver.find_element_by_class_name('lqb-QuickBetHeader_DoneButton ').click()
                 print('Ставка проставлена!')
                 return 'Ставка проставлена!'
@@ -546,7 +560,8 @@ class FireFoxDriverMain:
 
         print('[-] Не удалось поставить ставку')
         try:
-            self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
+            self.try_click_many_class(['qbs-NormalBetItem_Indicator ', 'lqb-NormalBetItem_Indicator '])
+            # self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
             # self.driver.find_element_by_class_name('lqb-NormalBetItem_Indicator ').click()
         except:
             pass
@@ -572,7 +587,8 @@ class FireFoxDriverMain:
 
         # попытка закрыть купон
         try:
-            self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
+            self.try_click_many_class(['qbs-NormalBetItem_Indicator ', 'lqb-NormalBetItem_Indicator '])
+            # self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
             # self.driver.find_element_by_class_name('lqb-NormalBetItem_Indicator ').click()
             time.sleep(2)
         except:
@@ -598,9 +614,13 @@ class FireFoxDriverMain:
 
     def close_cupon2(self):
         try:
-            self.driver.find_element_by_class_name('bss-DefaultContent ').click()
+            self.try_click_many_class(['bss-DefaultContent ', 'lbs-DefaultContent'])
+            # self.driver.find_element_by_class_name('bss-DefaultContent ').click()
+            # lbs-DefaultContent
             time.sleep(1)
-            self.driver.find_element_by_class_name('bs-ControlBar_RemoveAll ').click()
+            # lbl-ControlBar_RemoveAll
+            self.try_click_many_class(['lbl-ControlBar_RemoveAll ', 'bs-ControlBar_RemoveAll '])
+            # self.driver.find_element_by_class_name('bs-ControlBar_RemoveAll ').click()
         except Exception as er:
             print(er)
 

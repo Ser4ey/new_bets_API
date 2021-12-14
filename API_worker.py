@@ -45,6 +45,7 @@ class APIWork:
 
         try:
             r = requests.get(self.URL, params=self.params)
+            # print(r.url)
             respons = json.loads(r.text)
         except Exception as er:
             print('!'*100)

@@ -1,49 +1,122 @@
-import pickle
-import threading
-import selenium
-from selenium import webdriver
+import requests
+import json
 import time
-import data
-import random
-from selenium.webdriver import ActionChains
-from selenium.webdriver.common.keys import Keys
-from multiprocessing.dummy import Pool
+from datetime import datetime
 
 
-def cool_decorator(method_to_decorate, type_of_account):
-    def wrapper(url):
-        if (type_of_account == 'RU') and ('bet365' in url):
-            url = url.replace('.com', '.ru')
-        return method_to_decorate(url)
-    return wrapper
+def check_time(time_string):
+    # BK1_score	"1:1 65:14"
+    # print(time_string)
+    game_time = time_string.split(' ')[-1]
+    game_minutes = game_time.split(':')[0]
+
+    if int(game_minutes) >= 8:
+        return False
+    return True
+
+TOKEN = 'ec02c59dee6faaca3189bace969c22d7'
+URL = 'http://api.oddscp.com:8111/valuebets'
+
+min_fi_valuebet = 3
+
+params = {
+    "token": TOKEN,
+    "sport": "soccer",
+    "bk_name": "bet365",
+    # 'get_cfs': '1',
+    'min_fi': min_fi_valuebet,
+
+}
 
 
-firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
-firefox_capabilities['marionette'] = True
+class APIWork:
+    def __init__(self, TOKEN: str, URL: str, params: dict):
+        self.TOKEN = TOKEN
+        self.URL = URL
+        self.params = params
+        self.forks_ids = set()
 
-fp = webdriver.FirefoxProfile(data.firefox_profile_path)
-fp.set_preference("browser.privatebrowsing.autostart", True)
+    def send_request_to_API(self, old_bets_set=set()):
+        # список уже проставленных ставок
 
-options = webdriver.FirefoxOptions()
-options.add_argument("-private")
-options.set_preference("dom.webdriver.enabled", False)
-options.set_preference("dom.webnotifications.enabled", False)
-binary = data.firefox_binary
-options.binary = binary
+        try:
+            r = requests.get(self.URL, params=self.params)
+            print(r.url)
+            respons = json.loads(r.text)
+        except Exception as er:
+            print('!'*100)
+            print('Ошибка при отправке запроса к API')
+            print(er)
+            try:
+                print(r.status_code)
+            except:
+                print('Status code: None')
+            print('!'*100)
+            time.sleep(20)
+            return False
 
-driver = webdriver.Firefox(capabilities=firefox_capabilities, firefox_profile=fp,
-                           firefox_binary=data.firefox_binary,
-                           executable_path=data.path_to_geckodriver,
-                           options=options)
+        if len(respons) < 1:
+            print('Нет вилок', datetime.now())
+            return False
 
-driver.get = cool_decorator(driver.get, 'RU')
+        bet1 = 'No'
+        for i in respons:
+            if not (i['fork_id'] in old_bets_set):
+                old_bets_set.add(i['fork_id'])
+                bet365_line = '1'
+                other_line = '2'
 
-driver.get('https://google.com')
-time.sleep(10)
-driver.get('https://bet365.com')
+                # проверка на кибер спорт
+                if check_time(i['BK1_score']):
+                    print('------Вилка найдена------')
+                    print('Ставка на киберфутбол')
+                else:
+                    print('Ставка не на киберфутбол')
+                    continue
+
+                if float(i[f'BK{bet365_line}_cf']) >= 2:
+                    print(f'Коэффициент на bet365:', i[f'BK{bet365_line}_cf'])
+                    bet1 = i
+                    break
+                else:
+                    print('Коэффициент на bet365 < 2', i[f'BK{bet365_line}_cf'])
 
 
+        if bet1 == 'No':
+            print('Нет вилок на кибер футбол', datetime.now())
+            return False
+
+        fork_id = bet1['fork_id']
+        sport_name = bet1['sport']
+
+        bet365_href = bet1[f'BK{bet365_line}_href']
+
+        bet365_type = bet1[f'BK{bet365_line}_bet']
+
+        bet365_coef = bet1[f'BK{bet365_line}_cf']
+        other_coef = bet1[f'BK{other_line}_cf']
+
+        return {
+            'sport_name': sport_name,
+            'bet365_href': bet365_href,
+            'bet365_type': bet365_type,
+            'bet365_coef': bet365_coef,
+            'other_coef': other_coef,
+            'fork_id': fork_id,
+            'bet_all_data': bet1,
+            'responce': respons,
+        }
 
 
+APIWorker1 = APIWork(TOKEN, URL, params)
+
+AllForks = set()
+
+for i in range(1000):
+    time.sleep(1)
+    r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
+    print(r)
+
+#
 
 
