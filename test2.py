@@ -2,6 +2,9 @@ import random
 import time
 from selenium import webdriver
 from multiprocessing.dummy import Pool
+
+from selenium.webdriver import ActionChains
+
 import data
 from chromdriver_class import FireFoxDriverMainNoAutoOpen
 from data import AccountsBet365, path_to_accounts_file
@@ -180,6 +183,9 @@ while True:
     account1.make_cyber_football_bet(url, bet_type, coef)
 
     input(':::')
-    account1.close_cupon2()
-
+    # account1.close_cupon2()
+    actions = ActionChains(account1.driver)
+    actions.move_by_offset(100, 100).perform()
+    time.sleep(1)
+    actions.click().perform()
 

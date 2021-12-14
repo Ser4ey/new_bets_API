@@ -566,7 +566,7 @@ class FireFoxDriverMain:
                 self.try_click_many_class(['lqb-QuickBetHeader_DoneButton ', 'qbs-QuickBetHeader_DoneButton '])
                 actions = ActionChains(self.driver)
                 actions.move_by_offset(100, 100).perform()
-                time.sleep(1)
+                time.sleep(5)
                 actions.click().perform()
                 print('Закрываем купон!')
                 # print('A')*100
