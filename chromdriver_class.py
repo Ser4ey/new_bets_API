@@ -565,8 +565,8 @@ class FireFoxDriverMain:
             try:
                 self.try_click_many_class(['lqb-QuickBetHeader_DoneButton ', 'qbs-QuickBetHeader_DoneButton '])
                 self.try_click_many_class(['hm-MainHeaderLogoWide_Bet365LogoImage '])
-                print('A')*100
-                time.sleep(100)
+                # print('A')*100
+                # time.sleep(100)
                 # self.driver.find_element_by_class_name('qbs-QuickBetHeader_DoneButton ').click()
                 # self.driver.find_element_by_class_name('lqb-QuickBetHeader_DoneButton ').click()
                 print('Ставка проставлена!')
