@@ -1,15 +1,13 @@
-from chromdriver_class import FireFoxDriverMainNoAutoOpen, FireFoxForPimatch
+from chromdriver_class import FireFoxDriverMainNoAutoOpen, GetWorkAccountsList
 from data import AccountsBet365, path_to_accounts_file
 import datetime
 from multiprocessing.dummy import Pool
 import time
 from telegram_API import telegram_notify1
-from selenium import webdriver
 import data
-from API_worker import APIWorker1
+from API_worker_valuebet import APIWorker1
 import random
 
-# needed f
 def make_bet_multipotok(All_elements_array):
     print('Ставим ставку на одном из аккаунтов')
     driver, sport, url, bet_type, coef = All_elements_array
@@ -37,6 +35,7 @@ def cheeck_porezan_li_account(driver):
         driver.check_is_account_not_valid_mean_porezan()
     except Exception as er:
         print(f'Ошибка при определении порезки для - {driver.bet365_login}\nError: {er}')
+
 def delete_account_from_txt_by_login(login: str):
     '''Удаляет из файла с аккаунтами все строки, содержащии данный логин'''
     with open(path_to_accounts_file, 'r', encoding='utf-8') as file:
@@ -50,7 +49,6 @@ def delete_account_from_txt_by_login(login: str):
                 print(f'{login} - удалён из аккаунтов!')
     return
 
-# needed f
 def log_in_driver(driver_class):
     login = driver_class.bet365_login
     passwd = driver_class.bet365_password
@@ -61,47 +59,62 @@ def open_stable_bet365(driver_class):
     driver_class.restart_browser_and_bet365_account(check_valid=False)
 
 
-driverParimatch = FireFoxForPimatch()
 
 List_of_Bet365_open = []
 list_of_start_info = []
 
 i1 = 1
 for i in range(len(AccountsBet365)):
-# for i in range(4):
     account_data = AccountsBet365[i]
     start_info = [account_data['bet365_login'], account_data['bet365_password'], account_data['bet_value'], account_data['vpn_country']]
     list_of_start_info.append(start_info)
     i1 += 1
 
+
+# запускаем аккаунты
 List_of_bet_account = []
-for i in range(len(list_of_start_info)):
-    driver_class = FireFoxDriverMainNoAutoOpen(
-        driver='no driver here',
-        login=list_of_start_info[i][0],
-        password=list_of_start_info[i][1],
-        bet_value=list_of_start_info[i][2],
-        vpn_country=list_of_start_info[i][3]
-    )
+countries = []
+Set_of_countries = set()
 
-    List_of_bet_account.append(driver_class)
+for i in list_of_start_info:
+    countries.append(i[3])
 
-# запуск аккаунтов (открытие bet365)
-# with Pool(processes=1) as p:
-#     p.map(open_stable_bet365, List_of_bet_account)
+for i in countries:
+    Set_of_countries.add(i)
 
-counter = 1
-for account in List_of_bet_account:
-    print(f'Открытие аккаунта {counter} из {len(List_of_bet_account)}')
-    start_time = time.time()
-    open_stable_bet365(account)
-    print(f'Времени затрачено: {time.time() - start_time}')
-    counter += 1
+Dict_of_Drivers_count = {}
 
-print('Все сайты bet365 открыты!')
+for i in Set_of_countries:
+    Dict_of_Drivers_count[i] = countries.count(i)
+
+
+start_time_for_all = time.time()
+for i in Set_of_countries:
+    print(f'Открываем {Dict_of_Drivers_count[i]} аккаунта для {i}')
+    start_time_for_type = time.time()
+    accounts_get_class = GetWorkAccountsList(number_of_accounts=Dict_of_Drivers_count[i], vpn_country=i)
+    Accounts = accounts_get_class.return_Browser_List()
+
+    for account_info in list_of_start_info:
+        bet365login, bet365password, bet_value, vpn_country = account_info
+        if vpn_country != i:
+            continue
+
+        driver_class = FireFoxDriverMainNoAutoOpen(
+            driver=Accounts.pop(-1),
+            login=bet365login,
+            password=bet365password,
+            bet_value=bet_value,
+            vpn_country=vpn_country
+        )
+
+        List_of_bet_account.append(driver_class)
+    print(f'{Dict_of_Drivers_count[i]} аккаунтов для {i} открыты за {time.time() - start_time_for_type}')
+
+print(f'Все аккаунты успешно открыты за {time.time() - start_time_for_all}')
 # авторизация аккаунтов
-# with Pool(processes=len(List_of_bet_account)) as p:
-#     p.map(log_in_driver, List_of_bet_account)
+with Pool(processes=len(List_of_bet_account)) as p:
+    p.map(log_in_driver, List_of_bet_account)
 
 print(f'Все аккаунты успешно авторизованы!')
 # START OF PROGRAM
@@ -150,21 +163,6 @@ while True:
             time.sleep(10)
             continue
         AllBetsSet.add(fork_info['fork_id'])
-
-        try:
-            second_coef = driverParimatch.find_coef_for_any_sport(fork_info['sport_name'], fork_info['parimatch_href'], fork_info['parimatch_type'])
-            print(f'Коэффициент на париматч: {second_coef}')
-            try:
-                float(second_coef)
-            except:
-                print('Ставка не поддерживается')
-                continue
-            if float(second_coef) + 0.05 < float(fork_info['parimatch_coef']):
-                print('Коэффициет на париматч упал!', f'{fork_info["parimatch_coef"]} -> {second_coef}')
-                continue
-        except:
-            print('Не удалось получить коэффициент для париматч')
-            continue
 
         # проставление ставок на всех аккаунтах (Pool)
         try:
