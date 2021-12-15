@@ -4,15 +4,15 @@ import time
 from datetime import datetime
 import data
 
-def check_time(time_string):
-    # BK1_score	"1:1 65:14"
-    # print(time_string)
-    game_time = time_string.split(' ')[-1]
-    game_minutes = game_time.split(':')[0]
-
-    if int(game_minutes) >= 8:
-        return False
-    return True
+# def check_time(time_string):
+#     # BK1_score	"1:1 65:14"
+#     # print(time_string)
+#     game_time = time_string.split(' ')[-1]
+#     game_minutes = game_time.split(':')[0]
+#
+#     if int(game_minutes) >= 8:
+#         return False
+#     return True
 
 TOKEN = 'ec02c59dee6faaca3189bace969c22d7'
 URL = 'http://api.oddscp.com:8111/valuebets'
@@ -67,7 +67,7 @@ class APIWork:
                 other_line = '2'
 
                 # проверка на кибер спорт
-                if check_time(i['BK1_score']):
+                if i['BK1_league'] == "Esoccer Battle - 8 mins play":
                     print('------Вилка найдена------')
                     print('Ставка на киберфутбол')
                 else:
