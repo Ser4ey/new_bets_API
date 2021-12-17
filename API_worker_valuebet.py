@@ -28,7 +28,7 @@ params = {
 
 }
 
-
+# https://github.com/Ser4ey/new_bets_API.git
 class APIWork:
     def __init__(self, TOKEN: str, URL: str, params: dict):
         self.TOKEN = TOKEN
@@ -66,13 +66,13 @@ class APIWork:
                 bet365_line = '1'
                 other_line = '2'
 
-                # проверка на кибер спорт
-                if i['BK1_league'] == "Esoccer Battle - 8 mins play":
-                    print('------Вилка найдена------')
-                    print('Ставка на киберфутбол')
-                else:
-                    print('Ставка не на киберфутбол')
-                    continue
+                # проверка на кибер спорт (убрана)
+                # if i['BK1_league'] == "Esoccer Battle - 8 mins play":
+                #     print('------Вилка найдена------')
+                #     print('Ставка на киберфутбол')
+                # else:
+                #     print('Ставка не на киберфутбол')
+                #     continue
 
                 if float(i[f'BK{bet365_line}_cf']) >= 2:
                     print(f'Коэффициент на bet365:', i[f'BK{bet365_line}_cf'])
