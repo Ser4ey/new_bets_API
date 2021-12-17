@@ -66,13 +66,14 @@ class APIWork:
                 bet365_line = '1'
                 other_line = '2'
 
-                # проверка на кибер спорт (убрана)
+                # проверка на кибер спорт
                 # if i['BK1_league'] == "Esoccer Battle - 8 mins play":
-                #     print('------Вилка найдена------')
-                #     print('Ставка на киберфутбол')
-                # else:
-                #     print('Ставка не на киберфутбол')
-                #     continue
+                if 'Esports' in i['BK1_game']:
+                    print('------Вилка найдена------')
+                    print('Ставка на киберфутбол')
+                else:
+                    print('Ставка не на киберфутбол')
+                    continue
 
                 if float(i[f'BK{bet365_line}_cf']) >= 2:
                     print(f'Коэффициент на bet365:', i[f'BK{bet365_line}_cf'])
