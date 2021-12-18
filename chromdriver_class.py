@@ -509,6 +509,8 @@ class FireFoxDriverMain:
                 bet365balance = bet365balance.replace(' ', '')
                 bet365balance = bet365balance.strip()
                 bet365balance = bet365balance.strip('£')
+                bet365balance = bet365balance.strip('€')
+                # €100.00
                 bet365balance = bet365balance.replace(' ', '')
                 bet365balance = float(bet365balance)
                 print(f'Баланс аккаунта {bet365balance}')
