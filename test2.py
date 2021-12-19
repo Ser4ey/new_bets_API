@@ -180,12 +180,14 @@ while True:
     bet_type = input('bet_type:')
     coef = input('coef:')
 
-    account1.make_cyber_football_bet(url, bet_type, coef)
-
-    input(':::')
-    # account1.close_cupon2()
-    actions = ActionChains(account1.driver)
-    actions.move_by_offset(100, 100).perform()
-    time.sleep(1)
-    actions.click().perform()
+    r = account1.check_is_account_not_valid_mean_porezan()
+    print(r)
+    # account1.make_cyber_football_bet(url, bet_type, coef)
+    #
+    # input(':::')
+    # # account1.close_cupon2()
+    # actions = ActionChains(account1.driver)
+    # actions.move_by_offset(100, 100).perform()
+    # time.sleep(1)
+    # actions.click().perform()
 

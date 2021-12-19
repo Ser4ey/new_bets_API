@@ -672,6 +672,17 @@ class FireFoxDriverMain:
         self.driver.get('https://www.bet365.com/#/MB/')
         time.sleep(7)
 
+        try:
+            iframe1 = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame ')
+            self.driver.switch_to.frame(iframe1)
+            notify_text = self.driver.find_element_by_class_name('modal-title').text
+            if notify_text == 'Restrictions have been applied to your account':
+                return True
+        except:
+            pass
+        finally:
+            self.driver.switch_to.default_content()
+
         main_blocks_line = self.driver.find_element_by_class_name('myb-MyBetsHeader_Container ')
 
         first_block = main_blocks_line.find_elements_by_class_name('myb-HeaderButton')[0]
