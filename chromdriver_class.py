@@ -677,6 +677,7 @@ class FireFoxDriverMain:
             self.driver.switch_to.frame(iframe1)
             notify_text = self.driver.find_element_by_class_name('modal-title').text
             if notify_text == 'Restrictions have been applied to your account':
+                self.is_valud_account = False
                 return True
         except:
             pass
