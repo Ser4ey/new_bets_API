@@ -141,13 +141,13 @@ class GetWorkAccountsList:
 
 List_of_Bet365_open = []
 list_of_start_info = []
-
+list_of_start_info.append('rob320;555ggg;0.2;UK'.split(';'))
 i1 = 1
-for i in range(len(AccountsBet365)):
-    account_data = AccountsBet365[i]
-    start_info = [account_data['bet365_login'], account_data['bet365_password'], account_data['bet_value'], account_data['vpn_country']]
-    list_of_start_info.append(start_info)
-    i1 += 1
+# for i in range(len(AccountsBet365)):
+#     account_data = AccountsBet365[i]
+#     start_info = [account_data['bet365_login'], account_data['bet365_password'], account_data['bet_value'], account_data['vpn_country']]
+#     list_of_start_info.append(start_info)
+#     i1 += 1
 
 List_of_bet_account = []
 
