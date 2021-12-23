@@ -126,6 +126,8 @@ list_of_start_info = []
 i1 = 1
 for i in range(len(AccountsBet365_from_google)):
     account_data = AccountsBet365_from_google[i]
+    if account_data[5] == 'Да':
+        continue
     start_info = [account_data[0], account_data[1], account_data[2], account_data[3]]
     list_of_start_info.append(start_info)
     i1 += 1
