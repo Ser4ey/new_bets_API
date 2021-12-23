@@ -45,7 +45,7 @@ class GoogleAPI:
 
     def get_all_accounts_date(self):
         # возвращает данные аккаунтов, исключая 1 строку заголовков
-        ranges = ["A1:G1000"]
+        ranges = ["A1:F1000"]
         results = self.service.spreadsheets().values().batchGet(spreadsheetId=self.spreadsheet_id,
                                                            ranges=ranges,
                                                            valueRenderOption='FORMATTED_VALUE',
@@ -56,9 +56,12 @@ class GoogleAPI:
         clean_accounts = []
 
         for account_ in sheet_user_values:
-            if account_info[0].strip() != '':
+            if account_[0].strip() != '':
+                account_ += ['not-value', 'not-value']
+                account_ = account_[:6]
                 clean_accounts.append(account_)
 
+        # print(clean_accounts, 'clean')
         return clean_accounts
 
 
@@ -67,8 +70,9 @@ class WorkWithGoogleAPI:
         self.google_api = google_api_exemple
         self.Accounts = self.google_api.get_all_accounts_date()
 
+        # print(self.Accounts, 11)
         for account in self.Accounts:
-            if account[5].strip() == '':
+            if account[5].strip() == 'not-value':
                 account[5] = 'Нет'
 
     def rewrate_google_sheet(self):
@@ -89,7 +93,7 @@ class WorkWithGoogleAPI:
 
         self.Accounts = new_accounts
         for account in self.Accounts:
-            if account[5].strip() == '':
+            if account[5].strip() == 'not-value':
                 account[5] = 'Нет'
 
         return return_accounts
@@ -105,18 +109,10 @@ google_table_api = GoogleAPI(sheet_id)
 AccountsBet365_from_google = []
 accounts_ = google_table_api.get_all_accounts_date()
 
-for i in range(len(accounts_)):
-    account_info = accounts_[i]
-
-    if account_info[0].strip() == '':
-        break
-
-    data_ = account_info[:]
-    AccountsBet365_from_google.append(
-        {'bet365_login': data_[0], 'bet365_password': data_[1], 'bet_value': data_[2], 'vpn_country': data_[3]},
-    )
+AccountsBet365_from_google = accounts_[:]
 
 print(AccountsBet365_from_google)
 
-
 GoogleAPIWorker = WorkWithGoogleAPI(google_api_exemple=google_table_api)
+
+

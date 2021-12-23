@@ -118,7 +118,7 @@ def get_new_accounts_from_info(list_of_start_info):
     return List_of_bet_account
 
 
-driverParimatch = FireFoxForPimatch(data.VPN_dict['RU'])
+# driverParimatch = FireFoxForPimatch(data.VPN_dict['RU'])
 
 List_of_Bet365_open = []
 list_of_start_info = []
@@ -126,7 +126,7 @@ list_of_start_info = []
 i1 = 1
 for i in range(len(AccountsBet365_from_google)):
     account_data = AccountsBet365_from_google[i]
-    start_info = [account_data['bet365_login'], account_data['bet365_password'], account_data['bet_value'], account_data['vpn_country']]
+    start_info = [account_data[0], account_data[1], account_data[2], account_data[3]]
     list_of_start_info.append(start_info)
     i1 += 1
 
@@ -141,14 +141,22 @@ porezan_counter = 0
 graphic_bet_telegram_counter = 0
 error_flag = False
 
+input('Новые аккаунты:')
 while True:
     # add new accounts from google sheets
     new_accounts_info = GoogleAPIWorker.return_new_accounts_info()
+    # список новых аккаунтов
+    list_of_new_info = []
+    for i in range(new_accounts_info):
+        account_data = new_accounts_info[i]
+        new_info = [account_data[0], account_data[1], account_data[2], account_data[3]]
+        list_of_new_info.append(new_info)
+
     if len(new_accounts_info) > 0:
         print('Запускаем новые аккаунты')
         List_of_bet_account += get_new_accounts_from_info(new_accounts_info)
     else:
-        print('Нет новыз аккаунтов')
+        print('Нет новых аккаунтов')
 
     # Вывод текущего времени
     now = datetime.datetime.now()
