@@ -1,115 +1,68 @@
-import requests
-import json
-import time
-from datetime import datetime
 
 
-def check_time(time_string):
-    # BK1_score	"1:1 65:14"
-    # print(time_string)
-    game_time = time_string.split(' ')[-1]
-    game_minutes = game_time.split(':')[0]
+def get_new_accounts_from_info(list_of_start_info):
+    # запускаем аккаунты
+    List_of_bet_account = []
+    countries = []
+    Set_of_countries = set()
 
-    if int(game_minutes) >= 8:
-        return False
-    return True
+    for i in list_of_start_info:
+        countries.append(i[3])
 
-TOKEN = 'ec02c59dee6faaca3189bace969c22d7'
-URL = 'http://api.oddscp.com:8111/valuebets'
+    for i in countries:
+        Set_of_countries.add(i)
 
-min_fi_valuebet = 3
+    Dict_of_Drivers_count = {}
 
-params = {
-    "token": TOKEN,
-    "sport": "soccer",
-    "bk_name": "bet365",
-    # 'get_cfs': '1',
-    'min_fi': min_fi_valuebet,
+    for i in Set_of_countries:
+        Dict_of_Drivers_count[i] = countries.count(i)
 
-}
+    start_time_for_all = time.time()
+    for i in Set_of_countries:
+        print(f'Открываем {Dict_of_Drivers_count[i]} аккаунта для {i}')
+        start_time_for_type = time.time()
+        accounts_get_class = GetWorkAccountsList(number_of_accounts=Dict_of_Drivers_count[i], vpn_country=i)
+        Accounts = accounts_get_class.return_Browser_List()
 
+        for account_info in list_of_start_info:
+            bet365login, bet365password, bet_value, vpn_country = account_info
+            if vpn_country != i:
+                continue
 
-class APIWork:
-    def __init__(self, TOKEN: str, URL: str, params: dict):
-        self.TOKEN = TOKEN
-        self.URL = URL
-        self.params = params
-        self.forks_ids = set()
+            driver_class = FireFoxDriverMainNoAutoOpen(
+                driver=Accounts.pop(-1),
+                login=bet365login,
+                password=bet365password,
+                bet_value=bet_value,
+                vpn_country=vpn_country
+            )
 
-    def send_request_to_API(self, old_bets_set=set()):
-        # список уже проставленных ставок
+            List_of_bet_account.append(driver_class)
+        print(f'{Dict_of_Drivers_count[i]} аккаунтов для {i} открыты за {time.time() - start_time_for_type}')
 
-        try:
-            r = requests.get(self.URL, params=self.params)
-            # print(r.url)
-            respons = json.loads(r.text)
-        except Exception as er:
-            print('!'*100)
-            print('Ошибка при отправке запроса к API')
-            print(er)
-            try:
-                print(r.status_code)
-            except:
-                print('Status code: None')
-            print('!'*100)
-            time.sleep(20)
-            return False
+    print(f'Все аккаунты успешно открыты за {time.time() - start_time_for_all}')
+    # авторизация аккаунтов
+    with Pool(processes=len(List_of_bet_account)) as p:
+        p.map(log_in_driver, List_of_bet_account)
 
-        if len(respons) < 1:
-            print('Нет вилок', datetime.now())
-            return False
+    print(f'Все аккаунты успешно авторизованы!')
+    # START OF PROGRAM
 
-        bet1 = 'No'
-        for i in respons:
-            if not (i['fork_id'] in old_bets_set):
-                old_bets_set.add(i['fork_id'])
-                bet365_line = '1'
-                other_line = '2'
+    porezan_counter = 1
+    # предварительный поиск порезанных аккаунтов
+    with Pool(processes=len(List_of_bet_account)) as p:
+        p.map(cheeck_porezan_li_account, List_of_bet_account)
+    i_porez = 0
+    while i_porez < len(List_of_bet_account):
+        if not List_of_bet_account[i_porez].is_valud_account:
+            telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
+            telegram_notify1.telegram_bot_send_message(telegram_text)
+            delete_account_from_txt_by_login(List_of_bet_account[i_porez].bet365_login)
+            print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
+            List_of_bet_account[i_porez].driver.quit()
+            List_of_bet_account.pop(i_porez)
+        else:
+            i_porez += 1
 
-                # проверка на кибер спорт
-                if check_time(i['BK1_score']):
-                    print('------Вилка найдена------')
-                    print('Ставка на киберфутбол')
-                else:
-                    print('Ставка не на киберфутбол')
-                    continue
-
-                if float(i[f'BK{bet365_line}_cf']) >= 2:
-                    print(f'Коэффициент на bet365:', i[f'BK{bet365_line}_cf'])
-                    bet1 = i
-                    break
-                else:
-                    print('Коэффициент на bet365 < 2', i[f'BK{bet365_line}_cf'])
-
-
-        if bet1 == 'No':
-            print('Нет вилок на кибер футбол', datetime.now())
-            return False
-
-        fork_id = bet1['fork_id']
-        sport_name = bet1['sport']
-
-        bet365_href = bet1[f'BK{bet365_line}_href']
-
-        bet365_type = bet1[f'BK{bet365_line}_bet']
-
-        bet365_coef = bet1[f'BK{bet365_line}_cf']
-        other_coef = bet1[f'BK{other_line}_cf']
-
-        return {
-            'sport_name': sport_name,
-            'bet365_href': bet365_href,
-            'bet365_type': bet365_type,
-            'bet365_coef': bet365_coef,
-            'other_coef': other_coef,
-            'fork_id': fork_id,
-            'bet_all_data': bet1,
-            'responce': respons,
-        }
-
-
-APIWorker1 = APIWork(TOKEN, URL, params)
-
-AllForks = set()
-
-
+    print(f'Осталось рабочих аккаунтов: {len(List_of_bet_account)}')
+    # завершение поиска порезанных аккаунтов
