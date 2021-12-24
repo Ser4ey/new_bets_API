@@ -183,12 +183,12 @@ while True:
                 if GoogleAPIWorker.Accounts[i_porez][5] == 'Да':
                     i_porez += 1
                     continue
-                GoogleAPIWorker.Accounts[i][5] = 'Да'
-                telegram_text = f'{List_of_bet_account[i].bet365_login} - порезан. Баланс: {List_of_bet_account[i].get_balance()} '
+                GoogleAPIWorker.Accounts[i_porez][5] = 'Да'
+                telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
                 telegram_notify1.telegram_bot_send_message(telegram_text)
-                print(f'Аккаунт {List_of_bet_account[i].bet365_login} - порезан')
-                List_of_bet_account[i].driver.quit()
-                List_of_bet_account.pop(i)
+                print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
+                List_of_bet_account[i_porez].driver.quit()
+                List_of_bet_account.pop(i_porez)
             else:
                 i_porez += 1
 
