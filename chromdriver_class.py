@@ -595,12 +595,19 @@ class FireFoxDriverMain:
             time.sleep(2)
         except:
             pass
+        # попытка закрыть уведомление о почте (2.0 version)
+        try:
+            frame = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame')
+            self.driver.switch_to.frame(frame)
+            self.driver.find_element_by_id('RemindMeLater').click()
+        except Exception as er:
+            pass
+        finally:
+            self.driver.switch_to.default_content()
 
         # попытка закрыть купон
         try:
             self.try_click_many_class(['qbs-NormalBetItem_Indicator ', 'lqb-NormalBetItem_Indicator '])
-            # self.driver.find_element_by_class_name('qbs-NormalBetItem_Indicator ').click()
-            # self.driver.find_element_by_class_name('lqb-NormalBetItem_Indicator ').click()
             time.sleep(2)
         except:
             pass
