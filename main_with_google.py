@@ -112,7 +112,7 @@ def check_is_account_froze(driver):
     #     new_driver = get_new_accounts_from_info(Account_start_date)
     #     driver.driver = new_driver[0].driver
 
-# driverParimatch = FireFoxForPimatch(data.VPN_dict['RU'])
+driverParimatch = FireFoxForPimatch(data.VPN_dict['RU'])
 
 List_of_Bet365_open = []
 list_of_start_info = []
@@ -143,7 +143,7 @@ while True:
     new_accounts_info = GoogleAPIWorker.return_new_accounts_info()
     # список новых аккаунтов
     list_of_new_info = []
-    for i in range(new_accounts_info):
+    for i in range(LEN(new_accounts_info)):
         account_data = new_accounts_info[i]
         new_info = [account_data[0], account_data[1], account_data[2], account_data[3]]
         list_of_new_info.append(new_info)
