@@ -1,5 +1,4 @@
 from chromdriver_class import FireFoxDriverMainNoAutoOpen, FireFoxForPimatch, GetWorkAccountsList
-from data import path_to_accounts_file
 from google_sheets_API import AccountsBet365_from_google, GoogleAPIWorker
 import datetime
 from multiprocessing.dummy import Pool
