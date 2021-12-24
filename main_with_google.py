@@ -171,14 +171,17 @@ while True:
     #     p.map(check_is_account_froze, A)
 
     if porezan_counter % 6 == 0:
+        i_porez = 0
         try:
             with Pool(processes=len(List_of_bet_account)) as p:
                 p.map(cheeck_porezan_li_account, List_of_bet_account)
         except Exception as er:
             print(er)
-        for i in range(len(List_of_bet_account)):
-            if not List_of_bet_account[i].is_valud_account:
-                if GoogleAPIWorker.Accounts[i][5] == 'Да':
+
+        while i_porez < len(List_of_bet_account):
+            if not List_of_bet_account[i_porez].is_valud_account:
+                if GoogleAPIWorker.Accounts[i_porez][5] == 'Да':
+                    i_porez += 1
                     continue
                 GoogleAPIWorker.Accounts[i][5] = 'Да'
                 telegram_text = f'{List_of_bet_account[i].bet365_login} - порезан. Баланс: {List_of_bet_account[i].get_balance()} '
@@ -186,6 +189,8 @@ while True:
                 print(f'Аккаунт {List_of_bet_account[i].bet365_login} - порезан')
                 List_of_bet_account[i].driver.quit()
                 List_of_bet_account.pop(i)
+            else:
+                i_porez += 1
 
     GoogleAPIWorker.rewrate_google_sheet()
     porezan_counter += 1
