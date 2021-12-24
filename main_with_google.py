@@ -143,7 +143,7 @@ while True:
     new_accounts_info = GoogleAPIWorker.return_new_accounts_info()
     # список новых аккаунтов
     list_of_new_info = []
-    for i in range(LEN(new_accounts_info)):
+    for i in range(len(new_accounts_info)):
         account_data = new_accounts_info[i]
         new_info = [account_data[0], account_data[1], account_data[2], account_data[3]]
         list_of_new_info.append(new_info)
