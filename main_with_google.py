@@ -137,7 +137,7 @@ porezan_counter = 0
 graphic_bet_telegram_counter = 0
 error_flag = False
 
-input('Новые аккаунты:')
+# input('Новые аккаунты:')
 while True:
     # add new accounts from google sheets
     new_accounts_info = GoogleAPIWorker.return_new_accounts_info()
@@ -148,7 +148,7 @@ while True:
         new_info = [account_data[0], account_data[1], account_data[2], account_data[3]]
         list_of_new_info.append(new_info)
 
-    print('list of new info:', list_of_new_info)
+    # print('list of new info:', list_of_new_info)
 
     if len(list_of_new_info) > 0:
         print('Запускаем новые аккаунты')
