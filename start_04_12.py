@@ -25,10 +25,11 @@ def reanimate_bet365com(driver):
         pass
 
 def check_is_account_froze(driver):
-    try:
-        driver.restart_browser_and_bet365_account()
-    except:
-        pass
+    pass
+    # try:
+    #     driver.restart_browser_and_bet365_account()
+    # except:
+    #     pass
 
 
 def cheeck_porezan_li_account(driver):

@@ -26,32 +26,11 @@ def reanimate_bet365com(driver):
         pass
 
 
-def check_is_account_froze(driver):
-    try:
-        driver.restart_browser_and_bet365_account()
-    except:
-        pass
-
-
 def cheeck_porezan_li_account(driver):
     try:
         driver.check_is_account_not_valid_mean_porezan()
     except Exception as er:
         print(f'Ошибка при определении порезки для - {driver.bet365_login}\nError: {er}')
-
-
-def delete_account_from_txt_by_login(login: str):
-    '''Удаляет из файла с аккаунтами все строки, содержащии данный логин'''
-    with open(path_to_accounts_file, 'r', encoding='utf-8') as file:
-        lines_with_accounts = file.readlines()
-
-    with open(path_to_accounts_file, 'w', encoding='utf-8') as file:
-        for line in lines_with_accounts:
-            if not login in line:
-                file.write(line)
-            else:
-                print(f'{login} - удалён из аккаунтов!')
-    return
 
 
 def log_in_driver(driver_class):
@@ -118,6 +97,21 @@ def get_new_accounts_from_info(list_of_start_info):
     return List_of_bet_account
 
 
+def check_is_account_froze(driver):
+    pass
+    # result = driver.restart_browser_and_bet365_account()
+    # # Аккаунт завис
+    # if result:
+    #     Account_start_date = [[
+    #         driver.bet365_login,
+    #         driver.bet365_password,
+    #         driver.bet_value,
+    #         driver.vpn_country
+    #     ]]
+    #
+    #     new_driver = get_new_accounts_from_info(Account_start_date)
+    #     driver.driver = new_driver[0].driver
+
 # driverParimatch = FireFoxForPimatch(data.VPN_dict['RU'])
 
 List_of_Bet365_open = []
@@ -171,9 +165,9 @@ while True:
         p.map(reanimate_bet365com, A)
 
     # проверка, завис ли аккаунты
-    with Pool(processes=len(List_of_bet_account)) as p:
-        A = [i for i in List_of_bet_account]
-        p.map(check_is_account_froze, A)
+    # with Pool(processes=len(List_of_bet_account)) as p:
+    #     A = [i for i in List_of_bet_account]
+    #     p.map(check_is_account_froze, A)
 
     if porezan_counter % 6 == 0:
         try:
@@ -188,7 +182,6 @@ while True:
                 GoogleAPIWorker.Accounts[i][5] = 'Да'
                 telegram_text = f'{List_of_bet_account[i].bet365_login} - порезан. Баланс: {List_of_bet_account[i].get_balance()} '
                 telegram_notify1.telegram_bot_send_message(telegram_text)
-                delete_account_from_txt_by_login(List_of_bet_account[i].bet365_login)
                 print(f'Аккаунт {List_of_bet_account[i].bet365_login} - порезан')
                 List_of_bet_account[i].driver.quit()
                 List_of_bet_account.pop(i)
