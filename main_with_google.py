@@ -148,9 +148,11 @@ while True:
         new_info = [account_data[0], account_data[1], account_data[2], account_data[3]]
         list_of_new_info.append(new_info)
 
-    if len(new_accounts_info) > 0:
+    print('list of new info:', list_of_new_info)
+
+    if len(list_of_new_info) > 0:
         print('Запускаем новые аккаунты')
-        List_of_bet_account += get_new_accounts_from_info(new_accounts_info)
+        List_of_bet_account += get_new_accounts_from_info(list_of_new_info)
     else:
         print('Нет новых аккаунтов')
 
