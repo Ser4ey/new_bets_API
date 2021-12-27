@@ -87,7 +87,11 @@ class WorkWithGoogleAPI:
 
     def return_new_accounts_info(self):
         # возвращает данные для регистрации новых аккаунтов
-        new_accounts = self.google_api.get_all_accounts_date()
+        try:
+            new_accounts = self.google_api.get_all_accounts_date()
+        except Exception as er:
+            print(f'Ошибка при получении данных из гугл таблицы. {er}')
+            return []
 
         return_accounts = new_accounts[len(self.Accounts):]
 
