@@ -141,7 +141,7 @@ class GetWorkAccountsList:
 
 List_of_Bet365_open = []
 list_of_start_info = []
-list_of_start_info.append('rob320;555ggg;0.2;UK'.split(';'))
+list_of_start_info.append('nad684;777xxx;0.2;UK'.split(';'))
 i1 = 1
 # for i in range(len(AccountsBet365)):
 #     account_data = AccountsBet365[i]

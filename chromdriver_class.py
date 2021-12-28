@@ -913,7 +913,7 @@ class FireFoxDriverMain:
             text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text[-4:]
             text1_2 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
-            if (text1 == 'ГОЛЫ') or (text1 == 'Goals' and len(text1_2) > 12):
+            if (text1 == 'ГОЛЫ') or (text1 == 'oals' and len(text1_2) > 12):
                 line = i
                 print(f'line: {line}')
                 break
