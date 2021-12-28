@@ -86,7 +86,7 @@ class APIWork:
                             print(f'Ставка уже была проставлена. ' + f'{bet_365url}:{bet_365type}')
                             continue
                         else:
-                            if len(self.old_forks_info) > 1000:
+                            if len(self.old_forks_info) > 100:
                                 self.old_forks_info = []
                             self.old_forks_info.append(f'{bet_365url}:{bet_365type}')
 
