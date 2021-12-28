@@ -37,6 +37,9 @@ class APIWork:
         self.URL = URL
         self.params = params
         self.forks_ids = set()
+        self.old_forks_info = [
+            'url:bet_type'
+        ]
 
     def send_request_to_API(self, old_bets_set='1'):
         # список уже проставленных ставок
@@ -76,6 +79,16 @@ class APIWork:
                         if i['BK1_name'] == 'bet365':
                             bet365_line = '1'
                             parimatch_line = '2'
+
+                        bet_365url = i[f'BK{bet365_line}_href']
+                        bet_365type = i[f'BK{bet365_line}_bet']
+                        if f'{bet_365url}:{bet_365type}' in self.old_forks_info:
+                            print(f'Ставка уже была проставлена. ' + f'{bet_365url}:{bet_365type}')
+                            continue
+                        else:
+                            if len(self.old_forks_info) > 0:
+                                self.old_forks_info = []
+                            self.old_forks_info.append(f'{bet_365url}:{bet_365type}')
 
                         if float(i[f'BK{bet365_line}_cf']) >= 2:
                             print(f'Коэффициент на bet365:', i[f'BK{bet365_line}_cf'])
