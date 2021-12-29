@@ -90,6 +90,11 @@ class APIWork:
                                 self.old_forks_info = []
                             self.old_forks_info.append(f'{bet_365url}:{bet_365type}')
 
+                        # новый фильтр 29.12.2021
+                        if bet_365type in ['WIN__P1', 'WIN__P2', 'WIN__PX', 'WIN__1X', 'WIN__X2']:
+                            print(f'Ставка {bet_365type} не проставляется')
+                            continue
+
                         if float(i[f'BK{bet365_line}_cf']) >= 2:
                             print(f'Коэффициент на bet365:', i[f'BK{bet365_line}_cf'])
                             bet1 = i
@@ -146,9 +151,12 @@ class APIWork:
 
         print('Выигрышных ставок с bet365:', count_of_bet365_plus_forks)
         print('Выигрышных ставок с parimatch:', count_of_parimatch_plus_forks)
-        if count_of_parimatch_plus_forks >= count_of_bet365_plus_forks:
-            print('Bet365 не инициатор')
-            return False
+
+        # Новое условие 29.12.2021
+        print('Инициатор не проверяется')
+        # if count_of_parimatch_plus_forks >= count_of_bet365_plus_forks:
+        #     print('Bet365 не инициатор')
+        #     return False
 
         return {
             'sport_name': sport_name,
