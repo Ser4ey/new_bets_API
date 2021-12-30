@@ -153,10 +153,10 @@ class APIWork:
         print('Выигрышных ставок с parimatch:', count_of_parimatch_plus_forks)
 
         # Новое условие 29.12.2021
-        print('Инициатор не проверяется')
-        # if count_of_parimatch_plus_forks >= count_of_bet365_plus_forks:
-        #     print('Bet365 не инициатор')
-        #     return False
+        print('Инициатор проверяется')
+        if count_of_parimatch_plus_forks >= count_of_bet365_plus_forks:
+            print('Bet365 не инициатор')
+            return False
 
         return {
             'sport_name': sport_name,
