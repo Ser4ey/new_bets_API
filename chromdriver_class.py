@@ -285,7 +285,7 @@ class FireFoxDriverMain:
             self.driver.switch_to.default_content()
 
         try:
-            time.sleep(3)
+            time.sleep(5)
             self.driver.find_element_by_class_name('pm-MessageOverlayCloseButton ').click()
         except:
             pass
@@ -904,19 +904,34 @@ class FireFoxDriverMain:
     def make_cyber_football_bet_totalbet_of_teme_1or2(self, url, bet_type, coef, bet_value):
         print(f'Проставляем ставку total bet team url: {url}; bet_type: {bet_type}; coef: {coef}')
         self.driver.get(url)
-        time.sleep(3)
+        time.sleep(1.5)
 
         list_of_bets = self.driver.find_elements_by_class_name('sip-MarketGroup ')
+        first_len = len(list_of_bets)
+        print(f'len1: {len(list_of_bets)}')
+
+        for i in range(10):
+            time.sleep(0.5)
+            list_of_bets = self.driver.find_elements_by_class_name('sip-MarketGroup ')
+            # print(f'len{i}: {len(list_of_bets)}')
+            if len(list_of_bets) > first_len:
+                print('Все ставки загружены')
+                break
+
         line = 'None'
         for i in range(len(list_of_bets)):
             bet_element = list_of_bets[i]
             text1 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text[-4:]
             text1_2 = bet_element.find_element_by_class_name('sip-MarketGroupButton_Text ').text
 
+            # print(text1)
+            # print(f'{i}) {text1_2}')
             if (text1 == 'ГОЛЫ') or (text1 == 'oals' and len(text1_2) > 12):
                 line = i
                 print(f'line: {line}')
                 break
+            # else:
+            #     print('no')
 
         if line == 'None':
             print('Total bet на команду не найдена')

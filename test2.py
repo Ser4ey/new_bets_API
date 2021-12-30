@@ -118,7 +118,7 @@ class GetWorkAccountsList:
                     pass
 
         # число браузеров, которое будет открыто
-        number_of_tries = 1
+        number_of_tries = 3
         Browser_List = []
 
         while len(Browser_List) < self.number_of_accounts:
@@ -141,7 +141,7 @@ class GetWorkAccountsList:
 
 List_of_Bet365_open = []
 list_of_start_info = []
-list_of_start_info.append('nad684;777xxx;0.2;UK'.split(';'))
+list_of_start_info.append('dav353;555hhh;0.2;UK'.split(';'))
 i1 = 1
 # for i in range(len(AccountsBet365)):
 #     account_data = AccountsBet365[i]
@@ -178,9 +178,10 @@ account1 = List_of_bet_account[0]
 while True:
     url = input('url:')
     bet_type = input('bet_type:')
-    coef = input('coef:')
+    # coef = input('coef:')
 
     r = account1.check_is_account_not_valid_mean_porezan()
+    account1.make_cyber_football_bet(url, bet_type, '1')
     print(r)
     # account1.make_cyber_football_bet(url, bet_type, coef)
     #
