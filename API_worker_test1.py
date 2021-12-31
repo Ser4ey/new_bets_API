@@ -128,13 +128,13 @@ class APIWork:
         list_of_cfs = [0, cfs1, cfs2]
         fork_id = bet1['fork_id']
 
-        coef_for_bet365 = list_of_cfs[int(bet365_line)]
-        print(coef_for_bet365)
-        coef_for_bet365 = [float(i) for i in coef_for_bet365.values()]
-        max_coef_from_bet365 = max(coef_for_bet365)
-
-        print(f'Макс коэффициет на плечо bet365: {max_coef_from_bet365}')
-        print(f'Коэффициент bet365: {bet365_coef}')
+        # coef_for_bet365 = list_of_cfs[int(bet365_line)]
+        # print(coef_for_bet365)
+        # coef_for_bet365 = [float(i) for i in coef_for_bet365.values()]
+        # max_coef_from_bet365 = max(coef_for_bet365)
+        #
+        # print(f'Макс коэффициет на плечо bet365: {max_coef_from_bet365}')
+        # print(f'Коэффициент bet365: {bet365_coef}')
 
         count_of_parimatch_plus_forks = find_number_of_plus_bets(
             our_coef=parimatch_coef,
@@ -142,11 +142,12 @@ class APIWork:
             opposite_forks=list_of_cfs[int(bet365_line)]
         )
         print('Выигрышных ставок(вилок) с parimatch:', count_of_parimatch_plus_forks)
+        print('Неважно сколько вилок с bet365')
 
         # Новое условие 30.12.2021
-        if max_coef_from_bet365 > bet365_coef:
-            print('!Коэффициент для Bet365 не максимальный!')
-            return False
+        # if max_coef_from_bet365 > bet365_coef:
+        #     print('!Коэффициент для Bet365 не максимальный!')
+        #     return False
         if count_of_parimatch_plus_forks > 0:
             print('!Есть вилки с parimatch!')
             return False

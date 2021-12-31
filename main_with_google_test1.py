@@ -35,7 +35,10 @@ def cheeck_porezan_li_account(driver):
 def log_in_driver(driver_class):
     login = driver_class.bet365_login
     passwd = driver_class.bet365_password
-    driver_class.log_in_bet365_v2(login, passwd)
+    try:
+        driver_class.log_in_bet365_v2(login, passwd)
+    except Exception as er:
+        print(f'1Ошибка при входе в аккаунт. Error:{er}')
 
 
 def open_stable_bet365(driver_class):
