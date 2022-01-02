@@ -23,8 +23,20 @@ class GoogleAPI:
                        row=['Login', 'Password', 'Bet value(%5)', 'VPN',
                             'Статус работы(in_work, need_start, dead)', 'Порезан'])
 
+    def get_service_to_google_API(self):
+        # создаём и возвращаем новую сессию сейссию с таблицей
+        CREDENTIALS_FILE = 'creds.json'
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(
+            CREDENTIALS_FILE,
+            ['https://www.googleapis.com/auth/spreadsheets',
+             'https://www.googleapis.com/auth/drive'])
+        httpAuth = credentials.authorize(httplib2.Http())
+        service = discovery.build('sheets', 'v4', http=httpAuth)
+        return service
+
     def write_row(self, row, current_line=2):
-        values = self.service.spreadsheets().values().batchUpdate(
+        service = self.get_service_to_google_API()
+        values = service.spreadsheets().values().batchUpdate(
             spreadsheetId=self.spreadsheet_id,
             body={
                 "valueInputOption": "USER_ENTERED",
@@ -45,8 +57,9 @@ class GoogleAPI:
 
     def get_all_accounts_date(self):
         # возвращает данные аккаунтов, исключая 1 строку заголовков
+        service = self.get_service_to_google_API()
         ranges = ["A1:F1000"]
-        results = self.service.spreadsheets().values().batchGet(spreadsheetId=self.spreadsheet_id,
+        results = service.spreadsheets().values().batchGet(spreadsheetId=self.spreadsheet_id,
                                                            ranges=ranges,
                                                            valueRenderOption='FORMATTED_VALUE',
                                                            dateTimeRenderOption='FORMATTED_STRING').execute()
