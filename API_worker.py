@@ -82,18 +82,12 @@ class APIWork:
 
                         bet_365url = i[f'BK{bet365_line}_href']
                         bet_365type = i[f'BK{bet365_line}_bet']
-                        # if f'{bet_365url}:{bet_365type}' in self.old_forks_info:
-                        #     print(f'Ставка уже была проставлена. ' + f'{bet_365url}:{bet_365type}')
-                        #     continue
-                        # else:
-                        #     if len(self.old_forks_info) > 100:
-                        #         self.old_forks_info = []
-                        #     self.old_forks_info.append(f'{bet_365url}:{bet_365type}')
 
-                        # новый фильтр 29.12.2021
-                        if bet_365type in ['WIN__P1', 'WIN__P2', 'WIN__PX', 'WIN__1X', 'WIN__X2']:
-                            print(f'Ставка {bet_365type} не проставляется')
-                            continue
+
+                        # новый фильтр 29.12.2021 - выключен
+                        # if bet_365type in ['WIN__P1', 'WIN__P2', 'WIN__PX', 'WIN__1X', 'WIN__X2']:
+                        #     print(f'Ставка {bet_365type} не проставляется')
+                        #     continue
 
                         if float(i[f'BK{bet365_line}_cf']) >= 2:
                             print(f'Коэффициент на bet365:', i[f'BK{bet365_line}_cf'])
