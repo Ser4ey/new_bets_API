@@ -1,5 +1,5 @@
 from chromdriver_class import FireFoxDriverMainNoAutoOpen, FireFoxForPimatch, GetWorkAccountsList
-from google_sheets_API import AccountsBet365_from_google, GoogleAPIWorker
+from google_sheets_API import AccountsBet365_from_google, GoogleAPIWorker, google_table_api
 import datetime
 from multiprocessing.dummy import Pool
 import time
@@ -114,33 +114,71 @@ def check_is_account_froze(driver):
     #     new_driver = get_new_accounts_from_info(Account_start_date)
     #     driver.driver = new_driver[0].driver
 
+
+class GetNewAccountsListHigh:
+    def __init__(self, reboot_time=60*60):
+        self.time_point = time.time()
+        self.reboot_time = reboot_time
+
+    def get_new_accounts_list(self):
+        '''Возвращает список новых аккаунтов'''
+        list_of_start_info = []
+        AccountsBet365_from_google = google_table_api.get_all_accounts_date()
+        i1 = 1
+
+        for i in range(len(AccountsBet365_from_google)):
+            account_data = AccountsBet365_from_google[i]
+            if account_data[5] == 'Да':
+                continue
+            start_info = [account_data[0], account_data[1], account_data[2], account_data[3]]
+            list_of_start_info.append(start_info)
+            i1 += 1
+
+        List_of_bet_account = get_new_accounts_from_info(list_of_start_info)
+        GoogleAPIWorker.rewrate_google_sheet()
+
+        return List_of_bet_account
+
+    def restart_all_accounts_and_return_new_by_time_check(self, accounts_list_to_close=[]):
+        '''Принемает список старых аккаунтов, закрывает их, если прошло более x ремени'''
+        time_now = time.time()
+
+        time_delta = time_now - self.time_point
+        if time_delta < self.reboot_time:
+            print(f'С момента перезагрузки прошло {time_delta} сек. Не перезапускаем аккаунты(интервал: {self.reboot_time})')
+            return accounts_list_to_close
+
+        print(f'С момента перезагрузки прошло {time_delta} сек. Перезапуск!')
+        for i in range(len(accounts_list_to_close)):
+            try:
+                driver_class_ = accounts_list_to_close[i]
+                driver_class_.driver.quit()
+                print(f'Аккаунт {i+1}/{len(accounts_list_to_close)} закрыт')
+            except:
+                print(f'Аккаунт {i+1}/{len(accounts_list_to_close)} не удалось закрыть!')
+
+        self.time_point = time.time()
+        print(f'Обновляем время, новая точка: {self.time_point}')
+
+        return self.get_new_accounts_list()
+
+
+NewAccountsGetterHigh = GetNewAccountsListHigh()
+
 driverParimatch = FireFoxForPimatch(data.VPN_dict['RU'])
 
-List_of_Bet365_open = []
-list_of_start_info = []
-
-i1 = 1
-for i in range(len(AccountsBet365_from_google)):
-    account_data = AccountsBet365_from_google[i]
-    if account_data[5] == 'Да':
-        continue
-    start_info = [account_data[0], account_data[1], account_data[2], account_data[3]]
-    list_of_start_info.append(start_info)
-    i1 += 1
-
-List_of_bet_account = get_new_accounts_from_info(list_of_start_info)
-GoogleAPIWorker.rewrate_google_sheet()
-
+List_of_bet_account = NewAccountsGetterHigh.get_new_accounts_list()
 
 AllBetsSet = set()
-
 reboot_counter = 0
 porezan_counter = 0
 graphic_bet_telegram_counter = 0
 error_flag = False
 
-# input('Новые аккаунты:')
 while True:
+    # перезапуск аккаунтов каждый час
+    List_of_bet_account = NewAccountsGetterHigh.restart_all_accounts_and_return_new_by_time_check(List_of_bet_account)
+
     # add new accounts from google sheets
     new_accounts_info = GoogleAPIWorker.return_new_accounts_info()
     # список новых аккаунтов
@@ -167,11 +205,6 @@ while True:
     with Pool(processes=len(List_of_bet_account)) as p:
         A = [i for i in List_of_bet_account]
         p.map(reanimate_bet365com, A)
-
-    # проверка, завис ли аккаунты
-    # with Pool(processes=len(List_of_bet_account)) as p:
-    #     A = [i for i in List_of_bet_account]
-    #     p.map(check_is_account_froze, A)
 
     if porezan_counter % 6 == 0:
         i_porez = 0
