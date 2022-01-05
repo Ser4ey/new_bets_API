@@ -138,14 +138,14 @@ class APIWork:
         # print(f'Коэффициент bet365: {bet365_coef}')
 
 
-        coef_for_parimatch = list_of_cfs[int(parimatch_line)]
-        print(coef_for_parimatch)
-        coef_for_parimatch = [float(i) for i in coef_for_parimatch.values()]
-
-        max_coef_from_parimatch = max(coef_for_parimatch)
-
-        print(f'Макс коэффициет на плечо parimatch: {max_coef_from_parimatch}')
-        print(f'Коэффициент parimatch: {parimatch_coef}')
+        # coef_for_parimatch = list_of_cfs[int(parimatch_line)]
+        # print(coef_for_parimatch)
+        # coef_for_parimatch = [float(i) for i in coef_for_parimatch.values()]
+        #
+        # max_coef_from_parimatch = max(coef_for_parimatch)
+        #
+        # print(f'Макс коэффициет на плечо parimatch: {max_coef_from_parimatch}')
+        # print(f'Коэффициент parimatch: {parimatch_coef}')
 
 
         # count_of_parimatch_plus_forks = find_number_of_plus_bets(
@@ -165,9 +165,10 @@ class APIWork:
         #     print('!Есть вилки с parimatch!')
         #     return False
 
-        if max_coef_from_parimatch > parimatch_coef:
-            print('Коэффициент на париматч не максимальный!')
-            return False
+        # if max_coef_from_parimatch > parimatch_coef:
+        #     print('Коэффициент на париматч не максимальный!')
+        #     return False
+        print('!!!Ставим все ставки независимо от того, есть инициатор или нет!!!')
 
         if len(self.old_forks_info) > 100:
             self.old_forks_info = []
