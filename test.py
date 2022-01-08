@@ -1,19 +1,39 @@
 import time
 
 
-class RestartAccountsClass:
-    def __init__(self):
-        self.time_point = time.time()
-        '''Принемает список старых аккаунтов, закрывает их'''
-    def restart_all_accounts_and_return_new(self, accounts_list=[]):
-        time_now = time.time()
+class LogWorker:
+    def __init__(self, path_to_log_file):
+        self.path_to_log_file = path_to_log_file
+        self.log_info = []
 
-        time_delta = time_now - self.time_point
-        print(time_delta, time_delta > 1)
+    def write_row_in_log_file(self, row):
+        '''row - интерируемый'''
+        with open(self.path_to_log_file, 'a', encoding='utf-8') as file:
+            str_row = [str(i) for i in row]
+
+            row_line = ','.join(str_row) + '\n'
+            file.write(row_line)
+
+        print(f'Строка записана: {row_line}')
+
+    def get_all_log_data(self):
+        with open(self.path_to_log_file, 'r', encoding='utf-8') as file:
+            log_info = file.readlines()
+            log_info = [i.strip() for i in log_info if i != '']
+        print(log_info)
+        return log_info
+
+    def get_info_from_log_string(self):
+        return ''
 
 
-restartClass1 = RestartAccountsClass()
 
-while True:
-    input(':::')
-    restartClass1.restart_all_accounts_and_return_new()
+
+
+
+logWorker1 = LogWorker('logFile.txt')
+
+# logWorker1.write_row_in_log_file([1,2,3,'dd'])
+logWorker1.get_all_log_data()
+
+

@@ -163,7 +163,16 @@ class APIWork:
             'cfs1': cfs1,
             'cfs2': cfs2,
             'fork_id': fork_id,
+            # данные для логов BK1 == bet365
             'bet_all_data': bet1,
+            'count_of_BK1_plus_forks': count_of_bet365_plus_forks,
+            'count_of_BK2_plus_forks': count_of_parimatch_plus_forks,
+            'BK1_name': bet1[f'BK{bet365_line}_name'],
+            'BK2_name': bet1[f'BK{parimatch_line}_name'],
+            'BK1_coef': bet1[f'BK{bet365_line}_cf'],
+            'BK2_coef': bet1[f'BK{parimatch_line}_cf'],
+            'BK1_game_name': bet1[f'BK{bet365_line}_game'],
+            # для определения ставки
             'responce': respons,
         }
 

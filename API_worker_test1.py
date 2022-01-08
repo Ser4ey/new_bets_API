@@ -128,31 +128,17 @@ class APIWork:
         list_of_cfs = [0, cfs1, cfs2]
         fork_id = bet1['fork_id']
 
-        # coef_for_bet365 = list_of_cfs[int(bet365_line)]
+        count_of_bet365_plus_forks = find_number_of_plus_bets(
+            our_coef=bet365_coef,
+            bk_name='BT3',
+            opposite_forks=list_of_cfs[int(parimatch_line)]
+        )
 
-        # print(coef_for_bet365)
-        # coef_for_bet365 = [float(i) for i in coef_for_bet365.values()]
-        # max_coef_from_bet365 = max(coef_for_bet365)
-        #
-        # print(f'Макс коэффициет на плечо bet365: {max_coef_from_bet365}')
-        # print(f'Коэффициент bet365: {bet365_coef}')
-
-
-        # coef_for_parimatch = list_of_cfs[int(parimatch_line)]
-        # print(coef_for_parimatch)
-        # coef_for_parimatch = [float(i) for i in coef_for_parimatch.values()]
-        #
-        # max_coef_from_parimatch = max(coef_for_parimatch)
-        #
-        # print(f'Макс коэффициет на плечо parimatch: {max_coef_from_parimatch}')
-        # print(f'Коэффициент parimatch: {parimatch_coef}')
-
-
-        # count_of_parimatch_plus_forks = find_number_of_plus_bets(
-        #     our_coef=parimatch_coef,
-        #     bk_name='PAN',
-        #     opposite_forks=list_of_cfs[int(bet365_line)]
-        # )
+        count_of_parimatch_plus_forks = find_number_of_plus_bets(
+            our_coef=parimatch_coef,
+            bk_name='PAN',
+            opposite_forks=list_of_cfs[int(bet365_line)]
+        )
         # print('Выигрышных ставок(вилок) с parimatch:')
         print('Неважно сколько вилок с bet365')
         print('Неважно сколько вилок с parimatch')
@@ -186,7 +172,16 @@ class APIWork:
             'cfs1': cfs1,
             'cfs2': cfs2,
             'fork_id': fork_id,
+            # данные для логов BK1 == bet365
             'bet_all_data': bet1,
+            'count_of_BK1_plus_forks': count_of_bet365_plus_forks,
+            'count_of_BK2_plus_forks': count_of_parimatch_plus_forks,
+            'BK1_name': bet1[f'BK{bet365_line}_name'],
+            'BK2_name': bet1[f'BK{parimatch_line}_name'],
+            'BK1_coef': bet1[f'BK{bet365_line}_cf'],
+            'BK2_coef': bet1[f'BK{parimatch_line}_cf'],
+            'BK1_game_name': bet1[f'BK{bet365_line}_game'],
+            # для определения ставки
             'responce': respons,
         }
 
