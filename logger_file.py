@@ -9,7 +9,6 @@ class LogWorker:
     def write_row_in_log_file(self, row):
         '''row - интерируемый
         [BK1_name, BK2_name, BK1_coef, BK2_coef, BK1_game_name, count_of_BK1_plus_forks, count_of_BK2_plus_forks]
-
         '''
         with open(self.path_to_log_file, 'a', encoding='utf-8') as file:
             str_row = [str(i) for i in row]
@@ -48,13 +47,9 @@ class LogWorker:
         return log_dict
 
 
-
-
-
-
 logWorker1 = LogWorker('logFile.txt')
 
 # logWorker1.write_row_in_log_file([1,2,3,'dd'])
-logWorker1.get_all_log_data()
+# logWorker1.get_all_log_data()
 
 

@@ -6,6 +6,7 @@ import time
 from telegram_API import telegram_notify1
 import data
 from API_worker import APIWorker1
+from logger_file import logWorker1
 
 
 def make_bet_multipotok(All_elements_array):
@@ -267,6 +268,20 @@ while True:
             print('Не удалось получить коэффициент для париматч')
             continue
 
+        # добавление ставки в логи
+        print('Добавляем ставку в лог файл')
+        logWorker1.write_row_in_log_file(
+        [
+            fork_info['BK1_name'],
+            fork_info['BK2_name'],
+            fork_info['BK1_coef'],
+            fork_info['BK2_coef'],
+            fork_info['BK1_game_name'],
+            fork_info['count_of_BK1_plus_forks'],
+            fork_info['count_of_BK2_plus_forks'],
+
+        ]
+        )
         # проставление ставок на всех аккаунтах (Pool)
         try:
             print('-'*100)
