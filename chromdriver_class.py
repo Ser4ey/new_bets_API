@@ -691,6 +691,10 @@ class FireFoxDriverMain:
         return True
 
     def make_any_sport_bet(self, sport, url, bet_type, coef):
+        # проверка, что аккаунт не порезан
+        if not self.is_valud_account:
+            print(f'Аккаунт {self.bet365_login} - порезан, ставки не проставляются')
+            return
         # Попытка закрыть окно неактивности
         try:
             # попытка закрыть окно неактивности
