@@ -103,9 +103,9 @@ class APIWork:
             if i['is_cyber'] == '1' and (i['fork_id'] not in self.old_forks_info):
                 if not (i['fork_id'] in old_bets_set):
                     # добавляем ставку в полученые
-                    # if len(self.old_forks_info) > 1000:
-                    #     self.old_forks_info = []
-                    # self.old_forks_info.append(bet1['fork_id'])
+                    if len(self.old_forks_info) > 1000:
+                        self.old_forks_info = []
+                    self.old_forks_info.append(bet1['fork_id'])
                     print('bet add')
 
                     alive_time = i['alive_sec']
