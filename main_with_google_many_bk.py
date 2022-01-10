@@ -168,7 +168,7 @@ class GetNewAccountsListHigh:
 
 NewAccountsGetterHigh = GetNewAccountsListHigh()
 
-driverParimatch = FireFoxForPimatch(data.VPN_dict['RU'])
+# driverParimatch = FireFoxForPimatch(data.VPN_dict['RU'])
 
 List_of_bet_account = NewAccountsGetterHigh.get_new_accounts_list()
 
