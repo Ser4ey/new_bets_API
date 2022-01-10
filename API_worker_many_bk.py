@@ -2,7 +2,10 @@ import requests
 import json
 import time
 from datetime import datetime
+
+import data
 from data import min_fi, min_value_of_alive_sec, max_value_of_alive_sec
+import chromdriver_class
 
 
 def find_number_of_plus_bets(our_coef: str, bk_name: str, opposite_forks: dict):
@@ -22,9 +25,40 @@ def find_number_of_plus_bets(our_coef: str, bk_name: str, opposite_forks: dict):
 TOKEN = 'ec02c59dee6faaca3189bace969c22d7'
 URL = 'http://212.109.216.193:8111/forks'
 
+
+bookmakers_list = {
+    '1xbet': 'XBT',
+    # '1xbit': 'XBI',
+    # '1xstavka': 'XST',
+    # 'melbet': 'MLB',
+    'favbet': 'FAV',
+    # 'fonbet': 'FON', нет
+    'winline': 'WLN',
+    # 'betcity': 'BCT',
+    # 'betcity_by': 'BCY',
+    'parimatch_ru_new': 'PAN',
+
+}
+
+bookmakers_drivers_to_check = {
+    # '1xbet': chromdriver_class.FireFoxFor1XBet(),
+    # 'favbet': chromdriver_class.FireFoxForFavbet(),
+    # 'winline': chromdriver_class.FireFoxForWinline(),
+    # 'parimatch_ru_new':  chromdriver_class.FireFoxForPimatch(data.VPN_dict['RU'])
+}
+
+all_bk_list = [i for i in bookmakers_list.keys()]
+all_bk_list.append('bet365')
+
+all_bk_string = ','.join(all_bk_list)
+
+print('Список бк:', all_bk_string)
+# exit()
+
 params = {
     "token": TOKEN,
-    "bk2_name": "bet365,parimatch_ru_new",
+    'bk_name': 'bet365',
+    "bk2_name": all_bk_string,
     "sport": "soccer",
     'get_cfs': '1',
     'min_fi': min_fi,
@@ -42,11 +76,11 @@ class APIWork:
     def send_request_to_API(self, old_bets_set='1'):
         # список уже проставленных ставок
         if old_bets_set == '1':
-            old_bets_set = set()
+            old_bets_set = []
 
         try:
             r = requests.get(self.URL, params=self.params)
-            # print(r.url)
+            print(r.url)
             respons = json.loads(r.text)
         except Exception as er:
             print('!'*100)
@@ -68,6 +102,12 @@ class APIWork:
         for i in respons:
             if i['is_cyber'] == '1' and (i['fork_id'] not in self.old_forks_info):
                 if not (i['fork_id'] in old_bets_set):
+                    # добавляем ставку в полученые
+                    # if len(self.old_forks_info) > 1000:
+                    #     self.old_forks_info = []
+                    # self.old_forks_info.append(bet1['fork_id'])
+                    print('bet add')
+
                     alive_time = i['alive_sec']
                     print('------Вилка найдена------')
                     if (min_value_of_alive_sec <= alive_time) and (alive_time <= max_value_of_alive_sec):
@@ -81,19 +121,12 @@ class APIWork:
                         bet_365url = i[f'BK{bet365_line}_href']
                         bet_365type = i[f'BK{bet365_line}_bet']
 
-                        # новый фильтр 29.12.2021
-                        if bet_365type in ['WIN__P1', 'WIN__P2', 'WIN__PX', 'WIN__1X', 'WIN__X2']:
-                            print(f'Ставка {bet_365type} не проставляется')
-                            old_bets_set.add(i['fork_id'])
-                            continue
-
                         if float(i[f'BK{bet365_line}_cf']) >= 2:
                             print(f'Коэффициент на bet365:', i[f'BK{bet365_line}_cf'])
                             bet1 = i
                             break
                         else:
                             print('Коэффициент на bet365 < 2', i[f'BK{bet365_line}_cf'])
-
                     else:
                         print(f'Время жизни вилки не соответствует условиям: {alive_time}')
 
@@ -118,7 +151,11 @@ class APIWork:
         bet365_coef = bet1[f'BK{bet365_line}_cf']
         parimatch_coef = bet1[f'BK{parimatch_line}_cf']
 
+        oposite_bk_name = bet1[f'BK{parimatch_line}_name']
 
+        if float(bet365_coef) < 2:
+            print('Коэффициент на бет365 < 2')
+        # список коэффициентов по всем бк
         cfs1 = bet1['cfs1']
         cfs1 = json.loads(cfs1)
 
@@ -136,29 +173,38 @@ class APIWork:
 
         count_of_parimatch_plus_forks = find_number_of_plus_bets(
             our_coef=parimatch_coef,
-            bk_name='PAN',
+            bk_name=bookmakers_list[oposite_bk_name],
             opposite_forks=list_of_cfs[int(bet365_line)]
         )
-        # print('Выигрышных ставок(вилок) с parimatch:')
-        print('Неважно сколько вилок с bet365')
-        print('Неважно сколько вилок с parimatch')
 
-        # Новое условие 30.12.2021
-        # if max_coef_from_bet365 > bet365_coef:
-        #     print('!Коэффициент для Bet365 не максимальный!')
-        #     return False
-        # if count_of_parimatch_plus_forks > 0:
-        #     print('!Есть вилки с parimatch!')
-        #     return False
+        print('Выигрышных ставок с bet365:', count_of_bet365_plus_forks)
+        print(f'Выигрышных ставок с {oposite_bk_name}:', count_of_parimatch_plus_forks)
 
-        # if max_coef_from_parimatch > parimatch_coef:
-        #     print('Коэффициент на париматч не максимальный!')
-        #     return False
-        print('!!!Ставим все ставки независимо от того, есть инициатор или нет!!!')
+        # Новое условие 29.12.2021
+        print('Инициатор проверяется')
+        if count_of_parimatch_plus_forks >= count_of_bet365_plus_forks:
+            print('Bet365 не инициатор')
+            return False
 
-        if len(self.old_forks_info) > 100:
-            self.old_forks_info = []
-        self.old_forks_info.append(bet1['fork_id'])
+        driver_for_second_bk = bookmakers_drivers_to_check[bookmakers_list[oposite_bk_name]]
+        print(f'Вторая бк: {oposite_bk_name}')
+
+        try:
+            second_coef_now = driver_for_second_bk.find_coef_for_any_sport(bet1['sport_name'], bet1['parimatch_href'],
+                                                                           bet1['parimatch_type'])
+            print(f'Коэффициет на второй бк({oposite_bk_name}) сейчас: {second_coef_now}')
+            print(f'Коэффициет на второй бк нужный: {parimatch_coef}')
+            try:
+                float(second_coef_now)
+            except:
+                print('Ставка не поддерживается')
+                return False
+            if float(second_coef_now) + 0.05 < float(bet1['parimatch_coef']):
+                print('Коэффициет на париматч упал!', f'{bet1["parimatch_coef"]} -> {second_coef_now}')
+                return False
+        except:
+            print('Не удалось получить коэффициент для париматч')
+            return False
 
 
         return {
@@ -188,15 +234,15 @@ class APIWork:
 
 APIWorker1 = APIWork(TOKEN, URL, params)
 
-# AllForks = set()
-#
+AllForks = set()
+
 # for i in range(1000):
-#     time.sleep(5)
 #     r = APIWorker1.send_request_to_API(old_bets_set=AllForks)
 #     # if not r:
 #     #     continue
 #     print(r)
+#     time.sleep(5)
 #
 # #
-#
-#
+
+
