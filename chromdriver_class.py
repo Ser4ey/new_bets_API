@@ -3682,11 +3682,11 @@ class FireFoxFor1XBet:
 
 
 class FireFoxForFavbet:
-    def __init__(self):
+    def __init__(self, firefox_profile_path=data.VPN_dict['UK']):
         firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
         firefox_capabilities['marionette'] = True
 
-        fp = webdriver.FirefoxProfile(data.firefox_profile_path)
+        fp = webdriver.FirefoxProfile(firefox_profile_path)
         fp.set_preference("browser.privatebrowsing.autostart", True)
 
         options = webdriver.FirefoxOptions()

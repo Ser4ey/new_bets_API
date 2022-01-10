@@ -36,7 +36,7 @@ bookmakers_list = {
     'winline': 'WLN',
     # 'betcity': 'BCT',
     # 'betcity_by': 'BCY',
-    'parimatch_ru_new': 'PAN',
+    # 'parimatch_ru_new': 'PAN',
 
 }
 
@@ -44,7 +44,7 @@ bookmakers_drivers_to_check = {
     '1xbet': chromdriver_class.FireFoxFor1XBet(),
     'favbet': chromdriver_class.FireFoxForFavbet(),
     'winline': chromdriver_class.FireFoxForWinline(),
-    'parimatch_ru_new':  chromdriver_class.FireFoxForPimatch(data.VPN_dict['RU'])
+    # 'parimatch_ru_new':  chromdriver_class.FireFoxForPimatch(data.VPN_dict['RU'])
 }
 
 all_bk_list = [i for i in bookmakers_list.keys()]
