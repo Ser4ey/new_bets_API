@@ -3704,7 +3704,7 @@ class FireFoxForFavbet:
         self.driver = driver
         self.driver.set_page_load_timeout(75)
         time.sleep(5)
-        input('Смените VPN на Украину для falbet:')
+        # input('Смените VPN на Украину для falbet:')
         self.driver.get('https://favbet.by/en/')
 
     def find_coef_for_any_sport(self, sport, url, bet_type):
