@@ -3009,7 +3009,7 @@ class FireFoxForWinline:
         self.driver = driver
         self.driver.set_page_load_timeout(75)
         time.sleep(5)
-        input('Смените VPN на Россию:')
+        # input('Смените VPN на Россию:')
         self.driver.get('https://winline.ru/')
 
     def find_coef_for_any_sport(self, sport, url, bet_type):
@@ -3360,7 +3360,7 @@ class FireFoxFor1XBet:
         self.driver = driver
         self.driver.set_page_load_timeout(75)
         time.sleep(5)
-        input('Смените VPN на Россия для 1xbet:')
+        # input('Смените VPN на Россия для 1xbet:')
         self.driver.get('https://1xbet.com/')
 
     def find_coef_for_any_sport(self, sport, url, bet_type):
@@ -4060,7 +4060,7 @@ class FireFoxFonbet:
         self.driver = driver
         self.driver.set_page_load_timeout(75)
         time.sleep(5)
-        input('Смените VPN на Россию для fonbet:')
+        # input('Смените VPN на Россию для fonbet:')
         self.driver.get('https://www.fonbet.ru')
 
     def find_coef_for_any_sport(self, sport, url, bet_type):
