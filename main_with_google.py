@@ -155,6 +155,7 @@ class GetNewAccountsListHigh:
         for i in range(len(accounts_list_to_close)):
             try:
                 driver_class_ = accounts_list_to_close[i]
+                driver_class_.driver.close()
                 driver_class_.driver.quit()
                 print(f'Аккаунт {i+1}/{len(accounts_list_to_close)} закрыт')
             except:
