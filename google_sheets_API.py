@@ -131,5 +131,5 @@ AccountsBet365_from_google = accounts_[:]
 print(AccountsBet365_from_google)
 
 GoogleAPIWorker = WorkWithGoogleAPI(google_api_exemple=google_table_api)
-
+# GoogleAPIWorker.rewrate_google_sheet()
 
