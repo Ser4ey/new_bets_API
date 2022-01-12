@@ -679,7 +679,11 @@ class FireFoxDriverMain:
         finally:
             self.driver.switch_to.default_content()
 
-        main_blocks_line = self.driver.find_element_by_class_name('myb-MyBetsHeader_Container ')
+        try:
+            main_blocks_line = self.driver.find_element_by_class_name('myb-MyBetsHeader_Container ')
+        except:
+            print(f'Не удалось определить порезку на аккаунте {self.bet365_login}')
+            return True
 
         first_block = main_blocks_line.find_elements_by_class_name('myb-HeaderButton')[0]
         first_block_text = first_block.text
