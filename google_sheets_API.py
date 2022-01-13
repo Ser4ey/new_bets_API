@@ -35,19 +35,22 @@ class GoogleAPI:
         return service
 
     def write_row(self, row, current_line=2):
-        service = self.get_service_to_google_API()
-        values = service.spreadsheets().values().batchUpdate(
-            spreadsheetId=self.spreadsheet_id,
-            body={
-                "valueInputOption": "USER_ENTERED",
-                "data": [
-                    {f"range": f"A{current_line}:F{current_line}",
-                     "majorDimension": "ROWS",
-                     "values": [row]},
+        try:
+            service = self.get_service_to_google_API()
+            values = service.spreadsheets().values().batchUpdate(
+                spreadsheetId=self.spreadsheet_id,
+                body={
+                    "valueInputOption": "USER_ENTERED",
+                    "data": [
+                        {f"range": f"A{current_line}:F{current_line}",
+                         "majorDimension": "ROWS",
+                         "values": [row]},
 
-                ]
-            }
-        ).execute()
+                    ]
+                }
+            ).execute()
+        except Exception as er:
+            print(f'Не удалось перезаписать строку {er}')
 
     def write_many_rows(self, many_rows_list, start_line=2):
         for i in range(len(many_rows_list)):

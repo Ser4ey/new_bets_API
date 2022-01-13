@@ -117,7 +117,7 @@ def check_is_account_froze(driver):
 
 
 class GetNewAccountsListHigh:
-    def __init__(self, reboot_time=60*60):
+    def __init__(self, reboot_time=60*60*3):
         self.time_point = time.time()
         self.reboot_time = reboot_time
 
