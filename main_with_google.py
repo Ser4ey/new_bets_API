@@ -203,63 +203,63 @@ while True:
     # Вывод текущего времени
     now = datetime.datetime.now()
     now = now.strftime('%H:%M:%S')
-    print(now)
+    print(now, 'time')
 
     # реанимация .com аккаунтов
     with Pool(processes=len(List_of_bet_account)) as p:
         A = [i for i in List_of_bet_account]
         p.map(reanimate_bet365com, A)
 
-    if porezan_counter % 6 == 0:
-        # i_porez = 0
-        try:
-            with Pool(processes=len(List_of_bet_account)) as p:
-                p.map(cheeck_porezan_li_account, List_of_bet_account)
-        except Exception as er:
-            print(er)
-
-        # while i_porez < len(List_of_bet_account):
-        #     if not List_of_bet_account[i_porez].is_valud_account:
-        #         if GoogleAPIWorker.Accounts[i_porez][5] == 'Да':
-        #             i_porez += 1
-        #             continue
-        #         GoogleAPIWorker.Accounts[i_porez][5] = 'Да'
-        #         telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
-        #         telegram_notify1.telegram_bot_send_message(telegram_text)
-        #         print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
-        #         List_of_bet_account[i_porez].driver.quit()
-        #         List_of_bet_account.pop(i_porez)
-        #     else:
-        #         i_porez += 1
-
-        # определение порезки аккаунтов алгоритм 2.0
-        for i in range(len(List_of_bet_account)):
-            if not List_of_bet_account[i].is_valud_account:
-
-                account_google_line = 'no'
-                # сопоставление аккаунта в гугл таблицах аккаунту в массиве
-                for g in range(len(GoogleAPIWorker.Accounts)):
-                    google_name = GoogleAPIWorker.Accounts[g][0]
-                    if google_name == List_of_bet_account[i].bet365_login:
-                        account_google_line = g
-                        print(f'{google_name} = {List_of_bet_account[i].bet365_login}, g:{g} = A{i}')
-                        break
-
-                if account_google_line == 'no':
-                    print('Не удалось найти аккаунт в гугл таблице!')
-
-
-                if GoogleAPIWorker.Accounts[account_google_line][5] == 'Да':
-                    print('Аккаунт уже определён как порезанный (?)')
-                    continue
-
-                GoogleAPIWorker.Accounts[account_google_line][5] = 'Да'
-                print(f'Аккаунт {List_of_bet_account[i].bet365_login} - порезан ({GoogleAPIWorker.Accounts[account_google_line][0]})')
-                telegram_text = f'{List_of_bet_account[i].bet365_login} - порезан. Баланс: {List_of_bet_account[i].get_balance()} '
-                telegram_notify1.telegram_bot_send_message(telegram_text)
-                print(f'Аккаунт {List_of_bet_account[i].bet365_login} - порезан')
-                List_of_bet_account[i].driver.quit()
-                # List_of_bet_account.pop(i)
+    # if porezan_counter % 6 == 0:
+    #     # i_porez = 0
+    #     try:
+    #         with Pool(processes=len(List_of_bet_account)) as p:
+    #             p.map(cheeck_porezan_li_account, List_of_bet_account)
+    #     except Exception as er:
+    #         print(er)
+    #
+    #     # while i_porez < len(List_of_bet_account):
+    #     #     if not List_of_bet_account[i_porez].is_valud_account:
+    #     #         if GoogleAPIWorker.Accounts[i_porez][5] == 'Да':
+    #     #             i_porez += 1
+    #     #             continue
+    #     #         GoogleAPIWorker.Accounts[i_porez][5] = 'Да'
+    #     #         telegram_text = f'{List_of_bet_account[i_porez].bet365_login} - порезан. Баланс: {List_of_bet_account[i_porez].get_balance()} '
+    #     #         telegram_notify1.telegram_bot_send_message(telegram_text)
+    #     #         print(f'Аккаунт {List_of_bet_account[i_porez].bet365_login} - порезан')
+    #     #         List_of_bet_account[i_porez].driver.quit()
+    #     #         List_of_bet_account.pop(i_porez)
+    #     #     else:
+    #     #         i_porez += 1
+    #
+    #     # определение порезки аккаунтов алгоритм 2.0
+    #     for i in range(len(List_of_bet_account)):
+    #         if not List_of_bet_account[i].is_valud_account:
+    #
+    #             account_google_line = 'no'
+    #             # сопоставление аккаунта в гугл таблицах аккаунту в массиве
+    #             for g in range(len(GoogleAPIWorker.Accounts)):
+    #                 google_name = GoogleAPIWorker.Accounts[g][0]
+    #                 if google_name == List_of_bet_account[i].bet365_login:
+    #                     account_google_line = g
+    #                     print(f'{google_name} = {List_of_bet_account[i].bet365_login}, g:{g} = A{i}')
+    #                     break
+    #
+    #             if account_google_line == 'no':
+    #                 print('Не удалось найти аккаунт в гугл таблице!')
+    #
+    #
+    #             if GoogleAPIWorker.Accounts[account_google_line][5] == 'Да':
+    #                 print('Аккаунт уже определён как порезанный (?)')
+    #                 continue
+    #
+    #             GoogleAPIWorker.Accounts[account_google_line][5] = 'Да'
+    #             print(f'Аккаунт {List_of_bet_account[i].bet365_login} - порезан ({GoogleAPIWorker.Accounts[account_google_line][0]})')
+    #             telegram_text = f'{List_of_bet_account[i].bet365_login} - порезан. Баланс: {List_of_bet_account[i].get_balance()} '
+    #             telegram_notify1.telegram_bot_send_message(telegram_text)
+    #             print(f'Аккаунт {List_of_bet_account[i].bet365_login} - порезан')
+    #             List_of_bet_account[i].driver.quit()
+    #             # List_of_bet_account.pop(i)
 
 
     GoogleAPIWorker.rewrate_google_sheet()
