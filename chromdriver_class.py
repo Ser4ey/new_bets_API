@@ -667,22 +667,22 @@ class FireFoxDriverMain:
         self.driver.get('https://www.bet365.com/#/MB/')
         time.sleep(7)
 
-        try:
-            iframe1 = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame ')
-            self.driver.switch_to.frame(iframe1)
-            notify_text = self.driver.find_element_by_class_name('modal-title').text
-            if notify_text == 'Restrictions have been applied to your account':
-                self.is_valud_account = False
-                return True
-        except:
-            pass
-        finally:
-            self.driver.switch_to.default_content()
+        # try:
+        #     iframe1 = self.driver.find_element_by_class_name('lp-UserNotificationsPopup_Frame ')
+        #     self.driver.switch_to.frame(iframe1)
+        #     notify_text = self.driver.find_element_by_class_name('modal-title').text
+        #     if notify_text == 'Restrictions have been applied to your account':
+        #         self.is_valud_account = False
+        #         return True
+        # except:
+        #     pass
+        # finally:
+        #     self.driver.switch_to.default_content()
 
         try:
             main_blocks_line = self.driver.find_element_by_class_name('myb-MyBetsHeader_Container ')
         except:
-            print(f'Не удалось определить порезку на аккаунте {self.bet365_login}')
+            print(f'Не удалось определить порезку на аккаунте {self.bet365_login} 22')
             return True
 
         first_block = main_blocks_line.find_elements_by_class_name('myb-HeaderButton')[0]
