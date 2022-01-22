@@ -1,14 +1,14 @@
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium import webdriver
-
+import data
 
 def open_one_proxy_account():
     proxy = "51.89.191.226:10239"
     log_pass = 'avraint2305:01bbbe'
 
-    firefox_profile = r'C:\Users\Sergey\AppData\Roaming\Mozilla\Firefox\Profiles\s5auea2f.default-release'
-    firefox_binary = r'C:\Program Files\Mozilla Firefox\firefox.exe'
-    path_to_geckodriver = r'C:\Users\Sergey\PycharmProjects\new_bets_API\geckodriver.exe'
+    firefox_profile = data.firefox_profile_path
+    firefox_binary = data.firefox_binary
+    path_to_geckodriver = data.path_to_geckodriver
 
 
 
