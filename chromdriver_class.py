@@ -2590,9 +2590,8 @@ class GetWorkAccountsList:
         return self.Browser_List
 
 
-
 class FireFoxDriverMainNoAutoOpen(FireFoxDriverMain):
-    def __init__(self, driver, bet_value, login, password, vpn_country):
+    def __init__(self, driver, bet_value, login, password, vpn_country='UK'):
         self.driver = driver
         if vpn_country == 'RU':
             try:
